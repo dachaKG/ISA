@@ -1,4 +1,4 @@
-package app.users;
+package app.guest;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,42 +12,41 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/users")
-
-public class UserController {
-	private final UserService service;
+@RequestMapping("/guests")
+public class GuestController {
+	private final GuestService service;
 
 	@Autowired
-	public UserController(final UserService service) {
+	public GuestController(final GuestService service) {
 		this.service = service;
 	}
 
 	@GetMapping
-	public ResponseEntity<List<User>> findAll() {
+	public ResponseEntity<List<Guest>> findAll() {
 		return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
 	}
 
-	@RequestMapping(method = RequestMethod.POST, consumes = "application/json")
+	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public void save(@Valid @RequestBody User user) {
-		user.setId(null);
-		service.save(user);
+	public void save(@Valid @RequestBody Guest guest) {
+		guest.setId(null);
+		service.save(guest);
 	}
 
 	@GetMapping(path = "/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public User findOne(@PathVariable Long id) {
-		User disk = service.findOne(id);
-		Optional.ofNullable(disk).orElseThrow(() -> new ResourceNotFoundException("resourceNotFound!"));
-		return disk;
+	public Guest findOne(@PathVariable Long id) {
+		Guest guest = service.findOne(id);
+		Optional.ofNullable(guest).orElseThrow(() -> new ResourceNotFoundException("resourceNotFound!"));
+		return guest;
 	}
 
 	@DeleteMapping(path = "/{id}")
@@ -58,9 +57,10 @@ public class UserController {
 
 	@PutMapping(path = "/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public User update(@PathVariable Long id, @Valid @RequestBody User newHardDisk) {
-		Optional.ofNullable(service.findOne(id)).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
-		newHardDisk.setId(id);
-		return service.save(newHardDisk);
+	public Guest update(@PathVariable Long id, @Valid @RequestBody Guest guest) {
+		Optional.ofNullable(service.findOne(id))
+				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
+		guest.setId(id);
+		return service.save(guest);
 	}
 }
