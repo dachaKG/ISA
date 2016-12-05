@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import app.manager.restaurant.RestaurantManager;
+import app.manager.restaurant.RestaurantManagerService;
 import app.restaurant.Restaurant;
 import app.restaurant.RestaurantService;
 
@@ -24,10 +26,12 @@ import app.restaurant.RestaurantService;
 @RequestMapping("/systemManager")
 public class SystemManagerController {
 	private final RestaurantService service;
+	private final RestaurantManagerService restaurantManager;
 
 	@Autowired
-	public SystemManagerController(final RestaurantService service) {
+	public SystemManagerController(final RestaurantService service, final RestaurantManagerService restaurantManager) {
 		this.service = service;
+		this.restaurantManager = restaurantManager;
 	}
 
 	// 2.9
@@ -39,6 +43,12 @@ public class SystemManagerController {
 	public void save(@Valid @RequestBody Restaurant restaurant) {
 		restaurant.setId(null);
 		service.save(restaurant);
+	}
+	
+	public void saveRestaurantManager(@Valid @RequestBody RestaurantManager restaurantManager){
+		restaurantManager.setId(null);
+		this.restaurantManager.save(restaurantManager);
+		
 	}
 
 	// pronalazak bilo kog restorana

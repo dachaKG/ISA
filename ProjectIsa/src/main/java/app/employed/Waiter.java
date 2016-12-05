@@ -1,4 +1,4 @@
-package app.manager.restaurant;
+package app.employed;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,11 +10,14 @@ import app.common.User;
 import lombok.Data;
 
 @Data
-@Entity
-public class RestaurantManager extends User {
+@Entity(name = "WAITER")
+public class Waiter extends User{
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "RESTAURANT_MANAGER_ID")
-	private Long id;
+	@GeneratedValue(strategy = GenerationType.AUTO) //automatsko generisanje kljuca
+	@Column(name = "WAITER_ID")
+	private long id;
+	
+	
+
 }

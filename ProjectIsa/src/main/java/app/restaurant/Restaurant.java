@@ -13,6 +13,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import app.dish.Dish;
 import app.drink.Drink;
 import app.manager.restaurant.RestaurantManager;
@@ -27,7 +29,7 @@ public class Restaurant {
 	private Long id;
 
 	@Column
-	@NotNull
+	@NotBlank
 	private String name;
 
 	@NotNull

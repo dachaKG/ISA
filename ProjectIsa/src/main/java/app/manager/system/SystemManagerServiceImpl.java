@@ -23,7 +23,7 @@ public class SystemManagerServiceImpl implements SystemManagerService {
 	public List<SystemManager> findAll() {
 		return Lists.newArrayList(repository.findAll());
 	}
-
+	
 	@Override
 	public SystemManager save(SystemManager systemManager) {
 		return repository.save(systemManager);
