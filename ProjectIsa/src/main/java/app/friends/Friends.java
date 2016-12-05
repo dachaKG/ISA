@@ -12,6 +12,7 @@ import javax.validation.constraints.NotNull;
 import app.guest.Guest;
 import lombok.Data;
 
+//klasa koja ima parove prijatelja
 @Entity
 @Data
 public class Friends {

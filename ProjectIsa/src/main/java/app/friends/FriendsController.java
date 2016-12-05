@@ -1,5 +1,6 @@
 package app.friends;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,11 +31,29 @@ public class FriendsController {
 		this.guestService = guestService;
 	}
 
+	// izlistavanje svih prijatelja
 	@GetMapping
 	public ResponseEntity<List<Friends>> findAll() {
 		return new ResponseEntity<>(friendService.findAll(), HttpStatus.OK);
 	}
 
+	// izlistavanje svih prijatelja gosta koji je logovan
+	@GetMapping(path = "/{idGuest}")
+	public ResponseEntity<List<Friends>> findAllFriends(@PathVariable Long idFriend) {
+		Optional.ofNullable(guestService.findOne(idFriend))
+				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
+		List<Friends> friends = new ArrayList<>();
+		List<Friends> allFriendShips = friendService.findAll();
+		for (int i = 0; i < allFriendShips.size(); i++)
+			if (allFriendShips.get(i).getFriendSendRequest().getId() == idFriend
+					|| allFriendShips.get(i).getFriendReciveRequest().getId() == idFriend)
+				friends.add(allFriendShips.get(i));
+
+		return new ResponseEntity<>(friends, HttpStatus.OK);
+	}
+
+	// 2.2
+	// dodavanje prijatelja u listu prijatelja
 	@GetMapping(path = "/{idFriend}")
 	@ResponseStatus(HttpStatus.OK)
 	public void addFriend(@PathVariable Long idFriend) {
@@ -44,8 +63,7 @@ public class FriendsController {
 	}
 
 	public void addGuestAsFriend(Guest guest) {
-		// ovo za sad stoji, dok se ne utvrdi kako da odrzavam aktivnog jednog
-		// gosta
+		// ovo za sad stoji, dok se ne utvrdi kako da odrzavam aktivnog jednog gosta
 		Guest home = guestService.findOne(1l);
 		List<Friends> friends = friendService.findAll();
 
