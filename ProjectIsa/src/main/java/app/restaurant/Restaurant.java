@@ -13,6 +13,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
@@ -40,16 +41,15 @@ public class Restaurant {
 	@JoinColumn(name = "RESTAURANT_MANAGER_ID")
 	private RestaurantManager restaurantManager;
 
-	@ManyToMany
+	@OneToMany
 	@JoinTable(name = "RESTAURANT_DISH", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "DISH_ID"))
 	private List<Dish> food;
 
-	@ManyToMany
+	@OneToMany
 	@JoinTable(name = "RESTAURANT_DRINK", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "DRINK_ID"))
 	private List<Drink> drinks;
 
-	@ManyToMany
-	@JoinTable(name = "RESTAURANT_SEGMENT", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "SEGMENT_ID"))
+	@OneToMany(mappedBy = "restaurant")
 	private List<Segment> segments;
 	
 	//proveriti kardinalitete
@@ -57,8 +57,8 @@ public class Restaurant {
 	private List<Employed> staff;
 
 	@Column
-	private Integer summRate = 0;
+	private Integer summRate;
 
 	@Column
-	private Integer numRate = 0;
+	private Integer numRate;
 }
