@@ -2,6 +2,7 @@ package app.restaurant;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
@@ -17,6 +19,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import app.dish.Dish;
 import app.drink.Drink;
+import app.employed.Employed;
 import app.manager.restaurant.RestaurantManager;
 import lombok.Data;
 
@@ -48,6 +51,10 @@ public class Restaurant {
 	@ManyToMany
 	@JoinTable(name = "RESTAURANT_SEGMENT", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "SEGMENT_ID"))
 	private List<Segment> segments;
+	
+	//proveriti kardinalitete
+	@OneToMany(cascade=CascadeType.ALL) 
+	private List<Employed> staff;
 
 	@Column
 	private Integer summRate = 0;
