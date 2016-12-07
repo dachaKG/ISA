@@ -51,8 +51,8 @@ public class Restaurant {
 	private List<Segment> segments;
 	
 	//proveriti kardinalitete
-	@OneToMany(cascade=CascadeType.ALL) 
-	private List<Employed> staff;
+	//@OneToMany(cascade=CascadeType.ALL) 
+	//private List<Employed> staff;
 
 	@Column
 	private Integer summRate;

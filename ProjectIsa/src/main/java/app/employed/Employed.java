@@ -40,7 +40,7 @@ public class Employed extends User{
    @Column
    private int velicinaObuce;
    
-   @ManyToOne(cascade=CascadeType.ALL) 
-   public Restaurant restoran;
+   //@ManyToOne(cascade=CascadeType.ALL) 
+   //public Restaurant restoran;
 	
 }
