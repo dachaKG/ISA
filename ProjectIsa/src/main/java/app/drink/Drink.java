@@ -5,7 +5,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
+import app.restaurant.Restaurant;
 import lombok.Data;
 
 @Data
@@ -24,13 +27,13 @@ public class Drink {
 
 	@Column
 	private Integer price;
-	
+
 	@Column
-	private Integer summRate = 0;
-	
+	private Integer summRate;
+
 	@Column
-	private Integer numRate = 0;
-	
+	private Integer numRate;
+
 	/*
 	@ManyToOne
 	@JoinColumn(name = "RESTAURANT_ID")

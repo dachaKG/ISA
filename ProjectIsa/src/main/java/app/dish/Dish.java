@@ -26,10 +26,10 @@ public class Dish {
 	private Integer price;
 	
 	@Column
-	private Integer summRate = 0;
+	private Integer summRate;
 	
 	@Column
-	private Integer numRate = 0;
+	private Integer numRate;
 	
 	/*
 	@ManyToOne

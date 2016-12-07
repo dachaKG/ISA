@@ -63,7 +63,8 @@ public class FriendsController {
 	}
 
 	public void addGuestAsFriend(Guest guest) {
-		// ovo za sad stoji, dok se ne utvrdi kako da odrzavam aktivnog jednog gosta
+		// ovo za sad stoji, dok se ne utvrdi kako da odrzavam aktivnog jednog
+		// gosta
 		Guest home = guestService.findOne(1l);
 		List<Friends> friends = friendService.findAll();
 
