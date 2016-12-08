@@ -14,7 +14,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
 import app.common.User;
-import app.order.Order;
+import app.order.Orderr;
 import app.restaurant.Restaurant;
 import lombok.Data;
 
@@ -30,7 +30,7 @@ public class Employed extends User{
 	
 	@ManyToMany
 	@JoinTable(name = "EMPLOYED_ORDERS", joinColumns = @JoinColumn(name = "EMPLOYED_ID"), inverseJoinColumns = @JoinColumn(name = "ORDER_ID"))
-	private List<Order> orders;
+	private List<Orderr> orders;
 	
 	//Treba organizovati i raspored rada
  //  private Date datumRodjenja;
