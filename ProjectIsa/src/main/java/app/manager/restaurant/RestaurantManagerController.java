@@ -35,6 +35,13 @@ public class RestaurantManagerController {
 		return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
 	}
 	
+	@GetMapping(path = "/free")
+	public ResponseEntity<List<RestaurantManager>> findAllFreeRestaurantManagers() {
+		List<RestaurantManager> list = service.findAll();
+		//kad se uvede bidirekciona veza, treba ova lista da se pretrazi i vrate samo slobodni menadzeri,oni koji nisu u nekom restoranu
+		return new ResponseEntity<>(list, HttpStatus.OK);
+	}
+	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public void save(@Valid @RequestBody RestaurantManager restaurantManager){

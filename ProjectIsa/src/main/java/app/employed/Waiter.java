@@ -10,14 +10,11 @@ import app.common.User;
 import lombok.Data;
 
 @Data
-@Entity(name = "WAITER")
+@Entity()
 public class Waiter extends User{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO) //automatsko generisanje kljuca
 	@Column(name = "WAITER_ID")
 	private long id;
-	
-	
-
 }

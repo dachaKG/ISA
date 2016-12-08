@@ -17,4 +17,9 @@ public class RestaurantManager extends User {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "RESTAURANT_MANAGER_ID")
 	private Long id;
+	/*
+	@OneToOne
+	@JoinColumn(name = "RESTAURANT_ID")
+	private Restaurant restaurant;
+*/
 }

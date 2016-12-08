@@ -10,10 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
@@ -53,8 +51,8 @@ public class Restaurant {
 	private List<Segment> segments;
 	
 	//proveriti kardinalitete
-	@OneToMany(cascade=CascadeType.ALL) 
-	private List<Employed> staff;
+	//@OneToMany(cascade=CascadeType.ALL) 
+	//private List<Employed> staff;
 
 	@Column
 	private Integer summRate;

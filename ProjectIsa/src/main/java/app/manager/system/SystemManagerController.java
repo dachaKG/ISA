@@ -1,5 +1,6 @@
 package app.manager.system;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -7,6 +8,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,63 +19,67 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import app.manager.restaurant.RestaurantManager;
-import app.manager.restaurant.RestaurantManagerService;
-import app.restaurant.Restaurant;
-import app.restaurant.RestaurantService;
-
 @RestController
 @RequestMapping("/systemManager")
 public class SystemManagerController {
-	private final RestaurantService service;
-	private final RestaurantManagerService restaurantManager;
+
+	private SystemManagerService serviceSystemManager;
 
 	@Autowired
-	public SystemManagerController(final RestaurantService service, final RestaurantManagerService restaurantManager) {
-		this.service = service;
-		this.restaurantManager = restaurantManager;
+	public SystemManagerController(final SystemManagerService serviceSystemManager) {
+		this.serviceSystemManager = serviceSystemManager;
+	}
+
+	// izlistavanja svih menadzera sistema
+	@GetMapping
+	public ResponseEntity<List<SystemManager>> findAll() {
+		return new ResponseEntity<>(serviceSystemManager.findAll(), HttpStatus.OK);
 	}
 
 	// 2.9
-	// registrovanje novih restorana, sa vec postojecim menadzerom
-	// restorana,mora postojati menadzer da bi
-	// bio postavljen za menadzera datog restorana
-	@PostMapping
+	// dodavanje novog menadzera sistema
+	@PostMapping()
 	@ResponseStatus(HttpStatus.CREATED)
-	public void save(@Valid @RequestBody Restaurant restaurant) {
-		restaurant.setId(null);
-		service.save(restaurant);
-	}
-	
-	public void saveRestaurantManager(@Valid @RequestBody RestaurantManager restaurantManager){
-		restaurantManager.setId(null);
-		this.restaurantManager.save(restaurantManager);
-		
+	public void saveSystemManager(@Valid @RequestBody SystemManager systemManager) {
+		// zastita u slucaju da mu npr preko postmana posaljemo id,da se
+		// izignorise
+		systemManager.setId(null);
+		serviceSystemManager.save(systemManager);
 	}
 
-	// pronalazak bilo kog restorana
+	// omogucena izmena nekog menadzera sistema, koju vrsi glavni menadzer
+	@PutMapping(path = "/{id}")
+	@ResponseStatus(HttpStatus.OK)
+	public SystemManager updateSystemManager(@PathVariable Long id, @Valid @RequestBody SystemManager systemManager) {
+		Optional.ofNullable(serviceSystemManager.findOne(id))
+				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
+		systemManager.setId(id);
+		return serviceSystemManager.save(systemManager);
+	}
+
+	// nalazenje jednog menadzera sistema
 	@GetMapping(path = "/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public Restaurant findOne(@PathVariable Long id) {
-		Restaurant restaurant = service.findOne(id);
-		Optional.ofNullable(restaurant).orElseThrow(() -> new ResourceNotFoundException("resourceNotFound!"));
-		return restaurant;
+	public SystemManager findOne(@PathVariable Long id) {
+		SystemManager systemManager = serviceSystemManager.findOne(id);
+		Optional.ofNullable(systemManager).orElseThrow(() -> new ResourceNotFoundException("resourceNotFound!"));
+		return systemManager;
 	}
 
-	// brisanje restorana
+	// brisanje menadzera sistema
 	@DeleteMapping(path = "/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@PathVariable Long id) {
-		service.delete(id);
+		serviceSystemManager.delete(id);
 	}
 
-	// izmena restorana
-	@PutMapping(path = "/{id}")
-	@ResponseStatus(HttpStatus.OK)
-	public Restaurant update(@PathVariable Long id, @Valid @RequestBody Restaurant restaurant) {
-		Optional.ofNullable(service.findOne(id))
-				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
-		restaurant.setId(id);
-		return service.save(restaurant);
-	}
+	/*
+	 * private fina RestaurantManagerService restaurantManager
+	 * 
+	 * 
+	 * 
+	 * public void saveRestaurantManager(@Valid @RequestBody RestaurantManage
+	 * restaurantManager) restaurantManager.setId(null)
+	 * this.restaurantManager.save(restaurantManager)
+	 */
 }

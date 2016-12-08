@@ -2,7 +2,6 @@ package app.employed;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,11 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 
 import app.common.User;
 import app.order.Orderr;
-import app.restaurant.Restaurant;
 import lombok.Data;
 
 @Data
@@ -40,7 +37,7 @@ public class Employed extends User{
    @Column
    private int velicinaObuce;
    
-   @ManyToOne(cascade=CascadeType.ALL) 
-   public Restaurant restoran;
+   //@ManyToOne(cascade=CascadeType.ALL) 
+   //public Restaurant restoran;
 	
 }
