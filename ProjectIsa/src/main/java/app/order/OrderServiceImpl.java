@@ -20,17 +20,17 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public List<Order> findAll() {
+	public List<Orderr> findAll() {
 		return Lists.newArrayList(repository.findAll());
 	}
 
 	@Override
-	public Order save(Order order) {
+	public Orderr save(Orderr order) {
 		return repository.save(order);
 	}
 
 	@Override
-	public Order findOne(Long id) {
+	public Orderr findOne(Long id) {
 		return repository.findOne(id);
 	}
 

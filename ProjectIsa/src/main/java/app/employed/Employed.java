@@ -2,7 +2,6 @@ package app.employed;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,11 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 
 import app.common.User;
-import app.order.Order;
-import app.restaurant.Restaurant;
+import app.order.Orderr;
 import lombok.Data;
 
 @Data
@@ -30,7 +27,7 @@ public class Employed extends User{
 	
 	@ManyToMany
 	@JoinTable(name = "EMPLOYED_ORDERS", joinColumns = @JoinColumn(name = "EMPLOYED_ID"), inverseJoinColumns = @JoinColumn(name = "ORDER_ID"))
-	private List<Order> orders;
+	private List<Orderr> orders;
 	
 	//Treba organizovati i raspored rada
  //  private Date datumRodjenja;

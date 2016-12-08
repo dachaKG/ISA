@@ -10,11 +10,11 @@ import lombok.Data;
 @Data
 @MappedSuperclass
 public class User {
-	
+
 	@NotBlank
-	@Column(unique=true)
+	@Column(unique = true)
 	private String mail;
-	
+
 	@NotBlank
 	@Column
 	private String password;
@@ -26,9 +26,9 @@ public class User {
 	@NotBlank
 	@Column
 	private String lastname;
-	
-	//flag koji je inicijalno false, i kad korisnik klikne na link pri registraciji postaje true
-	
+
+	// flag koji je inicijalno false, i kad korisnik klikne na link pri
+	// registraciji postaje true
 	@Column
 	private boolean registrated;
 }

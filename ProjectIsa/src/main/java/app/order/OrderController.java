@@ -15,8 +15,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
+@RestController
+@RequestMapping("/orders")
 public class OrderController {
 
 	private final OrderService orderService;
@@ -28,21 +32,21 @@ public class OrderController {
 
 	// listanje svih porudzbina
 	@GetMapping
-	public ResponseEntity<List<Order>> findAll() {
+	public ResponseEntity<List<Orderr>> findAll() {
 		return new ResponseEntity<>(orderService.findAll(), HttpStatus.OK);
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public void save(@Valid @RequestBody Order order) {
+	public void save(@Valid @RequestBody Orderr order) {
 		order.setId(null);
 		orderService.save(order);
 	}
 
 	@GetMapping(path = "/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public Order findOne(@PathVariable Long id) {
-		Order order = orderService.findOne(id);
+	public Orderr findOne(@PathVariable Long id) {
+		Orderr order = orderService.findOne(id);
 		Optional.ofNullable(order).orElseThrow(() -> new ResourceNotFoundException("resourceNotFound!"));
 		return order;
 	}
@@ -55,7 +59,7 @@ public class OrderController {
 
 	@PutMapping(path = "/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public Order update(@PathVariable Long id, @Valid @RequestBody Order order) {
+	public Orderr update(@PathVariable Long id, @Valid @RequestBody Orderr order) {
 		Optional.ofNullable(orderService.findOne(id))
 				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 		order.setId(id);

@@ -3,11 +3,11 @@ package app.order;
 import java.util.List;
 
 public interface OrderService {
-	List<Order> findAll();
+	List<Orderr> findAll();
 
-	Order save(Order order);
+	Orderr save(Orderr order);
 
-	Order findOne(Long id);
+	Orderr findOne(Long id);
 
 	void delete(Long id);
 }
