@@ -3,6 +3,7 @@ package app.restaurant;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +18,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 @RestController
 @RequestMapping("/restaurant")
+@SessionAttributes
 public class RestaurantController {
 	private final RestaurantService service;
 
@@ -38,7 +41,7 @@ public class RestaurantController {
 	// pronalazak bilo kog restorana
 	@GetMapping(path = "/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public Restaurant findOne(@PathVariable Long id) {
+	public Restaurant findOne(@PathVariable Long id, HttpSession request) {
 		Restaurant restaurant = service.findOne(id);
 		Optional.ofNullable(restaurant).orElseThrow(() -> new ResourceNotFoundException("resourceNotFound!"));
 		return restaurant;

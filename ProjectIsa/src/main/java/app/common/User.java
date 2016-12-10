@@ -3,6 +3,7 @@ package app.common;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
 import lombok.Data;
@@ -11,6 +12,7 @@ import lombok.Data;
 @MappedSuperclass
 public class User {
 
+	@Email
 	@NotBlank
 	@Column(unique = true)
 	private String mail;
