@@ -31,9 +31,16 @@ public class Friends {
 	@JoinColumn(name = "FRIEND_RECIVE_REQUEST")
 	private Guest friendReciveRequest;
 
-	public Friends() {}
+	@Column
+	private boolean accepted;
+
 	public Friends(Guest friendSendRequest, Guest friendReciveRequest) {
+		super();
 		this.friendSendRequest = friendSendRequest;
 		this.friendReciveRequest = friendReciveRequest;
 	}
+
+	public Friends() {
+	}
+
 }
