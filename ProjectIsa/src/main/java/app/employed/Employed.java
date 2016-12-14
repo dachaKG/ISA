@@ -1,43 +1,82 @@
 package app.employed;
 
-import java.util.List;
-
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.MappedSuperclass;
+import javax.validation.constraints.NotNull;
 
 import app.common.User;
-import app.order.Orderr;
 import lombok.Data;
 
 @Data
-@Entity(name = "EMPLOYED")
-public class Employed extends User{
+@MappedSuperclass
+public abstract class Employed extends User{
 
 	
-	@Id
+	@Enumerated(EnumType.STRING)
+	@NotNull
+	@Column
+	private ClothesSize clothesSize;
+
+	@Enumerated(EnumType.STRING)
+	@NotNull
+	@Column
+	private ShoesSize shoesSize;
+	/*@Email
+	@NotBlank
+	@Column(unique = true)
+	private String mail;
+
+	@NotBlank
+	@Column
+	private String password;
+
+	@NotBlank
+	@Column
+	private String firstname;
+
+	@NotBlank
+	@Column
+	private String lastname;
+
+	// flag koji je inicijalno false, i kad korisnik klikne na link pri
+	// registraciji postaje true
+	@Column
+	private boolean registrated;
+	
+	@Enumerated(EnumType.STRING)
+	@NotNull
+	@Column
+	private ClothesSize clothesSize;
+
+	@Enumerated(EnumType.STRING)
+	@NotNull
+	@Column
+	private ShoesSize shoesSize;*/
+	
+
+	/*@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "EMPLOYED_ID")
 	private Long id;
-	
-	@ManyToMany
-	@JoinTable(name = "EMPLOYED_ORDERS", joinColumns = @JoinColumn(name = "EMPLOYED_ID"), inverseJoinColumns = @JoinColumn(name = "ORDER_ID"))
-	private List<Orderr> orders;
-	
-	//Treba organizovati i raspored rada
- //  private Date datumRodjenja;
-   @Column
-   private String konfekcijskiBroj;
-   
-   @Column
-   private int velicinaObuce;
-   
-   //@ManyToOne(cascade=CascadeType.ALL) 
-   //public Restaurant restoran;
-	
+
+
+
+	// Treba organizovati i raspored rada
+	// private Date datumRodjenja;
+	// @Column
+	@Enumerated(EnumType.STRING)
+	@NotNull
+	@Column
+	private ClothesSize clothesSize;
+
+	@Enumerated(EnumType.STRING)
+	@NotNull
+	@Column
+	private ShoesSize shoesSize;
+
+	@ManyToOne
+	@JoinTable(name = "EMPLOYED_RESTAURANT", joinColumns = @JoinColumn(name = "EMPLOYED_ID"), inverseJoinColumns = @JoinColumn(name = "RESTAURANT_ID"))
+	private Restaurant restaurant;*/
 }

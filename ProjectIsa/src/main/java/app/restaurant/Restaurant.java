@@ -2,6 +2,7 @@ package app.restaurant;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -19,7 +20,9 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import app.dish.Dish;
 import app.drink.Drink;
+import app.employed.waiter.Waiter;
 import app.manager.restaurant.RestaurantManager;
+import app.order.Orderr;
 import lombok.Data;
 
 @Data
@@ -53,12 +56,17 @@ public class Restaurant {
 	private List<Segment> segments;
 	
 	//proveriti kardinalitete
-	//@OneToMany(cascade=CascadeType.ALL) 
-	//private List<Employed> staff;
+	@OneToMany(cascade=CascadeType.ALL) 
+	@JoinTable(name = "RESTUARANT_STAFF", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "WAITER_ID"))
+	private List<Waiter> waiters;
 
 	@Column
 	private Integer summRate;
 
 	@Column
 	private Integer numRate;
+	
+	@OneToMany
+	@JoinTable(name = "RESTAURANT_ORDER", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "ORDER_ID"))
+	private List<Orderr> order;
 }
