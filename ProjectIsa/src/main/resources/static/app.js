@@ -60,5 +60,9 @@ angular.module('routerApp', ['ui.router',
         .state('restaurant.new', {
         	url : '/new',
         	templateUrl : 'restaurantt/restaurantNew.html'
+        })
+        .state('restaurant.profile', {
+        	url : '/profile',
+        	templateUrl : 'restaurantt/restaurantDetail.html'
         });
 });

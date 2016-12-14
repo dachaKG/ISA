@@ -26,6 +26,9 @@ public class Dish {
 	private Integer price;
 
 	@Column
+	private Integer count;
+
+	@Column
 	private Integer summRate;
 
 	@Column

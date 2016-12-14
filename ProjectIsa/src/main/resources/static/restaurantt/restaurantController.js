@@ -26,6 +26,17 @@ app.controller('restaurantController', ['$scope','restaurantService', 'restauran
                 }
             ); 	
 		};
+		
+		function findOne () {            
+			restaurantService.findOne(1).then(
+				function (response) {
+					$scope.restaurantt = response.data;
+				}
+            ); 	
+		};
+		findOne();
+		
+		
 	    $scope.delete = function (restaurant){
 	    	restaurantService.delete(restaurant.id).then(
 	    		function (response) {
