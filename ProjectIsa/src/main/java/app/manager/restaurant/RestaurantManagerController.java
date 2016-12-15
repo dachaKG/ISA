@@ -3,6 +3,7 @@ package app.manager.restaurant;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +25,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class RestaurantManagerController {
 
 	private final RestaurantManagerService service;
+	private HttpSession httpSession;
 
 	@Autowired
-	public RestaurantManagerController(final RestaurantManagerService service) {
+	public RestaurantManagerController(final RestaurantManagerService service,final HttpSession httpSession) {
 		this.service = service;
+		this.httpSession = httpSession;
 	}
 
 	@GetMapping
@@ -54,6 +57,7 @@ public class RestaurantManagerController {
 	@GetMapping(path = "/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public RestaurantManager findOne(@PathVariable Long id) {
+		httpSession.setAttribute("mika","zika");
 		RestaurantManager restaurantManager = service.findOne(id);
 		Optional.ofNullable(restaurantManager).orElseThrow(() -> new ResourceNotFoundException("resourceNotFound!"));
 		return restaurantManager;
@@ -62,6 +66,9 @@ public class RestaurantManagerController {
 	@DeleteMapping(path = "/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@PathVariable Long id) {
+		String temp = (String)httpSession.getAttribute("mika");
+		System.out.println(temp);
+		
 		service.delete(id);
 	}
 

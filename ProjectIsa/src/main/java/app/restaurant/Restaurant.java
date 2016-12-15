@@ -2,6 +2,7 @@ package app.restaurant;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -35,7 +36,7 @@ public class Restaurant {
 	private String name;
 
 	@NotNull
-	@OneToOne
+	@OneToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name = "RESTAURANT_MANAGER_ID")
 	private RestaurantManager restaurantManager;
 
