@@ -15,6 +15,6 @@ import lombok.Data;
 public class BossManager extends User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "MANAGER_BOSS_ID")
+	@Column(name = "BOSS_ID")
 	private Long id;
 }

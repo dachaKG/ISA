@@ -2,10 +2,17 @@ package app.dish;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import app.restaurant.Restaurant;
 import lombok.Data;
 
 @Data
@@ -16,15 +23,18 @@ public class Dish {
 	@Column(name = "DISH_ID")
 	private Long id;
 
+	@NotNull
 	@Column
 	private String name;
 
 	@Column
 	private String text;
 
+	@NotNull
 	@Column
 	private Integer price;
 
+	@NotNull
 	@Column
 	private Integer count;
 
@@ -33,10 +43,10 @@ public class Dish {
 
 	@Column
 	private Integer numRate;
-	/*
-	@JsonBackReference
-	// @org.codehaus.jackson.annotate.JsonIgnore
+
+	@JsonIgnore
+	@NotNull
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "RESTAURANT_ID")
-	private Restaurant restaurant;*/
+	private Restaurant restaurant;
 }

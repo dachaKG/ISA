@@ -1,4 +1,4 @@
-package app.guest;
+package app.bidder;
 
 import java.util.List;
 
@@ -12,20 +12,20 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
 import app.common.User;
-import app.restaurant.Restaurant;
+import app.order.Orderr;
 import lombok.Data;
 
 @Data
 @Entity
-public class Guest extends User {
+public class Bidder extends User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "GUEST_ID")
+	@Column(name = "BIDDER_ID")
 	private Long id;
 
-	//lista restorana gde je sve bio 
+	// lista svih dosadasnjih porudzbina
 	@ManyToMany
-	@JoinTable(name = "GUEST_RESTAURANT", joinColumns = @JoinColumn(name = "GUEST_ID"), inverseJoinColumns = @JoinColumn(name = "RESTAURANT_ID"))
-	private List<Restaurant> visitedRestaurants;
+	@JoinTable(name = "BIDDER_ORDERR", joinColumns = @JoinColumn(name = "BIDDER_ID"), inverseJoinColumns = @JoinColumn(name = "ORDERR_ID"))
+	private List<Orderr> lastOrders;
 
 }

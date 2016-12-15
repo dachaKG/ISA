@@ -1,4 +1,4 @@
-package app.manager.restaurant;
+package app.bidder;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,57 +20,54 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/restaurantManager")
-public class RestaurantManagerController {
-
-	private final RestaurantManagerService service;
+@RequestMapping("/guests")
+public class BidderController {
+	private final BidderService service;
 
 	@Autowired
-	public RestaurantManagerController(final RestaurantManagerService service) {
+	public BidderController(final BidderService service) {
 		this.service = service;
 	}
 
+	// izlistavanje svih gostiju
 	@GetMapping
-	public ResponseEntity<List<RestaurantManager>> findAll() {
+	public ResponseEntity<List<Bidder>> findAll() {
 		return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
 	}
 
-	@GetMapping(path = "/free")
-	public ResponseEntity<List<RestaurantManager>> findAllFreeRestaurantManagers() {
-		List<RestaurantManager> list = service.findAll();
-		// kad se uvede bidirekciona veza, treba ova lista da se pretrazi i
-		// vrate samo slobodni menadzeri,oni koji nisu u nekom restoranu
-		return new ResponseEntity<>(list, HttpStatus.OK);
-	}
-
+	// registracija gosta
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public void save(@Valid @RequestBody RestaurantManager restaurantManager) {
-		restaurantManager.setId(null);
-		restaurantManager.setRegistrated(false);
-		service.save(restaurantManager);
+	public void save(@Valid @RequestBody Bidder bidder) {
+		bidder.setId(null);
+		bidder.setRegistrated(false);
+		service.save(bidder);
 	}
 
+	// pretraga gostiju
 	@GetMapping(path = "/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public RestaurantManager findOne(@PathVariable Long id) {
-		RestaurantManager restaurantManager = service.findOne(id);
-		Optional.ofNullable(restaurantManager).orElseThrow(() -> new ResourceNotFoundException("resourceNotFound!"));
-		return restaurantManager;
+	public Bidder findOne(@PathVariable Long id) {
+		Bidder bidder = service.findOne(id);
+		Optional.ofNullable(bidder).orElseThrow(() -> new ResourceNotFoundException("resourceNotFound!"));
+		return bidder;
 	}
 
+	// brisanje gostiju
 	@DeleteMapping(path = "/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@PathVariable Long id) {
 		service.delete(id);
 	}
 
+	// 2.2
+	// izmena informacija o gostu
 	@PutMapping(path = "/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public RestaurantManager update(@PathVariable Long id, @Valid @RequestBody RestaurantManager restaurantManager) {
+	public Bidder update(@PathVariable Long id, @Valid @RequestBody Bidder bidder) {
 		Optional.ofNullable(service.findOne(id))
 				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
-		restaurantManager.setId(id);
-		return service.save(restaurantManager);
+		bidder.setId(id);
+		return service.save(bidder);
 	}
 }
