@@ -3,29 +3,28 @@ var app = angular.module('restaurantManager.controllers', []);
 app.controller('restaurantManagerController', ['$scope','restaurantManagerService', '$location',
 	function ($scope, restaurantManagerService, $location) {
 		function findAll() {
-			restaurantManagerService.findAll().then(
+			restaurantManagerService.findRestaurant().then(
 				function (response) {
-					$scope.restaurantManagers = response.data;
+					$scope.restaurant = response.data;
 				}
 			);
 		}
 		findAll();
 		
-		$scope.save = function () {            
-			restaurantManagerService.save($scope.restaurantManager).then(
+		$scope.saveDrink = function() {
+			//$scope.drink.restaurant = $scope.restaurant;
+			restaurantManagerService.saveDrink($scope.drink).then(
 				function (response) {
                     alert("Uspesno dodat.");
                     $scope.state = undefined;
-                    $location.path('restaurantManager/list');
+                    findAll();
+                    $location.path('restaurantManager/info');
+                },
+                function (response) {
+                    alert("Greska pri dodavanju.");
                 }
-            ); 	
-		};
-	    $scope.delete = function (restaurantManager){
-	    	restaurantManagerService.delete(restaurantManager.id).then(
-	    		function (response) {
-	    		     $scope.restaurantManagers.splice($scope.restaurantManager.indexOf(restaurantManager), 1);
-			    }
-		        
-	    	);
-		};		 
+			);
+		}
+		
+		
 }]);

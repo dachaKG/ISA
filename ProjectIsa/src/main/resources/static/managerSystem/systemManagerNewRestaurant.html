@@ -6,9 +6,9 @@
     <label>Manager</label>
     <select ng-model="$parent.restaurant.restaurantManager.id" class="form-control" required>
    		<option value="" disabled="" selected="">Select manager</option>
-     	<option ng-repeat="manager in restaurantManagers" value="{{ manager.id }}">{{manager.firstname}}</option>
+     	<option ng-repeat="manager in freeRestaurantManagers" value="{{ manager.id }}">{{manager.firstname}}</option>
 	</select>
-<button class="btn btn-default" ng-click="new.$valid &&  save()"><span class="glyphicon glyphicon-ok" ></span> Create</button>
+<button class="btn btn-default" ng-click="new.$valid &&  saveRestaurant()"><span class="glyphicon glyphicon-ok" ></span> Create</button>
 <button class="btn btn-default" ng-click="cancel()"><span class="glyphicon glyphicon-remove" ></span> Cancel</button>
 </form>
 

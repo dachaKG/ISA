@@ -3,16 +3,29 @@ var app = angular.module('systemManager.controllers', []);
 app.controller('systemManagerController', ['$scope','systemManagerService', '$location',
 	function ($scope, systemManagerService, $location) {
 		function findAll() {
-			systemManagerService.findAll().then(
+			systemManagerService.findAllRestaurantManagers().then(
 				function (response) {
-					$scope.systemMenagers = response.data;
+					$scope.restaurantManagers = response.data;
 				}
+			);
+			systemManagerService.findAllRestaurant().then(
+					function (response) {
+						$scope.restaurants = response.data;
+					}
 			);
 		}
 		findAll();
 		
-		$scope.save = function () {            
-			systemManagerService.save($scope.systemManager).then(
+		$scope.findAllFreeRestaurantManagers = function () {            
+			systemManagerService.findAllFreeRestaurantManagers().then(
+				function (response) {
+					$scope.freeRestaurantManagers = response.data;
+				}
+			); 	
+		};
+		
+		$scope.saveManager = function () {            
+			systemManagerService.saveRestaurantManager($scope.restaurantManager).then(
 				function (response) {
                     alert("Uspesno dodat.");
                     $scope.state = undefined;
@@ -23,14 +36,39 @@ app.controller('systemManagerController', ['$scope','systemManagerService', '$lo
                 }
             ); 	
 		};
-	    $scope.delete = function (systemManager){
-	    	systemManagerService.delete(systemManager.id).then(
+		
+		$scope.deleteRestaurantManager = function (restaurantManager){
+	    	systemManagerService.deleteRestaurantManager(restaurantManager.id).then(
 	    		function (response) {
-	    		     $scope.systemMenagers.splice($scope.systemMenagers.indexOf(systemManager), 1);
+	    		     $scope.restaurantManagers.splice($scope.restaurantMenagers.indexOf(restaurantManager), 1);
 			    },
 		        function (response) {
-		        	alert("Error while deleting component.");
+		        	alert("Greska pri brisanju menazdera.");
 		        }
 	    	);
-		};		 
+		};
+		
+		$scope.saveRestaurant = function () {            
+			systemManagerService.saveRestaurant($scope.restaurant).then(
+				function (response) {
+                    alert("Uspesno dodat.");
+                    $scope.state = undefined;
+                    $location.path('systemManager/list');
+                },
+                function (response) {
+                    alert("Greska pri dodavanju.");
+                }
+            ); 	
+		};
+		
+		$scope.deleteRestaurant = function (restaurant){
+	    	systemManagerService.deleteRestaurant(restaurant.id).then(
+	    		function (response) {
+	    		     $scope.restaurants.splice($scope.restaurants.indexOf(restaurant), 1);
+			    },
+		        function (response) {
+		        	alert("Greska pri brisanju restorana.");
+		        }
+	    	);
+		};
 }]);

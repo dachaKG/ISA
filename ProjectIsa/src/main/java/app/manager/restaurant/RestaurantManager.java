@@ -24,8 +24,8 @@ public class RestaurantManager extends User {
 	private Long id;
 
 	@JsonIgnore
-	//kako da ubacim da ne brise restoran kad brisem menadzera?
-	@OneToOne(cascade=CascadeType.ALL)
+	// kako da ubacim da ne brise restoran kad brisem menadzera?
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "RESTAURANT_ID")
 	private Restaurant restaurant;
 }

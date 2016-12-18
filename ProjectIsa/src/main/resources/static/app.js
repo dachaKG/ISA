@@ -3,7 +3,7 @@
 angular.module('routerApp', ['ui.router', 
 	'systemManager.services', 'systemManager.controllers', 
 	'restaurantManager.services', 'restaurantManager.controllers',
-	'restaurant.services', 'restaurant.controllers'])
+	'bossManager.services', 'bossManager.controllers',])
 .config(function($stateProvider, $urlRouterProvider) {
         
         $urlRouterProvider.otherwise('/home');
@@ -14,55 +14,58 @@ angular.module('routerApp', ['ui.router',
         	url : '/home',
           	templateUrl : 'home.html'
          })
-         .state('systemManager', {
+         
+         .state('bossManager', {
+        	url : '/bossManager',
+          	templateUrl : 'managerBoss/bossManagerPartial.html',
+            controller : 'bossManagerController'
+         })
+        .state('bossManager.list', {
+        	url : '/list',
+          	templateUrl : 'managerBoss/bossManagerList.html'
+        })
+         .state('bossManager.new', {
+        	url : '/new',
+        	templateUrl : 'managerBoss/bossManagerNew.html'
+        })
+        .state('systemManager', {
         	url : '/systemManager',
           	templateUrl : 'managerSystem/systemManagerPartial.html',
             controller : 'systemManagerController'
-         })
+        })
         .state('systemManager.list', {
         	url : '/list',
           	templateUrl : 'managerSystem/systemManagerList.html'
         })
-         .state('systemManager.edit', {
-        	url : '/edit',
-          	templateUrl : 'managerSystem/systemManagerEdit.html'
-         })
-         .state('systemManager.new', {
-        	url : '/new',
-        	templateUrl : 'managerSystem/systemManagerNew.html'
+        .state('systemManager.newRestaurantManager', {
+        	url : '/newRestaurantManager',
+        	templateUrl : 'managerSystem/systemManagerNewRestaurantManager.html'
         })
+         .state('systemManager.newRestaurant', {
+        	url : '/newRestaurant',
+        	templateUrl : 'managerSystem/systemManagerNewRestaurant.html'
+        })
+        
         
         .state('restaurantManager', {
         	url : '/restaurantManager',
           	templateUrl : 'managerRestaurant/restaurantManagerPartial.html',
             controller : 'restaurantManagerController'
          })
-         .state('restaurantManager.list', {
-        	url : '/list',
-          	templateUrl : 'managerRestaurant/restaurantManagerList.html'
+         .state('restaurantManager.info', {
+        	url : '/info',
+          	templateUrl : 'managerRestaurant/restaurantManagerInfo.html'
         })
-		.state('restaurantManager.new', {
-			url : '/new',
-			templateUrl : 'managerRestaurant/restaurantManagerNew.html'
+        .state('restaurantManager.newDrink', {
+			url : '/newDrink',
+			templateUrl : 'managerRestaurant/restaurantManagerNewDrink.html'
+		})
+		.state('restaurantManager.newDish', {
+			url : '/newDish',
+			templateUrl : 'managerRestaurant/restaurantManagerNewDish.html'
 		})
 	        
         
         
-        .state('restaurant', {
-        	url : '/restaurant',
-          	templateUrl : 'restaurantt/restaurantPartial.html',
-            controller : 'restaurantController'
-         })
-         .state('restaurant.list', {
-        	url : '/list',
-          	templateUrl : 'restaurantt/restaurantList.html'
-        })
-        .state('restaurant.new', {
-        	url : '/new',
-        	templateUrl : 'restaurantt/restaurantNew.html'
-        })
-        .state('restaurant.profile', {
-        	url : '/profile',
-        	templateUrl : 'restaurantt/restaurantDetail.html'
-        });
+  
 });

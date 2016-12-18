@@ -1,5 +1,6 @@
 package app.dish;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -45,8 +46,8 @@ public class Dish {
 	private Integer numRate;
 
 	@JsonIgnore
-	@NotNull
-	@ManyToOne(fetch = FetchType.EAGER)
+	//@NotNull
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "RESTAURANT_ID")
 	private Restaurant restaurant;
 }
