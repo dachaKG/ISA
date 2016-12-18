@@ -25,6 +25,6 @@ app.controller('restaurantManagerController', ['$scope','restaurantManagerServic
                 }
 			);
 		}
-		
+		   
 		
 }]);
