@@ -12,6 +12,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import app.employed.Employed;
 import app.order.Orderr;
 import app.restaurant.Restaurant;
@@ -32,6 +34,7 @@ public class Waiter extends Employed{
 	@JoinTable(name = "WAITER_ORDERS", joinColumns = @JoinColumn(name = "WAITER_ID"), inverseJoinColumns = @JoinColumn(name = "ORDER_ID"))
 	private List<Orderr> orders;
 	
+	//@JsonIgnore
 	@ManyToOne
 	@JoinTable(name = "WAITER_RESTAURANT", joinColumns = @JoinColumn(name = "WAITER_ID"), inverseJoinColumns = @JoinColumn(name = "RESTAURANT_ID"))
 	private Restaurant restaurant;

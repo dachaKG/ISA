@@ -16,8 +16,11 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import app.dish.Dish;
 import app.drink.Drink;
+import app.employed.cook.Cook;
 import app.employed.waiter.Waiter;
 import app.manager.restaurant.RestaurantManager;
 import app.order.Orderr;
@@ -52,9 +55,14 @@ public class Restaurant {
 	private List<Segment> segments;
 
 	// proveriti kardinalitete
-	@OneToMany
-	@JoinTable(name = "RESTUARANT_STAFF", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "WAITER_ID"))
+	@JsonIgnore
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "RESTUARANT_WAITERS", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "WAITER_ID"))
 	private List<Waiter> waiters;
+	
+	@OneToMany
+	@JoinTable(name = "RESTUARANT_COOKS", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "COOK_ID"))
+	private List<Cook> cooks;
 
 	@Column
 	private Integer summRate;

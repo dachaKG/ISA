@@ -41,12 +41,6 @@ public class WaiterController {
 		// this.waiter = service.findAll();
 	}
 
-	/*
-	 * public boolean check(){ if (waiter.getOrders().size() > 0) { for (int i =
-	 * 0; i < waiter.getOrders().size(); i++) { if
-	 * (waiter.getOrders().get(i).getRestaurant() != waiter.getRestaurant()) {
-	 * return false; } } return true; }else{ return true; } }
-	 */
 
 	@GetMapping
 	public ResponseEntity<List<Waiter>> findAll() {
