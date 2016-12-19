@@ -1,5 +1,26 @@
-<h1>Logovanje</h1>
+<h1>Restaurants</h1>
 
 
 <br/> <br/>
-<button class="btn btn-default" ng-click="submitLogin()">Uloguj se </button>
+
+<div class="center">
+<form  name = "loginForm">
+
+<label>Email</label><br/>
+<input name = "email" type="mail" class="form-control"  required><br/>  
+
+ <label>Password</label><br/>
+ <input name = "password" type="password" class="form-control"  required></br><br/>
+
+
+
+<button class="btn btn-default" ng-click="loginForm.$valid && submitLogin()">Log In </button>
+</form>
+</div>
+
+
+<div class = "bottom">
+<button class="btn btn-default" ui-sref="registration" >Sign up </button>
+<button class="btn btn-default" >Log In using Google+</button>
+<button class="btn btn-default" >Log In using Facebook </button>
+</div>

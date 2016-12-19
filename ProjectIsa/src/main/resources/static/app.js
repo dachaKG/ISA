@@ -16,6 +16,12 @@ angular.module('routerApp', ['ui.router',
           	controller : 'loginRegistrationController'
          })
          
+         .state('registration', {
+        	url : '/registration',
+        	templateUrl : 'loginRegistration/registration.html'	
+         })
+         
+         
          .state('loggedIn', {
         	url : '/loggedIn',
         	templateUrl : 'loggedIn.html'
