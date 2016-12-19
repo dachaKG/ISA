@@ -16,6 +16,8 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import app.dish.Dish;
 import app.drink.Drink;
 import app.employed.cook.Cook;
@@ -53,7 +55,8 @@ public class Restaurant {
 	private List<Segment> segments;
 
 	// proveriti kardinalitete
-	@OneToMany
+	@JsonIgnore
+	@OneToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "RESTUARANT_WAITERS", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "WAITER_ID"))
 	private List<Waiter> waiters;
 	
