@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import app.dish.Dish;
 import app.drink.Drink;
 import app.restaurant.Restaurant;
+import app.restaurant.Table;
 import lombok.Data;
 
 @Data
@@ -40,6 +41,11 @@ public class Orderr {
 	@ManyToOne
 	@JoinTable(name = "ORDER_RESTAURANT", joinColumns = @JoinColumn(name = "ORDER_ID"), inverseJoinColumns = @JoinColumn(name = "RESTAURANT_ID"))
 	private Restaurant restaurant;
+	
+	@ManyToOne
+	@JoinTable(name = "ORDER_TABLE", joinColumns = @JoinColumn(name = "ORDER_ID"), inverseJoinColumns = @JoinColumn(name = "TABLE_ID"))
+	private Table table;
+	
 
 	public void Order(List<Drink> drinks, List<Dish> food, Restaurant restaurant) {
 		this.drinks = drinks;
