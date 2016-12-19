@@ -51,5 +51,26 @@
 			</tr>
         </tbody>
     </table> 
+    
+    <table  class="table table-bordered tableBG" border="1">
+		<tbody>
+	        <tr>
+				<th>Id</th>
+				<th>Name</th>
+                <th>Mail</th>
+	        </tr>
+			<tr ng-repeat="waiter in waiters">
+				<td> 
+					{{waiter.id}}
+				</td>
+				<td>
+		    		{{waiter.firstname}}	
+				</td>
+            	<td>
+		    		{{waiter.mail}}	
+				</td>
+			</tr>
+        </tbody>
+    </table> 
 </div>
 

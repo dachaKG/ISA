@@ -21,9 +21,18 @@ app.controller('restaurantManagerController', ['$scope','restaurantManagerServic
 				function (response) {
 					$scope.restaurant = response.data;
 				},
-                function (response) {
-                    alert("Greska pri nalazenju.");
-                }
+	            function (response) {
+					alert("Greska pri nalazenju.");
+	            }
+			);
+			
+			restaurantManagerService.findAllWaitresInRestaurant().then(
+				function (response) {
+					$scope.waiters = response.data;
+				},
+	            function (response) {
+					alert("Greska pri nalazenju.");
+	            }
 			);
 		}
 		
