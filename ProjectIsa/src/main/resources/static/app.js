@@ -45,6 +45,8 @@ angular.module('routerApp', ['ui.router',
         	url : '/new',
         	templateUrl : 'managerBoss/bossManagerNew.html'
         })
+        
+        
         .state('loggedIn.systemManager', {
         	url : '/systemManager',
           	templateUrl : 'managerSystem/systemManagerPartial.html',

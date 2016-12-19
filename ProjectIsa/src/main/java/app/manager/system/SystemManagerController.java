@@ -63,7 +63,7 @@ public class SystemManagerController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public void saveRestaurantManager(@Valid @RequestBody RestaurantManager restaurantManager) {
 		restaurantManager.setId(null);
-		restaurantManager.setRegistrated(false);
+		restaurantManager.setRegistrated("0");
 		restaurantManagerService.save(restaurantManager);
 	}
 

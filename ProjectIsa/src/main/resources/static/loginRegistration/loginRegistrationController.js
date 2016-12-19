@@ -5,9 +5,19 @@ app.controller('loginRegistrationController', ['$scope','loginRegistrationServic
   	function ($scope, loginRegistrationService, $location) {
 	
 		$scope.submitLogin = function () {            
-        //   alert("Uspesno dodat.");
-           $location.path('loggedIn/home');
-		};
-		
-		
+			loginRegistrationService.logIn($scope.user).then(
+				function (response) {
+                    $scope.state = undefined;
+                    if(response.data === "boss")
+                    	$location.path('loggedIn/bossManager/list');
+                    else if(response.data === "system")
+                    	$location.path('loggedIn/systemManager/list');
+                    else if(response.data === "restaurant")
+                    	$location.path('loggedIn/restauratnManager/list');
+                },
+                function (response) {
+                    alert("Ne postoji korisnik sa tim imenom.");
+                }
+			);
+		}
 }]);

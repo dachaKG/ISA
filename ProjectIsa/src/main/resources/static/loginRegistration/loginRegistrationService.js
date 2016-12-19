@@ -4,8 +4,8 @@ var baseUrl = 'http://localhost\\:8080';
 
 services.service('loginRegistrationService', ['$http', function($http){
 	
-	this.findAll = function(){
-		return $http.get("/restaurantManager");
+	this.logIn = function(user){
+		return $http.post("/commonController/logIn",user);
 	}
 	
 }]);

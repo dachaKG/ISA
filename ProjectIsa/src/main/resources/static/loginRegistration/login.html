@@ -7,10 +7,10 @@
 <form  name = "loginForm">
 
 <label>Email</label><br/>
-<input name = "email" type="mail" class="form-control"  required><br/>  
+<input name = "email" type="mail" ng-model = "$parent.user.mail" class="form-control"  required><br/>  
 
  <label>Password</label><br/>
- <input name = "password" type="password" class="form-control"  required></br><br/>
+ <input name = "password" type="password" ng-model = "$parent.user.password" class="form-control"  required></br><br/>
 
 
 

@@ -40,7 +40,7 @@ public class BidderController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public void save(@Valid @RequestBody Bidder bidder) {
 		bidder.setId(null);
-		bidder.setRegistrated(false);
+		bidder.setRegistrated("0");
 		service.save(bidder);
 	}
 

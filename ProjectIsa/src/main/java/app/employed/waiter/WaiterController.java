@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import app.drink.Drink;
 import app.drink.DrinkService;
 import app.order.OrderService;
 import app.order.Orderr;
@@ -58,7 +57,7 @@ public class WaiterController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public void save(@Valid @RequestBody Waiter waiter) {
 		waiter.setId(null);
-		waiter.setRegistrated(false);
+		waiter.setRegistrated("0");
 		service.save(waiter);
 	}
 
