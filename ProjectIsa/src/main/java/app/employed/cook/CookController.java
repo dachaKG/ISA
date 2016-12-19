@@ -86,7 +86,6 @@ public class CookController {
 			}
 		}
 
-		Optional.ofNullable(food).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 		return new ResponseEntity<>(food, HttpStatus.OK);
 
 	}
