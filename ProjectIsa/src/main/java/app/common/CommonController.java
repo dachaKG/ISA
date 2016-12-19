@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,7 +42,7 @@ public class CommonController {
 
 	@PostMapping(path = "/logIn")
 	public ResponseEntity<String> logIn(@RequestBody User userInput) {
- 		User user = null;
+		User user = null;
 		String userType = "";
 		if (bossManagerService.findOne(userInput.getMail(), userInput.getPassword()) != null) {
 			user = bossManagerService.findOne(userInput.getMail(), userInput.getPassword());
@@ -56,13 +57,17 @@ public class CommonController {
 			user = guestService.findOne(userInput.getMail(), userInput.getPassword());
 			userType = "system";
 		}
-		
 
 		if (user != null) {
 			httpSession.setAttribute("user", user);
 			return new ResponseEntity<>(userType, HttpStatus.OK);
 		} else
 			throw new NoSuchElementException("Ne postoji korisnik sa tim parametrima.");
+	}
+
+	@GetMapping(path = "/logOut")
+	public void logOut() {
+		httpSession.invalidate();
 	}
 
 }

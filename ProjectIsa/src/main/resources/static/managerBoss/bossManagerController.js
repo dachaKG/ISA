@@ -2,7 +2,7 @@ var app = angular.module('bossManager.controllers', []);
 
 app.controller('bossManagerController', ['$scope','bossManagerService', '$location',
 	function ($scope, bossManagerService, $location) {
-		function checkRights() {
+		function checkRights() {			
 			bossManagerService.checkRights().then(
 				function (response) {
 					if(response.data === 'true')
@@ -14,7 +14,7 @@ app.controller('bossManagerController', ['$scope','bossManagerService', '$locati
 				}
 			);
 		}
-		checkRights();
+		checkRights();		
 		
 		function findAll() {
 			bossManagerService.findAll().then(

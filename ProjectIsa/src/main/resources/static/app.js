@@ -16,17 +16,21 @@ angular.module('routerApp', ['ui.router',
           	controller : 'loginRegistrationController'
          })
          
+         .state('login.logOut', {
+        	url : '/logout',
+         	templateUrl : 'loginRegistration/login.html',
+         })
+         
          .state('registration', {
         	url : '/registration',
         	templateUrl : 'loginRegistration/registration.html'	
          })
          
-         
          .state('loggedIn', {
         	url : '/loggedIn',
         	templateUrl : 'loggedIn.html'
          })
-
+         
         .state('loggedIn.home', {
         	url : '/home',
           	templateUrl : 'home.html'

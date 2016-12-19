@@ -1,6 +1,6 @@
 var app = angular.module('systemManager.controllers', []);
 
-app.controller('systemManagerController', ['$scope','systemManagerService', '$location',
+app.controller('systemManagerController', ['$scope','systemManagerService','$location',
 	function ($scope, systemManagerService, $location) {
 		function checkRights() {
 			systemManagerService.checkRights().then(
@@ -15,6 +15,8 @@ app.controller('systemManagerController', ['$scope','systemManagerService', '$lo
 			);
 		}
 		checkRights();
+		
+		
 		function findAll() {
 			systemManagerService.findAllRestaurantManagers().then(
 				function (response) {
