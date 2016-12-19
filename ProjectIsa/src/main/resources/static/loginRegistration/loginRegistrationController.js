@@ -1,6 +1,5 @@
 var app = angular.module('loginRegistration.controllers', []);
-
-
+ 
 app.controller('loginRegistrationController', ['$scope','loginRegistrationService', '$location',
   	function ($scope, loginRegistrationService, $location) {
 	
@@ -13,10 +12,10 @@ app.controller('loginRegistrationController', ['$scope','loginRegistrationServic
                     else if(response.data === "system")
                     	$location.path('loggedIn/systemManager/list');
                     else if(response.data === "restaurant")
-                    	$location.path('loggedIn/restauratnManager/list');
+                    	$location.path('loggedIn/restaurantManager/info');
                 },
                 function (response) {
-                    alert("Ne postoji korisnik sa tim imenom.");
+                    alert("Ne postoji korisnik sa tim parametrima.");
                 }
 			);
 		}

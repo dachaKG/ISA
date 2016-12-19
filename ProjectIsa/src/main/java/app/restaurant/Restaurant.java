@@ -64,6 +64,5 @@ public class Restaurant {
 
 	@OneToMany
 	@JoinTable(name = "RESTAURANT_ORDER", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "ORDER_ID"))
-	private List<Orderr> order;
-
+	private List<Orderr> order;	
 }
