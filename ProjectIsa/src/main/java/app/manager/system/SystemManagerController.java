@@ -42,6 +42,7 @@ public class SystemManagerController {
 		this.restaurantService = restaurantService;
 	}
 
+	@SuppressWarnings("unused")
 	@GetMapping("/checkRights")
 	public boolean checkRights() {
 		try {
@@ -107,6 +108,9 @@ public class SystemManagerController {
 		return restaurantManagerService.save(restaurantManager);
 	}
 
+	
+	
+	
 	// izlistavanje svih restorana
 	@GetMapping(path = "/restaurant")
 	@ResponseStatus(HttpStatus.OK)

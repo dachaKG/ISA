@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import app.dish.Dish;
-import app.drink.Drink;
 import app.order.Orderr;
 
 @RestController
@@ -72,7 +71,6 @@ public class CookController {
 		return service.save(cook);
 	}
 
-	
 	@GetMapping(path = "/{id}/order")
 	public ResponseEntity<List<Dish>> findAllOrders(@PathVariable Long id) {
 

@@ -35,6 +35,7 @@ public class BossManagerController {
 		this.httpSession = httpSession;
 	}
 
+	@SuppressWarnings("unused")
 	@GetMapping("/checkRights")
 	public boolean checkRights() {
 		try {

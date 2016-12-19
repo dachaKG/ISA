@@ -12,8 +12,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import app.employed.Employed;
 import app.order.Orderr;
 import app.restaurant.Restaurant;
@@ -22,25 +20,23 @@ import lombok.Data;
 
 @Data
 @Entity
-public class Waiter extends Employed{
-	
-	
+public class Waiter extends Employed {
+
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO) //automatsko generisanje kljuca
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "WAITER_ID")
 	private Long id;
-	
+
 	@OneToMany
 	@JoinTable(name = "WAITER_ORDERS", joinColumns = @JoinColumn(name = "WAITER_ID"), inverseJoinColumns = @JoinColumn(name = "ORDER_ID"))
 	private List<Orderr> orders;
-	
-	//@JsonIgnore
+
+	// @JsonIgnore
 	@ManyToOne
 	@JoinTable(name = "WAITER_RESTAURANT", joinColumns = @JoinColumn(name = "WAITER_ID"), inverseJoinColumns = @JoinColumn(name = "RESTAURANT_ID"))
 	private Restaurant restaurant;
-	
+
 	@ManyToOne
 	@JoinTable(name = "WAITER_SEGMENT", joinColumns = @JoinColumn(name = "WAITER_ID"), inverseJoinColumns = @JoinColumn(name = "SEGMENT_ID"))
 	private Segment segment;
-	
 }

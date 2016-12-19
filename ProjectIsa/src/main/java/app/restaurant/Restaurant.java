@@ -39,7 +39,7 @@ public class Restaurant {
 	private String name;
 
 	@NotNull
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.MERGE)
 	@JoinColumn(name = "RESTAURANT_MANAGER_ID")
 	private RestaurantManager restaurantManager;
 
