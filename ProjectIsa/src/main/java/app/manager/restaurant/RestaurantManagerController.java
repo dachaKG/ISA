@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import app.dish.Dish;
 import app.drink.Drink;
+import app.employed.cook.Cook;
 import app.employed.waiter.Waiter;
 import app.restaurant.Restaurant;
 import app.restaurant.RestaurantService;
@@ -69,7 +70,7 @@ public class RestaurantManagerController {
 		restaurant.getFood().add(dish);
 		restaurantService.save(restaurant);
 	}
-	
+
 	@PostMapping(path = "/restaurant/saveWaiter")
 	@ResponseStatus(HttpStatus.CREATED)
 	public void saveWaiter(@Valid @RequestBody Waiter waiter) {
@@ -79,13 +80,30 @@ public class RestaurantManagerController {
 		restaurantService.save(restaurant);
 	}
 	
-	
-	//mora da postoji zbog json igrnore sa strane restorana
+	@PostMapping(path = "/restaurant/saveCook")
+	@ResponseStatus(HttpStatus.CREATED)
+	public void saveCook(@Valid @RequestBody Cook cook) {
+		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
+		Restaurant restaurant = restaurantService.findOne(restaurantId);
+		restaurant.getCooks().add(cook);
+		restaurantService.save(restaurant);
+	}
+
+	// mora da postoji zbog json igrnore sa strane restorana
 	@GetMapping(path = "/restaurant/waitres")
 	@ResponseStatus(HttpStatus.CREATED)
 	public List<Waiter> findAllWaitresInRestaurant() {
 		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
 		Restaurant restaurant = restaurantService.findOne(restaurantId);
 		return restaurant.getWaiters();
+	}
+
+	// mora da postoji zbog json igrnore sa strane restorana
+	@GetMapping(path = "/restaurant/cooks")
+	@ResponseStatus(HttpStatus.CREATED)
+	public List<Cook> findAllCooksInRestaurant() {
+		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
+		Restaurant restaurant = restaurantService.findOne(restaurantId);
+		return restaurant.getCooks();
 	}
 }

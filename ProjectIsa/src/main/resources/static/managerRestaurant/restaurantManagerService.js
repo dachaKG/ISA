@@ -24,8 +24,16 @@ services.service('restaurantManagerService', ['$http', function($http){
 		return $http.post("/restaurantManager/restaurant/saveWaiter",waiter);
 	}
 	
+	this.saveCook = function(cook){
+		return $http.post("/restaurantManager/restaurant/saveCook",cook);
+	}
+	
 	this.findAllWaitresInRestaurant = function(){
 		return $http.get("/restaurantManager/restaurant/waitres");
+	}
+	
+	this.findAllCooksInRestaurant = function(){
+		return $http.get("/restaurantManager/restaurant/cooks");
 	}
 	
 	

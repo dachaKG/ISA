@@ -72,5 +72,26 @@
 			</tr>
         </tbody>
     </table> 
+    
+    <table  class="table table-bordered tableBG" border="1">
+		<tbody>
+	        <tr>
+				<th>Id</th>
+				<th>Name</th>
+                <th>Mail</th>
+	        </tr>
+			<tr ng-repeat="cook in cooks">
+				<td> 
+					{{cook.id}}
+				</td>
+				<td>
+		    		{{cook.firstname}}	
+				</td>
+            	<td>
+		    		{{cook.mail}}	
+				</td>
+			</tr>
+        </tbody>
+    </table> 
 </div>
 

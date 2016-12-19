@@ -34,6 +34,14 @@ app.controller('restaurantManagerController', ['$scope','restaurantManagerServic
 					alert("Greska pri nalazenju.");
 	            }
 			);
+			restaurantManagerService.findAllCooksInRestaurant().then(
+				function (response) {
+					$scope.cooks = response.data;
+				},
+		        function (response) {
+					alert("Greska pri nalazenju.");
+		        }
+			);
 		}
 		
 		$scope.saveDrink = function() {
@@ -69,6 +77,21 @@ app.controller('restaurantManagerController', ['$scope','restaurantManagerServic
 		$scope.saveWaiter = function() {
 			//$scope.drink.restaurant = $scope.restaurant;
 			restaurantManagerService.saveWaiter($scope.waiter).then(
+				function (response) {
+                    alert("Uspesno dodat.");
+                    $scope.state = undefined;
+                    findAll();
+                    $location.path('loggedIn/restaurantManager/info');
+                },
+                function (response) {
+                    alert("Greska pri dodavanju.");
+                }
+			);
+		}
+		
+		$scope.saveCook = function() {
+			//$scope.drink.restaurant = $scope.restaurant;
+			restaurantManagerService.saveCook($scope.cook).then(
 				function (response) {
                     alert("Uspesno dodat.");
                     $scope.state = undefined;

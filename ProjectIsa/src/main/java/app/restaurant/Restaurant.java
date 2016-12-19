@@ -60,7 +60,8 @@ public class Restaurant {
 	@JoinTable(name = "RESTUARANT_WAITERS", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "WAITER_ID"))
 	private List<Waiter> waiters;
 	
-	@OneToMany
+	@JsonIgnore
+	@OneToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "RESTUARANT_COOKS", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "COOK_ID"))
 	private List<Cook> cooks;
 
