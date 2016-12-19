@@ -15,6 +15,7 @@ import javax.persistence.OneToMany;
 import app.employed.Employed;
 import app.order.Orderr;
 import app.restaurant.Restaurant;
+import app.restaurant.Segment;
 import lombok.Data;
 
 @Data
@@ -34,4 +35,9 @@ public class Waiter extends Employed{
 	@ManyToOne
 	@JoinTable(name = "WAITER_RESTAURANT", joinColumns = @JoinColumn(name = "WAITER_ID"), inverseJoinColumns = @JoinColumn(name = "RESTAURANT_ID"))
 	private Restaurant restaurant;
+	
+	@ManyToOne
+	@JoinTable(name = "WAITER_SEGMENT", joinColumns = @JoinColumn(name = "WAITER_ID"), inverseJoinColumns = @JoinColumn(name = "SEGMENT_ID"))
+	private Segment segment;
+	
 }
