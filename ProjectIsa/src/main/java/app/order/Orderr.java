@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -27,8 +29,16 @@ public class Orderr {
 	@Column(name = "ORDER_ID")
 	private Long id;
 	
+	/*@Column
+	private boolean status;*/
+	
+	@Enumerated(EnumType.STRING)
 	@Column
-	private boolean status;
+	private DishStatus dishStatus;
+	
+	@Enumerated(EnumType.STRING)
+	@Column
+	private DrinkStatus drinkStatus;
 
 	@ManyToMany
 	@JoinTable(name = "ORDER_DRINKS", joinColumns = @JoinColumn(name = "ORDER_ID"), inverseJoinColumns = @JoinColumn(name = "DRINK_ID"))

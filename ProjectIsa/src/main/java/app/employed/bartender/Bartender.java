@@ -27,7 +27,7 @@ public class Bartender extends Employed {
 	private Long id;
 
 	@OneToMany
-	@JoinTable(name = "BARTENDER_ORDERS", joinColumns = @JoinColumn(name = "BARTENER_ID"), inverseJoinColumns = @JoinColumn(name = "ORDER_ID"))
+	@JoinTable(name = "BARTENDER_ORDERS", joinColumns = @JoinColumn(name = "BARTENDER_ID"), inverseJoinColumns = @JoinColumn(name = "ORDER_ID"))
 	private List<Orderr> orders;
 
 	@ManyToOne

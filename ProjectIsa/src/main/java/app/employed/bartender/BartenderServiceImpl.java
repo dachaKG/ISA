@@ -2,10 +2,15 @@ package app.employed.bartender;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.google.common.collect.Lists;
 
+@Service
+@Transactional
 public class BartenderServiceImpl implements BartenderService{
 
 	private final BartenderRepository repository;

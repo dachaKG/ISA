@@ -1,4 +1,4 @@
-package app.employed.cook;
+package app.order;
 
 public enum DishStatus {
 

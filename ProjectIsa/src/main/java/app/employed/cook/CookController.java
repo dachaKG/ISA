@@ -21,22 +21,26 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import app.dish.Dish;
+import app.order.DishStatus;
+import app.order.OrderService;
 import app.order.Orderr;
 
 @RestController
 @RequestMapping("/cook")
 public class CookController {
 
-	private final CookService service;
+	private final CookService cookService;
+	private final OrderService orderService;
 
 	@Autowired
-	public CookController(final CookService service) {
-		this.service = service;
+	public CookController(final CookService cookService, final OrderService orderService) {
+		this.cookService = cookService;
+		this.orderService = orderService;
 	}
 
 	@GetMapping
 	public ResponseEntity<List<Cook>> findAll() {
-		return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
+		return new ResponseEntity<>(cookService.findAll(), HttpStatus.OK);
 	}
 
 	@PostMapping
@@ -44,13 +48,13 @@ public class CookController {
 	public void save(@Valid @RequestBody Cook cook) {
 		cook.setId(null);
 		cook.setRegistrated("0");
-		service.save(cook);
+		cookService.save(cook);
 	}
 
 	@GetMapping(path = "/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public Cook findOne(@PathVariable Long id) {
-		Cook cook = service.findOne(id);
+		Cook cook = cookService.findOne(id);
 		Optional.ofNullable(cook).orElseThrow(() -> new ResourceNotFoundException("resourceNotFound!"));
 		return cook;
 	}
@@ -58,23 +62,23 @@ public class CookController {
 	@DeleteMapping(path = "/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@PathVariable Long id) {
-		service.delete(id);
+		cookService.delete(id);
 	}
 
 	// 2.4. kuvar ima mogucnost da azurira podatke
 	@PutMapping(path = "/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public Cook update(@PathVariable Long id, @Valid @RequestBody Cook cook) {
-		Optional.ofNullable(service.findOne(id))
+		Optional.ofNullable(cookService.findOne(id))
 				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 		cook.setId(id);
-		return service.save(cook);
+		return cookService.save(cook);
 	}
 
 	@GetMapping(path = "/{id}/order")
 	public ResponseEntity<List<Dish>> findAllOrders(@PathVariable Long id) {
 
-		List<Orderr> orders = service.findOne(id).getOrders();
+		List<Orderr> orders = cookService.findOne(id).getOrders();
 		Optional.ofNullable(orders).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 		List<Dish> food = new ArrayList<Dish>();
 
@@ -89,5 +93,23 @@ public class CookController {
 		return new ResponseEntity<>(food, HttpStatus.OK);
 
 	}
+	
+	@GetMapping(path = "/{cookId}/foodReady/{orderId}")
+	@ResponseStatus(HttpStatus.OK)
+	public Orderr drinkReady(@PathVariable Long cookId, @PathVariable Long orderId) {
+		Optional.ofNullable(cookService.findOne(cookId))
+				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
+
+		Optional.ofNullable(orderService.findOne(orderId))
+				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
+		
+		Orderr order = orderService.findOne(orderId);
+		
+		orderService.findOne(orderId).setDishStatus(DishStatus.finished);
+		order.setId(orderId);
+		return orderService.save(order);
+	}
+	
+	
 
 }

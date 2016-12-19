@@ -6,15 +6,14 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
-@Service
-@Transactional
+
 public interface BartenderService {
 
 	List<Bartender> findAll();
 
-	Bartender findOne(Long id);
-
 	Bartender save(Bartender bartender);
+
+	Bartender findOne(Long id);
 
 	void delete(Long id);
 
