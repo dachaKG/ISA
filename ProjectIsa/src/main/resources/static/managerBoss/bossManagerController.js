@@ -2,6 +2,20 @@ var app = angular.module('bossManager.controllers', []);
 
 app.controller('bossManagerController', ['$scope','bossManagerService', '$location',
 	function ($scope, bossManagerService, $location) {
+		function checkRights() {
+			bossManagerService.checkRights().then(
+				function (response) {
+					if(response.data === 'true')
+						findAll();
+					else {
+					    $location.path('login');
+					    alert("Access denied!");
+				    }
+				}
+			);
+		}
+		checkRights();
+		
 		function findAll() {
 			bossManagerService.findAll().then(
 				function (response) {
@@ -9,7 +23,6 @@ app.controller('bossManagerController', ['$scope','bossManagerService', '$locati
 				}
 			);
 		}
-		findAll();
 		
 		$scope.saveSystemManager = function () {            
 			bossManagerService.save($scope.systemManager).then(

@@ -1,9 +1,7 @@
 package app.manager.restaurant;
 
-import javax.security.sasl.AuthenticationException;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import javax.ws.rs.BadRequestException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,14 +22,11 @@ import app.restaurant.RestaurantService;
 public class RestaurantManagerController {
 
 	private HttpSession httpSession;
-	private RestaurantManagerService restaurantManagerService;
 	private RestaurantService restaurantService;
 
 	@Autowired
-	public RestaurantManagerController(final HttpSession httpSession,
-			final RestaurantManagerService restaurantManagerService, final RestaurantService restaurantService) {
+	public RestaurantManagerController(final HttpSession httpSession, final RestaurantService restaurantService) {
 		this.httpSession = httpSession;
-		this.restaurantManagerService = restaurantManagerService;
 		this.restaurantService = restaurantService;
 	}
 
@@ -60,5 +55,4 @@ public class RestaurantManagerController {
 		restaurant.getDrinks().add(drink);
 		restaurantService.save(restaurant);
 	}
-
 }

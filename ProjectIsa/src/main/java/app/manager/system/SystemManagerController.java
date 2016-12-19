@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +30,26 @@ import app.restaurant.RestaurantService;
 @RequestMapping("/systemManager")
 public class SystemManagerController {
 
+	private HttpSession httpSession;
 	private final RestaurantManagerService restaurantManagerService;
 	private final RestaurantService restaurantService;
 
 	@Autowired
 	public SystemManagerController(final RestaurantManagerService restaurantManagerService,
-			final RestaurantService restaurantService) {
+			final RestaurantService restaurantService, final HttpSession httpSession) {
 		this.restaurantManagerService = restaurantManagerService;
+		this.httpSession = httpSession;
 		this.restaurantService = restaurantService;
+	}
+
+	@GetMapping("/checkRights")
+	public boolean checkRights() {
+		try {
+			SystemManager systemManager = ((SystemManager) httpSession.getAttribute("user"));
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	// izlistavanje svih menadzera restorana
@@ -48,12 +61,12 @@ public class SystemManagerController {
 	// izlistavanje svih menadzera restorana koji nemaju radno mesto
 	@GetMapping(path = "/freeRestaurantManager")
 	public ResponseEntity<List<RestaurantManager>> findAllFreeRestaurantManagers() {
-		//ovo ce se kasnije promeniti da ide odmah na bazu, sa posebnim upitom
+		// ovo ce se kasnije promeniti da ide odmah na bazu, sa posebnim upitom
 		List<RestaurantManager> list = restaurantManagerService.findAll();
 		List<RestaurantManager> result = new ArrayList<RestaurantManager>();
-		for(int i =0;i<list.size();i++) {
-			if(list.get(i).getRestaurant() == null)
-				result.add(list.get(i));	
+		for (int i = 0; i < list.size(); i++) {
+			if (list.get(i).getRestaurant() == null)
+				result.add(list.get(i));
 		}
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}

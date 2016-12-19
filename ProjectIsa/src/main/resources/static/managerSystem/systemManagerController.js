@@ -2,6 +2,19 @@ var app = angular.module('systemManager.controllers', []);
 
 app.controller('systemManagerController', ['$scope','systemManagerService', '$location',
 	function ($scope, systemManagerService, $location) {
+		function checkRights() {
+			systemManagerService.checkRights().then(
+				function (response) {
+					if(response.data === 'true')
+						findAll();
+					else {
+					    $location.path('login');
+					    alert("Access denied!");
+				    }
+				}
+			);
+		}
+		checkRights();
 		function findAll() {
 			systemManagerService.findAllRestaurantManagers().then(
 				function (response) {
@@ -14,7 +27,6 @@ app.controller('systemManagerController', ['$scope','systemManagerService', '$lo
 					}
 			);
 		}
-		findAll();
 		
 		$scope.findAllFreeRestaurantManagers = function () {            
 			systemManagerService.findAllFreeRestaurantManagers().then(

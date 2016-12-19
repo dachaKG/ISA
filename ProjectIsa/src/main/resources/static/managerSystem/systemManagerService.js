@@ -4,6 +4,10 @@ var baseUrl = 'http://localhost\\:8080';
 
 services.service('systemManagerService', ['$http', function($http){
 	
+	this.checkRights = function(){
+		return $http.get("/systemManager/checkRights");
+	}
+	
 	this.findAllRestaurantManagers = function(){
 		return $http.get("/systemManager/restaurantManager");
 	}
@@ -47,7 +51,6 @@ services.service('systemManagerService', ['$http', function($http){
 	this.saveRestaurant = function(restaurant){
 		return $http.post("/systemManager/restaurant",restaurant);
 	}
-		
 	
 	this.deleteRestaurant = function(id){
 		return $http.delete("/systemManager/restaurant/"+id);

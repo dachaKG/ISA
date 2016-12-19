@@ -14,18 +14,18 @@ app.controller('restaurantManagerController', ['$scope','restaurantManagerServic
 				}
 			);
 		}
-	
+		checkRights();
+		
 		function findAll() {
 			restaurantManagerService.findRestaurant().then(
 				function (response) {
 					$scope.restaurant = response.data;
 				},
                 function (response) {
-                    alert("Greska pri dodavanju.");
+                    alert("Greska pri nalazenju.");
                 }
 			);
 		}
-		checkRights();
 		
 		$scope.saveDrink = function() {
 			//$scope.drink.restaurant = $scope.restaurant;

@@ -3,6 +3,7 @@ package app.manager.boss;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import app.manager.restaurant.RestaurantManager;
 import app.manager.system.SystemManager;
 import app.manager.system.SystemManagerService;
 
@@ -26,10 +28,22 @@ import app.manager.system.SystemManagerService;
 public class BossManagerController {
 
 	private SystemManagerService serviceSystemManager;
+	private HttpSession httpSession;
 
 	@Autowired
-	public BossManagerController(final SystemManagerService serviceSystemManager) {
+	public BossManagerController(final HttpSession httpSession, final SystemManagerService serviceSystemManager) {
 		this.serviceSystemManager = serviceSystemManager;
+		this.httpSession = httpSession;
+	}
+
+	@GetMapping("/checkRights")
+	public boolean checkRights() {
+		try {
+			BossManager bossManager = ((BossManager) httpSession.getAttribute("user"));
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	@GetMapping
