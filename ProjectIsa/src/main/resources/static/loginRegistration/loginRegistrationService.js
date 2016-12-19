@@ -8,4 +8,8 @@ services.service('loginRegistrationService', ['$http', function($http){
 		return $http.post("/commonController/logIn",user);
 	}
 	
+	this.logOut = function(){
+		return $http.get("/commonController/logOut");
+	}
+	
 }]);

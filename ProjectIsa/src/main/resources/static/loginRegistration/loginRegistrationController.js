@@ -19,4 +19,11 @@ app.controller('loginRegistrationController', ['$scope','loginRegistrationServic
                 }
 			);
 		}
+		$scope.logOut = function() {
+			loginRegistrationService.logOut().then(
+				function (response) {
+					$location.path('login/logout');
+	            }		
+			)
+		}
 }]);

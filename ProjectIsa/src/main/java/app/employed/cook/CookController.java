@@ -72,7 +72,7 @@ public class CookController {
 		return service.save(cook);
 	}
 
-	@SuppressWarnings("null")
+	
 	@GetMapping(path = "/{id}/order")
 	public ResponseEntity<List<Dish>> findAllOrders(@PathVariable Long id) {
 
