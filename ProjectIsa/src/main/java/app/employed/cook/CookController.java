@@ -75,6 +75,7 @@ public class CookController {
 		return cookService.save(cook);
 	}
 
+	// 2.4 vidi listu porudzbina jela koje je potrebno pripremiti
 	@GetMapping(path = "/{id}/order")
 	public ResponseEntity<List<Dish>> findAllOrders(@PathVariable Long id) {
 
@@ -83,7 +84,7 @@ public class CookController {
 		List<Dish> food = new ArrayList<Dish>();
 
 		for (int i = 0; i < orders.size(); i++) {
-			if (orders.get(i).getFood().size() != 0) {
+			if (orders.get(i).getFood().size() != 0 && orders.get(i).getDishStatus() == null) {
 				for (int j = 0; j < orders.get(i).getFood().size(); j++) {
 					food.add(orders.get(i).getFood().get(j));
 				}
@@ -93,23 +94,39 @@ public class CookController {
 		return new ResponseEntity<>(food, HttpStatus.OK);
 
 	}
-	
-	@GetMapping(path = "/{cookId}/foodReady/{orderId}")
+
+	// 2.4. signalizira da su jela sa porudzbine prihvacena za spremanje
+	@GetMapping(path = "/{cookId}/foodReceived/{orderId}")
 	@ResponseStatus(HttpStatus.OK)
-	public Orderr drinkReady(@PathVariable Long cookId, @PathVariable Long orderId) {
+	public Orderr foodReceived(@PathVariable Long cookId, @PathVariable Long orderId) {
 		Optional.ofNullable(cookService.findOne(cookId))
 				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 
 		Optional.ofNullable(orderService.findOne(orderId))
 				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
-		
+
 		Orderr order = orderService.findOne(orderId);
-		
+
+		orderService.findOne(orderId).setDishStatus(DishStatus.received);
+		order.setId(orderId);
+		return orderService.save(order);
+	}
+
+	// 2.4 signazilira da je odgovarajuce jelo gotovo
+	@GetMapping(path = "/{cookId}/foodReady/{orderId}")
+	@ResponseStatus(HttpStatus.OK)
+	public Orderr foodReady(@PathVariable Long cookId, @PathVariable Long orderId) {
+		Optional.ofNullable(cookService.findOne(cookId))
+				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
+
+		Optional.ofNullable(orderService.findOne(orderId))
+				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
+
+		Orderr order = orderService.findOne(orderId);
+
 		orderService.findOne(orderId).setDishStatus(DishStatus.finished);
 		order.setId(orderId);
 		return orderService.save(order);
 	}
-	
-	
 
 }
