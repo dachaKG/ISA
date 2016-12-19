@@ -18,6 +18,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import app.dish.Dish;
 import app.drink.Drink;
+import app.employed.cook.Cook;
 import app.employed.waiter.Waiter;
 import app.manager.restaurant.RestaurantManager;
 import app.order.Orderr;
@@ -53,8 +54,12 @@ public class Restaurant {
 
 	// proveriti kardinalitete
 	@OneToMany
-	@JoinTable(name = "RESTUARANT_STAFF", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "WAITER_ID"))
+	@JoinTable(name = "RESTUARANT_WAITERS", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "WAITER_ID"))
 	private List<Waiter> waiters;
+	
+	@OneToMany
+	@JoinTable(name = "RESTUARANT_COOKS", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "COOK_ID"))
+	private List<Cook> cooks;
 
 	@Column
 	private Integer summRate;
