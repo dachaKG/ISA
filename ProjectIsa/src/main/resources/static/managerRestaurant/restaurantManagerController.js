@@ -41,6 +41,36 @@ app.controller('restaurantManagerController', ['$scope','restaurantManagerServic
                 }
 			);
 		}
+		
+		$scope.saveDish = function() {
+			//$scope.drink.restaurant = $scope.restaurant;
+			restaurantManagerService.saveDrink($scope.dish).then(
+				function (response) {
+                    alert("Uspesno dodat.");
+                    $scope.state = undefined;
+                    findAll();
+                    $location.path('loggedIn/restaurantManager/info');
+                },
+                function (response) {
+                    alert("Greska pri dodavanju.");
+                }
+			);
+		}
+		
+		$scope.saveWaiter = function() {
+			//$scope.drink.restaurant = $scope.restaurant;
+			restaurantManagerService.saveWaiter($scope.waiter).then(
+				function (response) {
+                    alert("Uspesno dodat.");
+                    $scope.state = undefined;
+                    findAll();
+                    $location.path('loggedIn/restaurantManager/info');
+                },
+                function (response) {
+                    alert("Greska pri dodavanju.");
+                }
+			);
+		}
 		   
 		
 }]);

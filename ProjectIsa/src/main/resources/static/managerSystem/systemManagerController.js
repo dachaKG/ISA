@@ -42,8 +42,9 @@ app.controller('systemManagerController', ['$scope','systemManagerService','$loc
 			systemManagerService.saveRestaurantManager($scope.restaurantManager).then(
 				function (response) {
                     alert("Uspesno dodat.");
+                    findAll();
                     $scope.state = undefined;
-                    $location.path('systemManager/list');
+                    $location.path('loggedIn/systemManager/list');
                 },
                 function (response) {
                     alert("Greska pri dodavanju.");
@@ -66,8 +67,9 @@ app.controller('systemManagerController', ['$scope','systemManagerService','$loc
 			systemManagerService.saveRestaurant($scope.restaurant).then(
 				function (response) {
                     alert("Uspesno dodat.");
+                    findAll();
                     $scope.state = undefined;
-                    $location.path('systemManager/list');
+                    $location.path('loggedIn/systemManager/list');
                 },
                 function (response) {
                     alert("Greska pri dodavanju.");

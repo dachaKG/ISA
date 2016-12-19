@@ -82,13 +82,13 @@ angular.module('routerApp', ['ui.router',
         .state('loggedIn.restaurantManager.newDrink', {
 			url : '/newDrink',
 			templateUrl : 'managerRestaurant/restaurantManagerNewDrink.html'
-		})
+        })
 		.state('loggedIn.restaurantManager.newDish', {
 			url : '/newDish',
 			templateUrl : 'managerRestaurant/restaurantManagerNewDish.html'
 		})
-	        
-        
-        
-  
+		.state('loggedIn.restaurantManager.newWaiter', {
+			url : '/newWaiter',
+			templateUrl : 'managerRestaurant/restaurantManagerNewWaiter.html'
+		});
 });

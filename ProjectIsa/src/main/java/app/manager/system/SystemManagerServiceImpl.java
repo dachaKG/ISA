@@ -1,7 +1,6 @@
 package app.manager.system;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import javax.transaction.Transactional;
 
@@ -9,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.common.collect.Lists;
-
-import app.manager.restaurant.RestaurantManager;
 
 @Service
 @Transactional

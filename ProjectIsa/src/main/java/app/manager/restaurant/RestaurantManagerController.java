@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import app.dish.Dish;
 import app.drink.Drink;
 import app.restaurant.Restaurant;
 import app.restaurant.RestaurantService;
@@ -30,6 +31,7 @@ public class RestaurantManagerController {
 		this.restaurantService = restaurantService;
 	}
 
+	@SuppressWarnings("unused")
 	@GetMapping("/checkRights")
 	public boolean checkRights() {
 		try {
@@ -53,6 +55,15 @@ public class RestaurantManagerController {
 		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
 		Restaurant restaurant = restaurantService.findOne(restaurantId);
 		restaurant.getDrinks().add(drink);
+		restaurantService.save(restaurant);
+	}
+
+	@PostMapping(path = "/restaurant/saveDish")
+	@ResponseStatus(HttpStatus.CREATED)
+	public void saveDish(@Valid @RequestBody Dish dish) {
+		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
+		Restaurant restaurant = restaurantService.findOne(restaurantId);
+		restaurant.getFood().add(dish);
 		restaurantService.save(restaurant);
 	}
 }
