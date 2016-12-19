@@ -57,7 +57,7 @@ public class WaiterController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public void save(@Valid @RequestBody Waiter waiter) {
 		waiter.setId(null);
-		waiter.setRegistrated(false);
+		waiter.setRegistrated("0");
 		service.save(waiter);
 	}
 
