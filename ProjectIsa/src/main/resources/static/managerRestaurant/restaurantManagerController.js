@@ -33,6 +33,11 @@ app.controller('restaurantManagerController', ['$scope','restaurantManagerServic
 					$scope.cooks = response.data;
 				}
 		     );
+			restaurantManagerService.findAllBartendersInRestaurant().then(
+				function (response) {
+					$scope.bartenders = response.data;
+				}
+			);
 			restaurantManagerService.findAllBiddersInRestaurant().then(
 				function (response) {
 					$scope.bidders = response.data;
@@ -70,48 +75,46 @@ app.controller('restaurantManagerController', ['$scope','restaurantManagerServic
 			);
 		}
 		
-		$scope.saveWaiter = function() {
+		$scope.saveEmployed = function() {
 			//$scope.drink.restaurant = $scope.restaurant;
-			restaurantManagerService.saveWaiter($scope.waiter).then(
-				function (response) {
-                    alert("Successfully added.");
-                    $scope.state = undefined;
-                    findAll();
-                    $location.path('loggedIn/restaurantManager/info');
-                },
-                function (response) {
-                    alert("Error in adding.");
-                }
-			);
-		}
-		
-		$scope.saveCook = function() {
-			//$scope.drink.restaurant = $scope.restaurant;
-			restaurantManagerService.saveCook($scope.cook).then(
-				function (response) {
-                    alert("Successfully added.");
-                    $scope.state = undefined;
-                    findAll();
-                    $location.path('loggedIn/restaurantManager/info');
-                },
-                function (response) {
-                    alert("Error in adding.");
-                }
-			);
-		}
-		$scope.saveBidder = function() {
-			//$scope.drink.restaurant = $scope.restaurant;
-			restaurantManagerService.saveBidder($scope.bidder).then(
-				function (response) {
-                    alert("Successfully added.");
-                    $scope.state = undefined;
-                    findAll();
-                    $location.path('loggedIn/restaurantManager/info');
-                },
-                function (response) {
-                    alert("Error in adding.");
-                }
-			);
-		}   
-		
+			if($scope.employedType == 'Waiter') {
+				restaurantManagerService.saveWaiter($scope.employed).then(
+					function (response) {
+	                    alert("Successfully added.");
+	                    $scope.state = undefined;
+	                    findAll();
+	                    $location.path('loggedIn/restaurantManager/info');
+	                },
+	                function (response) {
+	                    alert("Error in adding.");
+	                }
+				);
+			}
+			else if($scope.employedType == 'Cook') {
+				restaurantManagerService.saveCook($scope.employed).then(
+					function (response) {
+						alert("Successfully added.");
+		                $scope.state = undefined;
+		                findAll();
+		                $location.path('loggedIn/restaurantManager/info');
+		            },
+		            function (response) {
+		            	alert("Error in adding.");
+		            }
+				);
+			}
+			else if($scope.employedType == 'Bartender') {
+				restaurantManagerService.saveBartender($scope.employed).then(
+					function (response) {
+						alert("Successfully added.");
+		                $scope.state = undefined;
+		                findAll();
+		                $location.path('loggedIn/restaurantManager/info');
+					},
+		            function (response) {
+						alert("Error in adding.");
+		            }
+				);
+			}
+		}		
 }]);

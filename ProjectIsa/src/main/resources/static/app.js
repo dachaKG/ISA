@@ -87,13 +87,9 @@ angular.module('routerApp', ['ui.router',
 			url : '/newDish',
 			templateUrl : 'managerRestaurant/restaurantManagerNewDish.html'
 		})
-		.state('loggedIn.restaurantManager.newWaiter', {
-			url : '/newWaiter',
-			templateUrl : 'managerRestaurant/restaurantManagerNewWaiter.html'
-		})
-        .state('loggedIn.restaurantManager.newCook', {
-			url : '/newCook',
-			templateUrl : 'managerRestaurant/restaurantManagerNewCook.html'
+		.state('loggedIn.restaurantManager.newEmployed', {
+			url : '/newEmpolyed',
+			templateUrl : 'managerRestaurant/restaurantManagerNewEmployed.html'
 		})
 		.state('loggedIn.restaurantManager.newBidder', {
 			url : '/newBidder',

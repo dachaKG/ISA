@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import app.bidder.Bidder;
 import app.dish.Dish;
 import app.drink.Drink;
+import app.employed.bartender.Bartender;
 import app.employed.cook.Cook;
 import app.employed.waiter.Waiter;
 import app.restaurant.Restaurant;
@@ -90,6 +91,15 @@ public class RestaurantManagerController {
 		restaurantService.save(restaurant);
 	}
 
+	@PostMapping(path = "/restaurant/saveBartender")
+	@ResponseStatus(HttpStatus.CREATED)
+	public void saveCook(@Valid @RequestBody Bartender bartender) {
+		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
+		Restaurant restaurant = restaurantService.findOne(restaurantId);
+		restaurant.getBartenders().add(bartender);
+		restaurantService.save(restaurant);
+	}
+
 	@PostMapping(path = "/restaurant/saveBidder")
 	@ResponseStatus(HttpStatus.CREATED)
 	public void saveBidder(@Valid @RequestBody Bidder bidder) {
@@ -115,6 +125,15 @@ public class RestaurantManagerController {
 		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
 		Restaurant restaurant = restaurantService.findOne(restaurantId);
 		return restaurant.getCooks();
+	}
+
+	// mora da postoji zbog json igrnore sa strane restorana
+	@GetMapping(path = "/restaurant/bartenders")
+	@ResponseStatus(HttpStatus.CREATED)
+	public List<Bartender> findAllBartendersInRestaurant() {
+		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
+		Restaurant restaurant = restaurantService.findOne(restaurantId);
+		return restaurant.getBartenders();
 	}
 
 	// mora da postoji zbog json igrnore sa strane restorana

@@ -69,6 +69,20 @@
 			</tr>
 		</tbody>
 	</table>
+	
+	<h3>Bartenders</h3>
+	<table class="table table-bordered tableBG" border="1">
+		<tbody>
+			<tr>
+				<th>Name</th>
+				<th>Mail</th>
+			</tr>
+			<tr ng-repeat="bartender in bartenders">
+				<td>{{bartender.firstname}}</td>
+				<td>{{bartender.mail}}</td>
+			</tr>
+		</tbody>
+	</table>
 	<h3>Bidders</h3>
 	<table class="table table-bordered tableBG" border="1">
 		<tbody>
