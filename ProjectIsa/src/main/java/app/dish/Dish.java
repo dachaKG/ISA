@@ -45,7 +45,7 @@ public class Dish {
 	private Integer numRate;
 
 	@JsonIgnore
-	//@NotNull
+	// @NotNull
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "RESTAURANT_ID")
 	private Restaurant restaurant;

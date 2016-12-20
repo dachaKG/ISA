@@ -95,6 +95,10 @@ angular.module('routerApp', ['ui.router',
 			url : '/newCook',
 			templateUrl : 'managerRestaurant/restaurantManagerNewCook.html'
 		})
+		.state('loggedIn.restaurantManager.newBidder', {
+			url : '/newBidder',
+			templateUrl : 'managerRestaurant/restaurantManagerNewBidder.html'
+		})
         
         
         

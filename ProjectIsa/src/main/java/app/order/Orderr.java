@@ -55,16 +55,4 @@ public class Orderr {
 	@ManyToOne
 	@JoinTable(name = "ORDER_TABLE", joinColumns = @JoinColumn(name = "ORDER_ID"), inverseJoinColumns = @JoinColumn(name = "TABLE_ID"))
 	private Table table;
-	
-
-	public void Order(List<Drink> drinks, List<Dish> food, Restaurant restaurant) {
-		this.drinks = drinks;
-		this.food = food;
-		this.restaurant = restaurant;
-	}
-
-	public void Order() {
-
-	}
-
 }
