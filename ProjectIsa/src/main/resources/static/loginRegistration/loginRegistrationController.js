@@ -13,6 +13,8 @@ app.controller('loginRegistrationController', ['$scope','loginRegistrationServic
                     	$location.path('loggedIn/systemManager/list');
                     else if(response.data === "restaurant")
                     	$location.path('loggedIn/restaurantManager/info');
+                    else if(response.data === "guest")
+                    	$location.path('loggedIn/guest');
                 },
                 function (response) {
                     alert("Ne postoji korisnik sa tim parametrima.");

@@ -94,5 +94,24 @@ angular.module('routerApp', ['ui.router',
         .state('loggedIn.restaurantManager.newCook', {
 			url : '/newCook',
 			templateUrl : 'managerRestaurant/restaurantManagerNewCook.html'
-		});
+		})
+        
+        
+        
+        
+        
+        .state('loggedIn.guest', {
+        	url: '/guest',
+        	templateUrl : 'guest/guestPartial.html'
+        })
+        .state('loggedIn.guest.home', {
+        	url: '/home',
+        	templateUrl : 'guest/guestHome.html'
+        })
+        .state('loggedIn.guest.profile', {
+        	url: '/profile',
+        	templateUrl : 'guest/guestProfile.html'
+        });
+        
+        
 });

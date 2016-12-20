@@ -55,7 +55,7 @@ public class CommonController {
 			userType = "system";
 		} else if (guestService.findOne(userInput.getMail(), userInput.getPassword()) != null) {
 			user = guestService.findOne(userInput.getMail(), userInput.getPassword());
-			userType = "system";
+			userType = "guest";
 		}
 
 		if (user != null) {
