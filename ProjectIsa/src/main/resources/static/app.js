@@ -3,6 +3,7 @@
 angular.module('routerApp', ['ui.router', 
 	'systemManager.services', 'systemManager.controllers', 
 	'restaurantManager.services', 'restaurantManager.controllers',
+	'employedBartender.services','employedBartender.controllers',
 	'bossManager.services', 'bossManager.controllers','loginRegistration.services', 'loginRegistration.controllers'])
 .config(function($stateProvider, $urlRouterProvider) {
         
@@ -97,7 +98,14 @@ angular.module('routerApp', ['ui.router',
 		})
         
         
-        
+        .state('loggedIn.bartender', {
+        	url: '/bartender',
+        	templateUrl : 'employedBartender/employedBartenderPartial.html'
+        })
+        .state('loggedIn.bartender.home', {
+        	url : '/home',
+        	templateUrl : 'employedBartender/employedBartenderHome.html'
+        })
         
         
         .state('loggedIn.guest', {

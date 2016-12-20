@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,18 +24,41 @@ import app.drink.Drink;
 import app.order.DrinkStatus;
 import app.order.OrderService;
 import app.order.Orderr;
+import app.restaurant.Restaurant;
+import app.restaurant.RestaurantService;
 
 @RestController
 @RequestMapping("/bartender")
 public class BartenderController {
 
+	private HttpSession httpSession;
+	
 	private final BartenderService bartenderService;
 	private final OrderService orderService;
-
+	private final RestaurantService restaurantService;
 	@Autowired
-	public BartenderController(final BartenderService bartenderService, final OrderService orderService) {
+	public BartenderController(final BartenderService bartenderService, final OrderService orderService, final RestaurantService restaurantService) {
 		this.bartenderService = bartenderService;
 		this.orderService = orderService;
+		this.restaurantService = restaurantService;
+	}
+	
+	@SuppressWarnings("unused")
+	@GetMapping("/checkRights")
+	public boolean checkRights() {
+		try {
+			Bartender bartender = ((Bartender) httpSession.getAttribute("user"));
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	@GetMapping("/restaurant")
+	public ResponseEntity<Restaurant> findBartender(){
+		Long restaurantId = ((Bartender) httpSession.getAttribute("user")).getRestaurant().getId();
+		Restaurant restaurant = restaurantService.findOne(restaurantId);
+		return new ResponseEntity<Restaurant>(restaurant, HttpStatus.OK);
 	}
 
 	@GetMapping

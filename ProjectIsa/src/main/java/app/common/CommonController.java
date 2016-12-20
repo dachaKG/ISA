@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import app.employed.bartender.BartenderService;
 import app.guest.GuestService;
 import app.manager.boss.BossManagerService;
 import app.manager.restaurant.RestaurantManagerService;
@@ -28,16 +29,18 @@ public class CommonController {
 	private RestaurantManagerService restaurantManagerService;
 	private GuestService guestService;
 	private SystemManagerService systemManagerService;
+	private BartenderService bartenderService;
 
 	@Autowired
 	public CommonController(final HttpSession httpSession, final BossManagerService bossManagerService,
 			final RestaurantManagerService restaurantManagerService, final GuestService guestService,
-			SystemManagerService systemManagerService) {
+			SystemManagerService systemManagerService, final BartenderService bartenderService) {
 		this.httpSession = httpSession;
 		this.bossManagerService = bossManagerService;
 		this.restaurantManagerService = restaurantManagerService;
 		this.guestService = guestService;
 		this.systemManagerService = systemManagerService;
+		this.bartenderService = bartenderService;
 	}
 
 	@PostMapping(path = "/logIn")
@@ -56,6 +59,9 @@ public class CommonController {
 		} else if (guestService.findOne(userInput.getMail(), userInput.getPassword()) != null) {
 			user = guestService.findOne(userInput.getMail(), userInput.getPassword());
 			userType = "guest";
+		} else if (bartenderService.findOne(userInput.getMail(), userInput.getPassword()) != null){
+			user = bartenderService.findOne(userInput.getMail(), userInput.getPassword());
+			userType = "bartender";
 		}
 
 		if (user != null) {
