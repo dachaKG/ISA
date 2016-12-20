@@ -44,14 +44,6 @@ public class GuestController {
 		service.save(guest);
 	}
 
-	//pretraga gostiju
-	@GetMapping(path = "/{id}")
-	@ResponseStatus(HttpStatus.OK)
-	public Guest findOne(@PathVariable Long id) {
-		Guest guest = service.findOne(id);
-		Optional.ofNullable(guest).orElseThrow(() -> new ResourceNotFoundException("resourceNotFound!"));
-		return guest;
-	}
 	
 	//brisanje gostiju
 	@DeleteMapping(path = "/{id}")

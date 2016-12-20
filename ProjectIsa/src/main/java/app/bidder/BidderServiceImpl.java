@@ -38,4 +38,15 @@ public class BidderServiceImpl implements BidderService {
 	public void delete(Long id) {
 		repository.delete(id);
 	}
+
+	// ovo se kasnije na repo spusta
+	@Override
+	public Bidder findOne(String mail, String password) {
+		List<Bidder> bidders = (List<Bidder>) repository.findAll();
+		for (int i = 0; i < bidders.size(); i++) {
+			if (bidders.get(i).getMail().equals(mail) && bidders.get(i).getMail().equals(password))
+				return bidders.get(i);
+		}
+		return null;
+	}
 }

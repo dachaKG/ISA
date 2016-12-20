@@ -28,7 +28,7 @@ public class Bidder extends User {
 
 	// lista svih dosadasnjih porudzbina
 	@ManyToMany
-	@JoinTable(name = "BIDDER_ORDERR", joinColumns = @JoinColumn(name = "BIDDER_ID"), inverseJoinColumns = @JoinColumn(name = "ORDERR_ID"))
+	@JoinTable(name = "BIDDER_ORDERR", joinColumns = @JoinColumn(name = "BIDDER_ID"), inverseJoinColumns = @JoinColumn(name = "ORDER_BIDDER_ID"))
 	private List<OrderBidder> lastOrders;
 
 	@OneToOne(cascade = CascadeType.MERGE)

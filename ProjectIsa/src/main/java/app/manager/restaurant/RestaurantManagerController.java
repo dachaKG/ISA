@@ -50,7 +50,7 @@ public class RestaurantManagerController {
 	}
 
 	@GetMapping("/restaurant")
-	public ResponseEntity<Restaurant> findManager() {
+	public ResponseEntity<Restaurant> findRestaurant() {
 		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
 		Restaurant restaurant = restaurantService.findOne(restaurantId);
 		return new ResponseEntity<>(restaurant, HttpStatus.OK);

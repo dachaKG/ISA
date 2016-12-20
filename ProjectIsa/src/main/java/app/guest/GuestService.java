@@ -2,8 +2,6 @@ package app.guest;
 
 import java.util.List;
 
-import app.manager.restaurant.RestaurantManager;
-
 public interface GuestService {
 	List<Guest> findAll();
 

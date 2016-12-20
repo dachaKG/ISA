@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import app.bidder.BidderService;
 import app.guest.GuestService;
 import app.manager.boss.BossManagerService;
 import app.manager.restaurant.RestaurantManagerService;
@@ -28,17 +29,19 @@ public class CommonController {
 	private RestaurantManagerService restaurantManagerService;
 	private GuestService guestService;
 	private SystemManagerService systemManagerService;
+	private BidderService bidderService;
 
 	@Autowired
 	public CommonController(final HttpSession httpSession, final BossManagerService bossManagerService,
 			final RestaurantManagerService restaurantManagerService, final GuestService guestService,
-			SystemManagerService systemManagerService) {
+			final SystemManagerService systemManagerService, final BidderService bidderService) {
 		this.httpSession = httpSession;
 		this.bossManagerService = bossManagerService;
 		this.restaurantManagerService = restaurantManagerService;
 		this.guestService = guestService;
 		this.systemManagerService = systemManagerService;
-	}
+		this.bidderService = bidderService;
+		}
 
 	@PostMapping(path = "/logIn")
 	public ResponseEntity<String> logIn(@RequestBody User userInput) {
@@ -56,8 +59,10 @@ public class CommonController {
 		} else if (guestService.findOne(userInput.getMail(), userInput.getPassword()) != null) {
 			user = guestService.findOne(userInput.getMail(), userInput.getPassword());
 			userType = "guest";
+		} else if (bidderService.findOne(userInput.getMail(), userInput.getPassword()) != null) {
+			user = bidderService.findOne(userInput.getMail(), userInput.getPassword());
+			userType = "bidder";
 		}
-
 		if (user != null) {
 			httpSession.setAttribute("user", user);
 			return new ResponseEntity<>(userType, HttpStatus.OK);

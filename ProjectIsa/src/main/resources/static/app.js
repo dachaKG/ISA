@@ -3,7 +3,9 @@
 angular.module('routerApp', ['ui.router', 
 	'systemManager.services', 'systemManager.controllers', 
 	'restaurantManager.services', 'restaurantManager.controllers',
-	'bossManager.services', 'bossManager.controllers','loginRegistration.services', 'loginRegistration.controllers'])
+	'bossManager.services', 'bossManager.controllers',
+	'bidder.services', 'bidder.controllers',
+	'loginRegistration.services', 'loginRegistration.controllers'])
 .config(function($stateProvider, $urlRouterProvider) {
         
         $urlRouterProvider.otherwise('/login');
@@ -111,7 +113,20 @@ angular.module('routerApp', ['ui.router',
         .state('loggedIn.guest.profile', {
         	url: '/profile',
         	templateUrl : 'guest/guestProfile.html'
-        });
+        })
+        
+        
+        
+        .state('loggedIn.bidder', {
+        	url: '/bidder',
+        	templateUrl : 'bidder/bidderPartial.html',
+            controller : 'bidderController'
+        })
+        .state('loggedIn.bidder.home', {
+        	url: '/home',
+        	templateUrl : 'bidder/bidderHome.html'
+        })
+        
         
         
 });
