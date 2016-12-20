@@ -75,5 +75,10 @@ public class CommonController {
 	public void logOut() {
 		httpSession.invalidate();
 	}
+	
+	@GetMapping(path= "/getLoggedUser")
+	public User getLoggedUser(){
+		return (User) httpSession.getAttribute("user");
+	}
 
 }
