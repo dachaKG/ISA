@@ -5,7 +5,7 @@ var baseUrl = 'http://localhost\\:8080';
 services.service('guestService', ['$http', function($http){
 	
 	this.checkRights = function(){
-		return $http.get("/GuestController/checkRights");
+		return $http.get("/guest/checkRights");
 	}
 	
 	this.getLoggedUser = function(){
