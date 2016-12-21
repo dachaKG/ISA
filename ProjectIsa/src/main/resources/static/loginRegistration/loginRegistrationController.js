@@ -1,5 +1,7 @@
 var app = angular.module('loginRegistration.controllers', []);
  
+var firstLoginId = null;
+
 app.controller('loginRegistrationController', ['$scope','loginRegistrationService', '$location',
   	function ($scope, loginRegistrationService, $location) {
 	
@@ -19,7 +21,15 @@ app.controller('loginRegistrationController', ['$scope','loginRegistrationServic
                     	$location.path('loggedIn/bidder/home');
                     else if(response.data === "bartender")
                     	$location.path('loggedIn/bartender/home');
-                },
+                    else if(response.data === "cook")
+                    	$location.path('login');
+                    else if(response.data === "waiter")
+                    	$location.path('login');
+                    else {
+                    	firstLoginId = response.data;
+                    	$location.path('firstLogin');
+                    }
+				},
                 function (response) {
                     alert("Ne postoji korisnik sa tim parametrima.");
                 }
@@ -34,6 +44,16 @@ app.controller('loginRegistrationController', ['$scope','loginRegistrationServic
                 function (response) {
                     alert("Greska pri registraciji.");
                 }
+            ); 	
+		};
+		
+		$scope.firstLogin = function () {  
+			$scope.user.firstname = "zz";
+			$scope.user.lastname = "zz";
+			loginRegistrationService.firstLogin(firstLoginId,$scope.user).then(
+				function (response) {
+					$location.path('login');
+	            }
             ); 	
 		};
 		

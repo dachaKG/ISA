@@ -11,5 +11,7 @@ public interface GuestService {
 
 	Guest findOne(String mail,String password);
 	
+	Guest findOneWithMail(String mail);
+	
 	void delete(Long id);
 }

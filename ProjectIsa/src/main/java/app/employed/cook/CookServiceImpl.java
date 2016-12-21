@@ -14,12 +14,12 @@ import com.google.common.collect.Lists;
 public class CookServiceImpl implements CookService {
 
 	private final CookRepository repository;
-	
+
 	@Autowired
-	public CookServiceImpl(final CookRepository repository){
+	public CookServiceImpl(final CookRepository repository) {
 		this.repository = repository;
 	}
-	
+
 	@Override
 	public List<Cook> findAll() {
 		return Lists.newArrayList(repository.findAll());
@@ -36,8 +36,25 @@ public class CookServiceImpl implements CookService {
 	}
 
 	@Override
+	public Cook findOne(String mail, String password) {
+		List<Cook> list = findAll();
+		for (int i = 0; i < list.size(); i++)
+			if (list.get(i).getMail().equals(mail) && list.get(i).getPassword().equals(password))
+				return list.get(i);
+		return null;
+	}
+
+	@Override
 	public void delete(Long id) {
 		repository.delete(id);
 	}
 
+	@Override
+	public Cook findOneWithMail(String mail) {
+		List<Cook> list = findAll();
+		for (int i = 0; i < list.size(); i++)
+			if (list.get(i).getMail().equals(mail))
+				return list.get(i);
+		return null;
+	}
 }

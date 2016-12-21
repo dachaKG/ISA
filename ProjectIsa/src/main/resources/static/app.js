@@ -33,6 +33,12 @@ angular.module('routerApp', ['ui.router',
         	controller : 'loginRegistrationController'
          })
          
+         .state('firstLogin', {
+        	url : '/firstLogin',
+        	templateUrl : 'loginRegistration/firstLogin.html',
+        	controller : 'loginRegistrationController'
+         })         
+         
          .state('loggedIn', {
         	url : '/loggedIn',
         	templateUrl : 'loggedIn.html'

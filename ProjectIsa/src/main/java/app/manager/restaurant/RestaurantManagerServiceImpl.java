@@ -47,6 +47,15 @@ public class RestaurantManagerServiceImpl implements RestaurantManagerService{
 	}
 	
 	@Override
+	public RestaurantManager findOneWithMail(String mail) {
+		List<RestaurantManager> list = findAll();
+		for(int i=0;i<list.size();i++)
+			if(list.get(i).getMail().equals(mail))
+				return list.get(i);
+		return null;
+	}
+	
+	@Override
 	public void delete(Long id) {
 		repository.delete(id);		
 	}

@@ -11,5 +11,7 @@ public interface BidderService {
 
 	Bidder findOne(String mail, String password);
 
+	Bidder findOneWithMail(String mail);
+
 	void delete(Long id);
 }

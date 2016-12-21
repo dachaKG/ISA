@@ -45,6 +45,15 @@ public class SystemManagerServiceImpl implements SystemManagerService {
 		}
 		return null;
 	}
+	
+	@Override
+	public SystemManager findOneWithMail(String mail) {
+		List<SystemManager> list = findAll();
+		for(int i=0;i<list.size();i++)
+			if(list.get(i).getMail().equals(mail))
+				return list.get(i);
+		return null;
+	}
 
 	@Override
 	public void delete(Long id) {

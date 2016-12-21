@@ -13,6 +13,8 @@ public interface BartenderService {
 	
 	Bartender findOne(String mail,String password);
 
+	Bartender findOneWithMail(String mail);
+	
 	void delete(Long id);
 
 }

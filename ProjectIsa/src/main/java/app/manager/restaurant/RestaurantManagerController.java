@@ -79,6 +79,7 @@ public class RestaurantManagerController {
 	@PostMapping(path = "/restaurant/saveWaiter")
 	@ResponseStatus(HttpStatus.CREATED)
 	public void saveWaiter(@Valid @RequestBody Waiter waiter) {
+		waiter.setRegistrated("0");
 		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
 		Restaurant restaurant = restaurantService.findOne(restaurantId);
 		//waiter.setRestaurant(restaurant);
@@ -89,6 +90,7 @@ public class RestaurantManagerController {
 	@PostMapping(path = "/restaurant/saveCook")
 	@ResponseStatus(HttpStatus.CREATED)
 	public void saveCook(@Valid @RequestBody Cook cook) {
+		cook.setRegistrated("0");
 		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
 		Restaurant restaurant = restaurantService.findOne(restaurantId);
 		//cook.setRestaurant(restaurant);
@@ -99,6 +101,7 @@ public class RestaurantManagerController {
 	@PostMapping(path = "/restaurant/saveBartender")
 	@ResponseStatus(HttpStatus.CREATED)
 	public void saveCook(@Valid @RequestBody Bartender bartender) {
+		bartender.setRegistrated("0");
 		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
 		Restaurant restaurant = restaurantService.findOne(restaurantId);
 		//bartender.setRestaurant(restaurant);
@@ -109,6 +112,7 @@ public class RestaurantManagerController {
 	@PostMapping(path = "/restaurant/saveBidder")
 	@ResponseStatus(HttpStatus.CREATED)
 	public void saveBidder(@Valid @RequestBody Bidder bidder) {
+		bidder.setRegistrated("0");
 		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
 		Restaurant restaurant = restaurantService.findOne(restaurantId);
 		//bidder.setRestaurant(restaurant);

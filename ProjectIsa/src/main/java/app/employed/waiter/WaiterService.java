@@ -11,5 +11,9 @@ public interface WaiterService {
 	
 	Waiter findOne(Long id);
 	
+	Waiter findOne(String mail,String password);
+	
+	Waiter findOneWithMail(String mail);
+
 	void delete(Long id);
 }

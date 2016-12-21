@@ -18,7 +18,7 @@ public class BossManagerServiceImpl implements BossManagerService {
 	public BossManagerServiceImpl(final BossManagerRepository repository) {
 		this.repository = repository;
 	}
-	
+
 	@Override
 	public List<BossManager> findAll() {
 		return Lists.newArrayList(repository.findAll());
@@ -30,11 +30,25 @@ public class BossManagerServiceImpl implements BossManagerService {
 	}
 
 	@Override
-	public BossManager findOne(String mail,String password) {
+	public BossManager findOne(String mail, String password) {
 		List<BossManager> list = findAll();
 		BossManager bossManager = list.get(0);
-		if(bossManager.getMail().equals(mail) && bossManager.getPassword().equals(password))
+		if (bossManager.getMail().equals(mail) && bossManager.getPassword().equals(password))
 			return bossManager;
+		return null;
+	}
+
+	@Override
+	public BossManager findOne(Long id) {
+		return repository.findOne(id);
+	}
+
+	@Override
+	public BossManager findOneWithMail(String mail) {
+		List<BossManager> list = findAll();
+		for (int i = 0; i < list.size(); i++)
+			if (list.get(i).getMail().equals(mail))
+				return list.get(i);
 		return null;
 	}
 }

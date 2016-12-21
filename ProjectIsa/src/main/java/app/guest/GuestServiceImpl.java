@@ -49,4 +49,13 @@ public class GuestServiceImpl implements GuestService {
 	public void delete(Long id) {
 		repository.delete(id);
 	}
+
+	@Override
+	public Guest findOneWithMail(String mail) {
+		List<Guest> list = findAll();
+		for (int i = 0; i < list.size(); i++)
+			if (list.get(i).getMail().equals(mail))
+				return list.get(i);
+		return null;
+	}
 }
