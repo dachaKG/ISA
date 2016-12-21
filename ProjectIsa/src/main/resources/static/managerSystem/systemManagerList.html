@@ -8,8 +8,7 @@
 				<th>Firstame</th>
                 <th>Lastname</th>
                 <th>Mail</th>
-               	<th colspan="1">Operations</th>
-	        </tr>
+            </tr>
 			<tr ng-repeat="restaurantManager in restaurantManagers">
 				<td> 
 					{{restaurantManager.id}}
@@ -23,10 +22,7 @@
             	<td>
 		    		{{restaurantManager.mail}}	
 				</td>
-				<td>
-					<a ng-click="deleteRestaurantManager(restaurantManager)" class="btn btn-small btn-default"><span class="glyphicon glyphicon-trash"></span> Delete</a>
-				</td>
-            </tr>
+			</tr>
         </tbody>
     </table> 
     
@@ -36,8 +32,7 @@
 				<th>Id</th>
 				<th>Name</th>
                 <th>Manager</th>
-                <th colspan="1">Operations</th>
-	        </tr>
+            </tr>
 			<tr ng-repeat="restaurant in restaurants">
 				<td> 
 					{{restaurant.id}}
@@ -47,9 +42,6 @@
 				</td>
             	<td>
 		    		{{restaurant.restaurantManager.firstname}}	
-				</td>
-            	<td>
-					<a ng-click="deleteRestaurant(restaurant)" class="btn btn-small btn-default"><span class="glyphicon glyphicon-trash"></span> Delete</a>
 				</td>
             </tr>
 		</tbody>

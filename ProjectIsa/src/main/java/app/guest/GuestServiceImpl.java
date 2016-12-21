@@ -39,7 +39,7 @@ public class GuestServiceImpl implements GuestService {
 	public Guest findOne(String mail, String password) {
 		List<Guest> guests = (List<Guest>) repository.findAll();
 		for (int i = 0; i < guests.size(); i++) {
-			if (guests.get(i).getMail().equals(mail) && guests.get(i).getMail().equals(password))
+			if (guests.get(i).getMail().equals(mail) && guests.get(i).getPassword().equals(password))
 				return guests.get(i);
 		}
 		return null;
