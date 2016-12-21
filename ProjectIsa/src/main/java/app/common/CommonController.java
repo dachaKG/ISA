@@ -3,6 +3,7 @@ package app.common;
 import java.util.NoSuchElementException;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,10 +12,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import app.bidder.BidderService;
 import app.employed.bartender.BartenderService;
+import app.guest.Guest;
 import app.guest.GuestService;
 import app.manager.boss.BossManagerService;
 import app.manager.restaurant.RestaurantManagerService;
@@ -66,7 +69,7 @@ public class CommonController {
 		} else if (bidderService.findOne(userInput.getMail(), userInput.getPassword()) != null) {
 			user = bidderService.findOne(userInput.getMail(), userInput.getPassword());
 			userType = "bidder";
-		} else if (bartenderService.findOne(userInput.getMail(), userInput.getPassword()) != null){
+		} else if (bartenderService.findOne(userInput.getMail(), userInput.getPassword()) != null) {
 			user = bartenderService.findOne(userInput.getMail(), userInput.getPassword());
 			userType = "bartender";
 		}
@@ -81,10 +84,19 @@ public class CommonController {
 	public void logOut() {
 		httpSession.invalidate();
 	}
-	
-	@GetMapping(path= "/getLoggedUser")
-	public User getLoggedUser(){
+
+	@GetMapping(path = "/getLoggedUser")
+	public User getLoggedUser() {
 		return (User) httpSession.getAttribute("user");
+	}
+
+	// registracija gosta
+	@PostMapping(path = "/registration")
+	@ResponseStatus(HttpStatus.CREATED)
+	public void save(@Valid @RequestBody Guest guest) {
+		guest.setId(null);
+		guest.setRegistrated("0");
+		guestService.save(guest);
 	}
 
 }

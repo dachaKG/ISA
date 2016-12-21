@@ -4,11 +4,12 @@ angular.module('routerApp', ['ui.router',
 	'systemManager.services', 'systemManager.controllers', 
 	'restaurantManager.services', 'restaurantManager.controllers',
 	'bossManager.services', 'bossManager.controllers',
+	'guest.services','guest.controllers',
 	'bidder.services', 'bidder.controllers',
 	'employedBartender.services','employedBartender.controllers',
 	'bossManager.services', 'bossManager.controllers',
-	'loginRegistration.services','loginRegistration.controllers', 
-	'guest.services','guest.controllers'])
+	'loginRegistration.services','loginRegistration.controllers'
+	])
 .config(function($stateProvider, $urlRouterProvider) {
         
         $urlRouterProvider.otherwise('/login');

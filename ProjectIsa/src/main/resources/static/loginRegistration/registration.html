@@ -1,22 +1,22 @@
 <h1>Registration</h1>
 
 <div class="center">
-<form  name = "registrationForm" ng-model="$parent.guest">
+<form  name = "registrationForm">
 
-<label>Name</label><br/>
-<input name = "name" type="text" class="form-control" ng-model = "$parent.guest.firstname"  required><br/>
+<label>Firstname</label><br/>
+<input name = "name" type="text" class="form-control" ng-model = "$parent.user.firstname"  required><br/>
 
-<label>Surname</label><br/>
-<input name = "surname" type="text" class="form-control" ng-model = "$parent.guest.lastname"  required><br/> 
+<label>Lastname</label><br/>
+<input type="text" class="form-control" ng-model = "$parent.user.lastname"  required><br/> 
 
 <label>Email</label><br/>
-<input name = "email" type="email" class="form-control" ng-model = "$parent.guest.mail"  required><br/>  
+<input type="mail" class="form-control" ng-model = "$parent.user.mail"  required><br/> 
 
- <label>Password</label><br/>
- <input name = "password" type="password" class="form-control" ng-model = "$parent.guest.password" required></br>
+<label>Password</label><br/>
+<input type="password" class="form-control" ng-model = "$parent.user.password" required></br>
  
-  <label>Repeat password</label><br/>
- <input name = "password" type="password" class="form-control"  required></br><br/>
+<label>Repeat password</label><br/>
+<input type="password" class="form-control"  required></br><br/>
 
 
 <button class="btn btn-default" ng-click= "submitRegistration()" >Sign up </button>

@@ -27,7 +27,7 @@ app.controller('loginRegistrationController', ['$scope','loginRegistrationServic
 		}
 		
 		$scope.submitRegistration = function () {  
-			loginRegistrationService.save($scope.guest).then(
+			loginRegistrationService.save($scope.user).then(
 				function (response) {
                     alert("Uspesno registrovan.");
                 },

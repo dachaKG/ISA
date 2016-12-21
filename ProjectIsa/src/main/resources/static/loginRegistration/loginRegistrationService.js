@@ -13,7 +13,7 @@ services.service('loginRegistrationService', ['$http', function($http){
 	}
 	
 	this.save = function(guest){
-		return $http.post("/guests",guest);
+		return $http.post("/commonController/registration",guest);
 	}
 	
 }]);

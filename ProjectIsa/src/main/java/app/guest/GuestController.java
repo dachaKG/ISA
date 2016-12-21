@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/guests")
+@RequestMapping("/guest")
 public class GuestController {
 	private final GuestService service;
 
@@ -34,16 +33,6 @@ public class GuestController {
 	public ResponseEntity<List<Guest>> findAll() {
 		return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
 	}
-
-	// registracija gosta
-	@PostMapping
-	@ResponseStatus(HttpStatus.CREATED)
-	public void save(@Valid @RequestBody Guest guest) {
-		guest.setId(null);
-		guest.setRegistrated("0");
-		service.save(guest);
-	}
-
 	
 	//brisanje gostiju
 	@DeleteMapping(path = "/{id}")
