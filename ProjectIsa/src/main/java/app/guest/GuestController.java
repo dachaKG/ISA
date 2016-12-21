@@ -3,6 +3,7 @@ package app.guest;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +18,31 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import app.manager.boss.BossManager;
+
 @RestController
 @RequestMapping("/guest")
 public class GuestController {
+	
 	private final GuestService service;
+	private HttpSession httpSession;
 
 	@Autowired
-	public GuestController(final GuestService service) {
+	public GuestController(final HttpSession httpSession, final GuestService service) {
 		this.service = service;
+		this.httpSession = httpSession;
+	}
+	
+	
+	@SuppressWarnings("unused")
+	@GetMapping("/checkRights")
+	public boolean checkRights() {
+		try {
+			Guest guest = ((Guest) httpSession.getAttribute("user"));
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	// izlistavanje svih gostiju
