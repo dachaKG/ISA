@@ -105,7 +105,7 @@ public class CommonController {
 		}
 		if (user != null) {
 			httpSession.setAttribute("user", user);
-			if (!user.getRegistrated().equals("0"))
+			if (!user.getRegistrated().equals("0") || userType.equals("guest"))
 				return new ResponseEntity<>(userType, HttpStatus.OK);
 			return new ResponseEntity<>("" + id, HttpStatus.OK);
 		} else
@@ -153,13 +153,16 @@ public class CommonController {
 			systemManager.setRegistrated("1");
 			systemManager.setPassword(userInput.getPassword());
 			systemManagerService.save(systemManager);
-		} else if (guestService.findOneWithMail(userInput.getMail()) != null) {
+		} 
+		/*else if (guestService.findOneWithMail(userInput.getMail()) != null) {
 			Guest guest = guestService.findOne(id);
 			guest.setId(id);
 			guest.setRegistrated("1");
 			guest.setPassword(userInput.getPassword());
 			guestService.save(guest);
-		} else if (bidderService.findOneWithMail(userInput.getMail()) != null) {
+		}*/
+		
+		  else if (bidderService.findOneWithMail(userInput.getMail()) != null) {
 			Bidder bidder = bidderService.findOne(id);
 			bidder.setId(id);
 			bidder.setRegistrated("1");

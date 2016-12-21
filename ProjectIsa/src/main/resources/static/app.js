@@ -135,16 +135,16 @@ angular.module('routerApp', ['ui.router',
         
         .state('loggedIn.guest', {
         	url: '/guestt',
-        	templateUrl : 'guest/guestPartial.html',
+        	templateUrl : 'guestt/guestPartial.html',
         	controller : 'guestController'
         })
         .state('loggedIn.guest.home', {
         	url: '/home',
-        	templateUrl : 'guest/guestHome.html'
+        	templateUrl : 'guestt/guestHome.html'
         })
         .state('loggedIn.guest.profile', {
         	url: '/profile',
-        	templateUrl : 'guest/guestProfile.html'
+        	templateUrl : 'guestt/guestProfile.html'
         })
         
         
