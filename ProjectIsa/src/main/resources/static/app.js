@@ -100,11 +100,24 @@ angular.module('routerApp', ['ui.router',
         
         .state('loggedIn.bartender', {
         	url: '/bartender',
-        	templateUrl : 'employedBartender/employedBartenderPartial.html'
+        	templateUrl : 'employedBartender/employedBartenderPartial.html',
+        	controller : 'employedBartenderController'
         })
         .state('loggedIn.bartender.home', {
         	url : '/home',
         	templateUrl : 'employedBartender/employedBartenderHome.html'
+        })
+        .state('loggedIn.bartender.orders', {
+        	url : '/orders',
+        	templateUrl : 'employedBartender/employedBartenderOrders.html'
+        })
+        .state('loggedIn.bartender.readyDrinks', {
+        	url : '/readyDrinks',
+        	templateUrl : 'employedBartender/employedBartenderReadyDrinks.html'
+        })
+        .state('loggedIn.bartender.profile', {
+        	url : '/profile',
+        	templateUrl : 'employedBartender/employedBartenderProfile.html'
         })
         
         

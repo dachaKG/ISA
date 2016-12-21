@@ -2,6 +2,7 @@ package app.order;
                            
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -13,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 import app.dish.Dish;
 import app.drink.Drink;
@@ -48,7 +50,7 @@ public class Orderr {
 	@JoinTable(name = "ORDER_FOOD", joinColumns = @JoinColumn(name = "ORDER_ID"), inverseJoinColumns = @JoinColumn(name = "DISH_ID"))
 	private List<Dish> food;
 	
-	@ManyToOne
+	@OneToOne(cascade = CascadeType.MERGE)
 	@JoinTable(name = "ORDER_RESTAURANT", joinColumns = @JoinColumn(name = "ORDER_ID"), inverseJoinColumns = @JoinColumn(name = "RESTAURANT_ID"))
 	private Restaurant restaurant;
 	

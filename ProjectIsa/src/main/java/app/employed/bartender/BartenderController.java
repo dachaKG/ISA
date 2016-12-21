@@ -37,7 +37,8 @@ public class BartenderController {
 	private final OrderService orderService;
 	private final RestaurantService restaurantService;
 	@Autowired
-	public BartenderController(final BartenderService bartenderService, final OrderService orderService, final RestaurantService restaurantService) {
+	public BartenderController(final HttpSession httpSession, final BartenderService bartenderService, final OrderService orderService, final RestaurantService restaurantService) {
+		this.httpSession = httpSession;
 		this.bartenderService = bartenderService;
 		this.orderService = orderService;
 		this.restaurantService = restaurantService;
@@ -54,17 +55,17 @@ public class BartenderController {
 		}
 	}
 	
-	@GetMapping("/restaurant")
-	public ResponseEntity<Restaurant> findBartender(){
-		Long restaurantId = ((Bartender) httpSession.getAttribute("user")).getRestaurant().getId();
-		Restaurant restaurant = restaurantService.findOne(restaurantId);
-		return new ResponseEntity<Restaurant>(restaurant, HttpStatus.OK);
+	@GetMapping
+	public ResponseEntity<Bartender> findBartender(){
+		Long id = ((Bartender) httpSession.getAttribute("user")).getId();
+		Bartender bartender = bartenderService.findOne(id);
+		return new ResponseEntity<Bartender>(bartender, HttpStatus.OK);
 	}
 
-	@GetMapping
+	/*@GetMapping
 	public ResponseEntity<List<Bartender>> findAll() {
 		return new ResponseEntity<>(bartenderService.findAll(), HttpStatus.OK);
-	}
+	}*/
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
@@ -93,9 +94,10 @@ public class BartenderController {
 	}
 
 	// 2.4 prikaz porudzbina za sankera
-	@GetMapping(path = "/{id}/order")
-	public ResponseEntity<List<Drink>> findAllOrdres(@PathVariable Long id) {
-
+	@GetMapping(path = "/orders")
+	public ResponseEntity<List<Drink>> findAllOrdrers() {
+		Long id = ((Bartender) httpSession.getAttribute("user")).getId();
+	//	Bartender bartender = ((Bartender) httpSession.getAttribute("user"));
 		List<Orderr> orders = bartenderService.findOne(id).getOrders();
 		Optional.ofNullable(orders).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 
@@ -111,20 +113,46 @@ public class BartenderController {
 
 		return new ResponseEntity<>(drinks, HttpStatus.OK);
 	}
+	
+	@GetMapping(path = "/readyDrinks")
+	public ResponseEntity<List<Drink>> readyDrinks() {
+		Long id = ((Bartender) httpSession.getAttribute("user")).getId();
+	//	Bartender bartender = ((Bartender) httpSession.getAttribute("user"));
+		Bartender bartender = bartenderService.findOne(id);
+		List<Orderr> orders = bartender.getOrders();
+		
+		Optional.ofNullable(orders).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
+
+		List<Drink> drinks = new ArrayList<Drink>();
+		
+		for (int i = 0; i < orders.size(); i++) {
+			System.out.println(orders.get(i).getId());
+			if (orders.get(i).getDrinks().size() != 0 && orders.get(i).getDrinkStatus() != null &&
+					orders.get(i).getDrinkStatus().compareTo(DrinkStatus.finished) == 0) {
+				for (int j = 0; j < orders.get(i).getDrinks().size(); j++) {
+					drinks.add(orders.get(i).getDrinks().get(j));
+				}
+			}
+		}
+
+		return new ResponseEntity<>(drinks, HttpStatus.OK);
+	}
 
 	//2.4 sanker signalizir da je odgovarajuce pice spremno
-	@GetMapping(path = "/{bartenderId}/drinkReady/{orderId}")
+	@GetMapping(path = "/drinkReady/{orderId}")
 	@ResponseStatus(HttpStatus.OK)
-	public Orderr drinkReady(@PathVariable Long bartenderId, @PathVariable Long orderId) {
-		Optional.ofNullable(bartenderService.findOne(bartenderId))
+	public Orderr drinkReady(@PathVariable Long orderId) {
+		Long id = ((Bartender) httpSession.getAttribute("user")).getId();
+		Bartender bartender = bartenderService.findOne(id);
+		Optional.ofNullable(bartender)
 				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
-
+		
 		Optional.ofNullable(orderService.findOne(orderId))
 				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 		
 		Orderr order = orderService.findOne(orderId);
 		
-		orderService.findOne(orderId).setDrinkStatus(DrinkStatus.finished);
+		order.setDrinkStatus(DrinkStatus.finished);
 		order.setId(orderId);
 		return orderService.save(order);
 	}
