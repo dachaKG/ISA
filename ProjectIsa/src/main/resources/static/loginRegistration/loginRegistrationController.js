@@ -23,6 +23,19 @@ app.controller('loginRegistrationController', ['$scope','loginRegistrationServic
                 }
 			);
 		}
+		
+		$scope.submitRegistration = function () {  
+			loginRegistrationService.save($scope.guest).then(
+				function (response) {
+                    alert("Uspesno registrovan.");
+                },
+                function (response) {
+                    alert("Greska pri registraciji.");
+                }
+            ); 	
+		};
+		
+		
 		$scope.logOut = function() {
 			loginRegistrationService.logOut().then(
 				function (response) {
@@ -30,4 +43,7 @@ app.controller('loginRegistrationController', ['$scope','loginRegistrationServic
 	            }		
 			)
 		}
+		
+		
+		
 }]);

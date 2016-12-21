@@ -25,7 +25,8 @@ angular.module('routerApp', ['ui.router',
          
          .state('registration', {
         	url : '/registration',
-        	templateUrl : 'loginRegistration/registration.html'	
+        	templateUrl : 'loginRegistration/registration.html',
+        	controller : 'loginRegistrationController'
          })
          
          .state('loggedIn', {
