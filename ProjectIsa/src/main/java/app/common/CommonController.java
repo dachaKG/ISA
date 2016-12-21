@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import app.bidder.BidderService;
+import app.employed.bartender.BartenderService;
 import app.guest.GuestService;
 import app.manager.boss.BossManagerService;
 import app.manager.restaurant.RestaurantManagerService;
@@ -30,18 +31,21 @@ public class CommonController {
 	private GuestService guestService;
 	private SystemManagerService systemManagerService;
 	private BidderService bidderService;
+	private BartenderService bartenderService;
 
 	@Autowired
 	public CommonController(final HttpSession httpSession, final BossManagerService bossManagerService,
 			final RestaurantManagerService restaurantManagerService, final GuestService guestService,
-			final SystemManagerService systemManagerService, final BidderService bidderService) {
+			final SystemManagerService systemManagerService, final BidderService bidderService,
+			final BartenderService bartenderService) {
 		this.httpSession = httpSession;
 		this.bossManagerService = bossManagerService;
 		this.restaurantManagerService = restaurantManagerService;
 		this.guestService = guestService;
 		this.systemManagerService = systemManagerService;
 		this.bidderService = bidderService;
-		}
+		this.bartenderService = bartenderService;
+	}
 
 	@PostMapping(path = "/logIn")
 	public ResponseEntity<String> logIn(@RequestBody User userInput) {
@@ -62,6 +66,9 @@ public class CommonController {
 		} else if (bidderService.findOne(userInput.getMail(), userInput.getPassword()) != null) {
 			user = bidderService.findOne(userInput.getMail(), userInput.getPassword());
 			userType = "bidder";
+		} else if (bartenderService.findOne(userInput.getMail(), userInput.getPassword()) != null){
+			user = bartenderService.findOne(userInput.getMail(), userInput.getPassword());
+			userType = "bartender";
 		}
 		if (user != null) {
 			httpSession.setAttribute("user", user);
@@ -73,6 +80,11 @@ public class CommonController {
 	@GetMapping(path = "/logOut")
 	public void logOut() {
 		httpSession.invalidate();
+	}
+	
+	@GetMapping(path= "/getLoggedUser")
+	public User getLoggedUser(){
+		return (User) httpSession.getAttribute("user");
 	}
 
 }

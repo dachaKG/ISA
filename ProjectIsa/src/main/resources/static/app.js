@@ -5,7 +5,10 @@ angular.module('routerApp', ['ui.router',
 	'restaurantManager.services', 'restaurantManager.controllers',
 	'bossManager.services', 'bossManager.controllers',
 	'bidder.services', 'bidder.controllers',
-	'loginRegistration.services', 'loginRegistration.controllers'])
+	'employedBartender.services','employedBartender.controllers',
+	'bossManager.services', 'bossManager.controllers',
+	'loginRegistration.services','loginRegistration.controllers', 
+	'guest.services','guest.controllers'])
 .config(function($stateProvider, $urlRouterProvider) {
         
         $urlRouterProvider.otherwise('/login');
@@ -25,7 +28,8 @@ angular.module('routerApp', ['ui.router',
          
          .state('registration', {
         	url : '/registration',
-        	templateUrl : 'loginRegistration/registration.html'	
+        	templateUrl : 'loginRegistration/registration.html',
+        	controller : 'loginRegistrationController'
          })
          
          .state('loggedIn', {
@@ -99,12 +103,20 @@ angular.module('routerApp', ['ui.router',
 		})
         
         
-        
+        .state('loggedIn.bartender', {
+        	url: '/bartender',
+        	templateUrl : 'employedBartender/employedBartenderPartial.html'
+        })
+        .state('loggedIn.bartender.home', {
+        	url : '/home',
+        	templateUrl : 'employedBartender/employedBartenderHome.html'
+        })
         
         
         .state('loggedIn.guest', {
         	url: '/guest',
-        	templateUrl : 'guest/guestPartial.html'
+        	templateUrl : 'guest/guestPartial.html',
+        	controller : 'guestController'
         })
         .state('loggedIn.guest.home', {
         	url: '/home',

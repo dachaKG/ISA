@@ -11,15 +11,15 @@ import com.google.common.collect.Lists;
 
 @Service
 @Transactional
-public class BartenderServiceImpl implements BartenderService{
+public class BartenderServiceImpl implements BartenderService {
 
 	private final BartenderRepository repository;
-	
+
 	@Autowired
 	public BartenderServiceImpl(final BartenderRepository repository) {
 		this.repository = repository;
 	}
-	
+
 	@Override
 	public List<Bartender> findAll() {
 		return Lists.newArrayList(repository.findAll());
@@ -38,6 +38,17 @@ public class BartenderServiceImpl implements BartenderService{
 	@Override
 	public void delete(Long id) {
 		repository.delete(id);
+	}
+
+	@Override
+	public Bartender findOne(String mail, String password) {
+		List<Bartender> bartenders = (List<Bartender>) repository.findAll();
+		for (int i = 0; i < bartenders.size(); i++) {
+			if (bartenders.get(i).getMail().equals(mail) && bartenders.get(i).getPassword().equals(password))
+				return bartenders.get(i);
+		}
+		return null;
+
 	}
 
 }

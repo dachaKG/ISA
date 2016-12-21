@@ -17,12 +17,27 @@ app.controller('loginRegistrationController', ['$scope','loginRegistrationServic
                     	$location.path('loggedIn/guest/home');
                     else if(response.data === "bidder")
                     	$location.path('loggedIn/bidder/home');
+                    else if(response.data === "bartender")
+                    	$location.path('loggedIn/bartender/home');
                 },
                 function (response) {
                     alert("Ne postoji korisnik sa tim parametrima.");
                 }
 			);
 		}
+		
+		$scope.submitRegistration = function () {  
+			loginRegistrationService.save($scope.guest).then(
+				function (response) {
+                    alert("Uspesno registrovan.");
+                },
+                function (response) {
+                    alert("Greska pri registraciji.");
+                }
+            ); 	
+		};
+		
+		
 		$scope.logOut = function() {
 			loginRegistrationService.logOut().then(
 				function (response) {
@@ -30,4 +45,7 @@ app.controller('loginRegistrationController', ['$scope','loginRegistrationServic
 	            }		
 			)
 		}
+		
+		
+		
 }]);

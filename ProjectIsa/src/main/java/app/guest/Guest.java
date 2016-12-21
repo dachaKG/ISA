@@ -23,9 +23,12 @@ public class Guest extends User {
 	@Column(name = "GUEST_ID")
 	private Long id;
 
+	// zakomentarisano zbog bug-a kod metode getLoggedUser u commonController
+/*
 	//lista restorana gde je sve bio 
 	@ManyToMany
 	@JoinTable(name = "GUEST_RESTAURANT", joinColumns = @JoinColumn(name = "GUEST_ID"), inverseJoinColumns = @JoinColumn(name = "RESTAURANT_ID"))
 	private List<Restaurant> visitedRestaurants;
+*/
 
 }
