@@ -12,6 +12,8 @@ public interface RestaurantManagerService {
 	
 	RestaurantManager findOne(String mail,String password);
 	
+	RestaurantManager findOneWithMail(String mail);
+	
 	void delete(Long id);
 
 }

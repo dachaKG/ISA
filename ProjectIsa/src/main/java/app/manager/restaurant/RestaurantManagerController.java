@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import app.bidder.Bidder;
 import app.dish.Dish;
 import app.drink.Drink;
+import app.drink.DrinkService;
 import app.employed.bartender.Bartender;
 import app.employed.cook.Cook;
 import app.employed.waiter.Waiter;
@@ -30,9 +31,9 @@ public class RestaurantManagerController {
 
 	private HttpSession httpSession;
 	private RestaurantService restaurantService;
-
+	
 	@Autowired
-	public RestaurantManagerController(final HttpSession httpSession, final RestaurantService restaurantService) {
+	public RestaurantManagerController(final HttpSession httpSession, final RestaurantService restaurantService,final DrinkService drinkService) {
 		this.httpSession = httpSession;
 		this.restaurantService = restaurantService;
 	}
@@ -49,7 +50,7 @@ public class RestaurantManagerController {
 	}
 
 	@GetMapping("/restaurant")
-	public ResponseEntity<Restaurant> findManager() {
+	public ResponseEntity<Restaurant> findRestaurant() {
 		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
 		Restaurant restaurant = restaurantService.findOne(restaurantId);
 		return new ResponseEntity<>(restaurant, HttpStatus.OK);
@@ -60,6 +61,7 @@ public class RestaurantManagerController {
 	public void saveDrink(@Valid @RequestBody Drink drink) {
 		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
 		Restaurant restaurant = restaurantService.findOne(restaurantId);
+		//drink.setRestaurant(restaurant);
 		restaurant.getDrinks().add(drink);
 		restaurantService.save(restaurant);
 	}
@@ -69,6 +71,7 @@ public class RestaurantManagerController {
 	public void saveDish(@Valid @RequestBody Dish dish) {
 		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
 		Restaurant restaurant = restaurantService.findOne(restaurantId);
+		//dish.setRestaurant(restaurant);
 		restaurant.getFood().add(dish);
 		restaurantService.save(restaurant);
 	}
@@ -76,8 +79,10 @@ public class RestaurantManagerController {
 	@PostMapping(path = "/restaurant/saveWaiter")
 	@ResponseStatus(HttpStatus.CREATED)
 	public void saveWaiter(@Valid @RequestBody Waiter waiter) {
+		waiter.setRegistrated("0");
 		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
 		Restaurant restaurant = restaurantService.findOne(restaurantId);
+		//waiter.setRestaurant(restaurant);
 		restaurant.getWaiters().add(waiter);
 		restaurantService.save(restaurant);
 	}
@@ -85,8 +90,10 @@ public class RestaurantManagerController {
 	@PostMapping(path = "/restaurant/saveCook")
 	@ResponseStatus(HttpStatus.CREATED)
 	public void saveCook(@Valid @RequestBody Cook cook) {
+		cook.setRegistrated("0");
 		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
 		Restaurant restaurant = restaurantService.findOne(restaurantId);
+		//cook.setRestaurant(restaurant);
 		restaurant.getCooks().add(cook);
 		restaurantService.save(restaurant);
 	}
@@ -94,8 +101,10 @@ public class RestaurantManagerController {
 	@PostMapping(path = "/restaurant/saveBartender")
 	@ResponseStatus(HttpStatus.CREATED)
 	public void saveCook(@Valid @RequestBody Bartender bartender) {
+		bartender.setRegistrated("0");
 		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
 		Restaurant restaurant = restaurantService.findOne(restaurantId);
+		//bartender.setRestaurant(restaurant);
 		restaurant.getBartenders().add(bartender);
 		restaurantService.save(restaurant);
 	}
@@ -103,8 +112,10 @@ public class RestaurantManagerController {
 	@PostMapping(path = "/restaurant/saveBidder")
 	@ResponseStatus(HttpStatus.CREATED)
 	public void saveBidder(@Valid @RequestBody Bidder bidder) {
+		bidder.setRegistrated("0");
 		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
 		Restaurant restaurant = restaurantService.findOne(restaurantId);
+		//bidder.setRestaurant(restaurant);
 		restaurant.getBidders().add(bidder);
 		restaurantService.save(restaurant);
 	}

@@ -70,11 +70,4 @@ public class BossManagerController {
 		Optional.ofNullable(systemManager).orElseThrow(() -> new ResourceNotFoundException("resourceNotFound!"));
 		return systemManager;
 	}
-
-	// brisanje menadzera sistema
-	@DeleteMapping(path = "/{id}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void delete(@PathVariable Long id) {
-		serviceSystemManager.delete(id);
-	}
 }

@@ -10,5 +10,9 @@ public interface CookService {
 	
 	Cook findOne(Long id);
 	
+	Cook findOne(String mail,String password);
+	
+	Cook findOneWithMail(String mail);
+	
 	void delete(Long id);
 }

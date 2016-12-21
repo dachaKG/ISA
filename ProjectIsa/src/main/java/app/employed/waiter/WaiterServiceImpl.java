@@ -41,6 +41,24 @@ public class WaiterServiceImpl implements WaiterService {
 	public void delete(Long id) {
 		repository.delete(id);
 	}
+	
+	@Override
+	public Waiter findOne(String mail,String password) {
+		List<Waiter> list = findAll();
+		for(int i=0;i<list.size();i++)
+			if(list.get(i).getMail().equals(mail) && list.get(i).getPassword().equals(password))
+				return list.get(i);
+		return null;
+	}
+	
+	@Override
+	public Waiter findOneWithMail(String mail) {
+		List<Waiter> list = findAll();
+		for(int i=0;i<list.size();i++)
+			if(list.get(i).getMail().equals(mail))
+				return list.get(i);
+		return null;
+	}
 
 	/*@Override
 	public boolean check() {

@@ -40,9 +40,18 @@ public class RestaurantManagerServiceImpl implements RestaurantManagerService{
 	public RestaurantManager findOne(String mail, String password) {
 		List<RestaurantManager> restaurantManagers = (List<RestaurantManager>) repository.findAll();
 		for(int i = 0; i <restaurantManagers.size();i++) {
-			if(restaurantManagers.get(i).getMail().equals(mail) && restaurantManagers.get(i).getMail().equals(password))
+			if(restaurantManagers.get(i).getMail().equals(mail) && restaurantManagers.get(i).getPassword().equals(password))
 				return restaurantManagers.get(i);
 		}
+		return null;
+	}
+	
+	@Override
+	public RestaurantManager findOneWithMail(String mail) {
+		List<RestaurantManager> list = findAll();
+		for(int i=0;i<list.size();i++)
+			if(list.get(i).getMail().equals(mail))
+				return list.get(i);
 		return null;
 	}
 	

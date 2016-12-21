@@ -46,7 +46,7 @@ public class Drink {
 
 	@JsonIgnore
 	// @NotNull
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "RESTAURANT_ID")
 	private Restaurant restaurant;
 }

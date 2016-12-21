@@ -9,5 +9,9 @@ public interface BidderService {
 
 	Bidder findOne(Long id);
 
+	Bidder findOne(String mail, String password);
+
+	Bidder findOneWithMail(String mail);
+
 	void delete(Long id);
 }

@@ -36,6 +36,8 @@ app.controller('bossManagerController', ['$scope','bossManagerService', '$locati
                 }
             ); 	
 		};
+		
+		/*
 	    $scope.delete = function (systemManager){
 	    	bossManagerService.delete(systemManager.id).then(
 	    		function (response) {
@@ -45,5 +47,5 @@ app.controller('bossManagerController', ['$scope','bossManagerService', '$locati
 		        	alert("Error while deleting component.");
 		        }
 	    	);
-		};		 
+		};		*/ 
 }]);

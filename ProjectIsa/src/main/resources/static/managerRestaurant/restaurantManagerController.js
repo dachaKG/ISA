@@ -62,7 +62,7 @@ app.controller('restaurantManagerController', ['$scope','restaurantManagerServic
 		
 		$scope.saveDish = function() {
 			//$scope.drink.restaurant = $scope.restaurant;
-			restaurantManagerService.saveDrink($scope.dish).then(
+			restaurantManagerService.saveDish($scope.dish).then(
 				function (response) {
                     alert("Successfully added.");
                     $scope.state = undefined;

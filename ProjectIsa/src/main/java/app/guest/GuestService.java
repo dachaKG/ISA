@@ -2,8 +2,6 @@ package app.guest;
 
 import java.util.List;
 
-import app.manager.restaurant.RestaurantManager;
-
 public interface GuestService {
 	List<Guest> findAll();
 
@@ -12,6 +10,8 @@ public interface GuestService {
 	Guest findOne(Long id);
 
 	Guest findOne(String mail,String password);
+	
+	Guest findOneWithMail(String mail);
 	
 	void delete(Long id);
 }

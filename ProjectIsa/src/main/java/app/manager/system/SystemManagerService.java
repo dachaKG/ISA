@@ -2,8 +2,6 @@ package app.manager.system;
 
 import java.util.List;
 
-import app.manager.system.SystemManager;
-
 public interface SystemManagerService {
 	List<SystemManager> findAll();
 
@@ -13,5 +11,7 @@ public interface SystemManagerService {
 
 	SystemManager findOne(String mail, String password);
 
+	SystemManager findOneWithMail(String mail);
+	
 	void delete(Long id);
 }

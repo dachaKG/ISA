@@ -3,8 +3,13 @@
 angular.module('routerApp', ['ui.router', 
 	'systemManager.services', 'systemManager.controllers', 
 	'restaurantManager.services', 'restaurantManager.controllers',
+	'bossManager.services', 'bossManager.controllers',
+	'guest.services','guest.controllers',
+	'bidder.services', 'bidder.controllers',
 	'employedBartender.services','employedBartender.controllers',
-	'bossManager.services', 'bossManager.controllers','loginRegistration.services', 'loginRegistration.controllers'])
+	'bossManager.services', 'bossManager.controllers',
+	'loginRegistration.services','loginRegistration.controllers'
+	])
 .config(function($stateProvider, $urlRouterProvider) {
         
         $urlRouterProvider.otherwise('/login');
@@ -24,8 +29,15 @@ angular.module('routerApp', ['ui.router',
          
          .state('registration', {
         	url : '/registration',
-        	templateUrl : 'loginRegistration/registration.html'	
+        	templateUrl : 'loginRegistration/registration.html',
+        	controller : 'loginRegistrationController'
          })
+         
+         .state('firstLogin', {
+        	url : '/firstLogin',
+        	templateUrl : 'loginRegistration/firstLogin.html',
+        	controller : 'loginRegistrationController'
+         })         
          
          .state('loggedIn', {
         	url : '/loggedIn',
@@ -122,8 +134,9 @@ angular.module('routerApp', ['ui.router',
         
         
         .state('loggedIn.guest', {
-        	url: '/guest',
-        	templateUrl : 'guest/guestPartial.html'
+        	url: '/guestt',
+        	templateUrl : 'guest/guestPartial.html',
+        	controller : 'guestController'
         })
         .state('loggedIn.guest.home', {
         	url: '/home',
@@ -132,7 +145,20 @@ angular.module('routerApp', ['ui.router',
         .state('loggedIn.guest.profile', {
         	url: '/profile',
         	templateUrl : 'guest/guestProfile.html'
-        });
+        })
+        
+        
+        
+        .state('loggedIn.bidder', {
+        	url: '/bidder',
+        	templateUrl : 'bidder/bidderPartial.html',
+            controller : 'bidderController'
+        })
+        .state('loggedIn.bidder.home', {
+        	url: '/home',
+        	templateUrl : 'bidder/bidderHome.html'
+        })
+        
         
         
 });

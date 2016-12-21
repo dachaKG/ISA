@@ -40,9 +40,18 @@ public class SystemManagerServiceImpl implements SystemManagerService {
 		List<SystemManager> systemManagers = (List<SystemManager>) repository.findAll();
 		for (int i = 0; i < systemManagers.size(); i++) {
 			if (systemManagers.get(i).getMail().equals(mail)
-					&& systemManagers.get(i).getMail().equals(password))
+					&& systemManagers.get(i).getPassword().equals(password))
 				return systemManagers.get(i);
 		}
+		return null;
+	}
+	
+	@Override
+	public SystemManager findOneWithMail(String mail) {
+		List<SystemManager> list = findAll();
+		for(int i=0;i<list.size();i++)
+			if(list.get(i).getMail().equals(mail))
+				return list.get(i);
 		return null;
 	}
 

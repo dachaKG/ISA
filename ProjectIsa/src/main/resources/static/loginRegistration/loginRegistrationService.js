@@ -12,4 +12,12 @@ services.service('loginRegistrationService', ['$http', function($http){
 		return $http.get("/commonController/logOut");
 	}
 	
+	this.save = function(guest){
+		return $http.post("/commonController/registration",guest);
+	}
+	
+	this.firstLogin = function(id,user){
+		return $http.put("/commonController/"+id,user);
+	}
+	
 }]);

@@ -11,8 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
-import app.dish.Dish;
-import app.drink.Drink;
 import lombok.Data;
 
 @Data
@@ -24,11 +22,11 @@ public class OrderBidder {
 	private Long id;
 	
 	@ManyToMany
-	@JoinTable(name = "ORDER_BIDDER_DRINKS", joinColumns = @JoinColumn(name = "ORDER_BIDDER_ID"), inverseJoinColumns = @JoinColumn(name = "DRINK_ID"))
-	private List<Drink> drinks;
+	@JoinTable(name = "ORDER_BIDDER_DRINKS", joinColumns = @JoinColumn(name = "ORDER_BIDDER_ID"), inverseJoinColumns = @JoinColumn(name = "DRINK_ORDER_ID"))
+	private List<DrinkOrder> drinks;
 
 	@ManyToMany
-	@JoinTable(name = "ORDER_BIDDER_FOOD", joinColumns = @JoinColumn(name = "ORDER_BIDDER_ID"), inverseJoinColumns = @JoinColumn(name = "DISH_ID"))
-	private List<Dish> food;
+	@JoinTable(name = "ORDER_BIDDER_FOOD", joinColumns = @JoinColumn(name = "ORDER_BIDDER_ID"), inverseJoinColumns = @JoinColumn(name = "DISH_ORDER_ID"))
+	private List<DishOrder> food;
 	
 }
