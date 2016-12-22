@@ -122,6 +122,7 @@ public class CommonController {
 
 	@GetMapping(path = "/logOut")
 	public void logOut() {
+		
 		httpSession.invalidate();
 	}
 

@@ -24,7 +24,12 @@ angular.module('routerApp', ['ui.router',
          
          .state('login.logOut', {
         	url : '/logout',
-         	templateUrl : 'loginRegistration/login.html',
+         	//templateUrl : 'loginRegistration/login.html',
+         	resolve: {
+        		promiseObj:  function($http,$location){
+        			$location.path('login');
+                    return $http.get("/commonController/logOut");
+                 }}
          })
          
          .state('registration', {
@@ -154,7 +159,6 @@ angular.module('routerApp', ['ui.router',
         	url: '/activation/:acNum',
         	templateUrl: 'guestt/guestActivation.html',
         	resolve: {
-        		//salje odma na back, random broj iz kliknutog linka
         		promiseObj:  function($http, $stateParams){
                 return $http.put("/guest/activate/"+ $stateParams.acNum);
              }}
