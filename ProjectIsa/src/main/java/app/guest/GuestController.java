@@ -70,4 +70,13 @@ public class GuestController {
 	public void activateGuest(@PathVariable String acNum){
 		service.activate(acNum);
 	}
+	
+	
+	
+	@GetMapping(path = "/findByFirstAndLastName/{inputStr}")
+	public List<Guest> findByFirstAndLastName(@PathVariable String inputStr){
+		return service.findByFirstAndLastName(inputStr);
+	}
+	
+	
 }

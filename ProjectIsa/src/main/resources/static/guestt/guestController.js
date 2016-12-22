@@ -24,5 +24,16 @@ app.controller('guestController', ['$scope','guestService', '$location',
 					$scope.loggedUser = response.data;
 	            }		
 			)
-		}		
+		}
+		
+		
+		$scope.findFriends = function(){
+			var inputStr = $("#inputStr").val();
+			guestService.findFriends(inputStr).then(
+					function(response){
+						$scope.guests = response.data;
+					}
+			)
+		}
+		
 }]);

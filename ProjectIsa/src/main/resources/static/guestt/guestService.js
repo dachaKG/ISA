@@ -12,4 +12,8 @@ services.service('guestService', ['$http', function($http){
 		return $http.get("/commonController/getLoggedUser");
 	}
 	
+	this.findFriends = function(input){
+		return $http.get("/guest/findByFirstAndLastName/"+input);
+	}
+	
 }]);

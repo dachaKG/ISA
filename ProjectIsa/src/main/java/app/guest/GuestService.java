@@ -16,4 +16,6 @@ public interface GuestService {
 	void activate(String regNum);
 	
 	void delete(Long id);
+	
+	List<Guest> findByFirstAndLastName(String inputStr);
 }
