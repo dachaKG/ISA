@@ -146,6 +146,19 @@ angular.module('routerApp', ['ui.router',
         	url: '/profile',
         	templateUrl : 'guestt/guestProfile.html'
         })
+        .state('loggedIn.notActivated', {
+        	url: '/notActivated',
+        	templateUrl : 'guestt/guestNotActivated.html'
+        })
+        .state('activation', {
+        	url: '/activation/:acNum',
+        	templateUrl: 'guestt/guestActivation.html',
+        	resolve: {
+        		//salje odma na back, random broj iz kliknutog linka
+        		promiseObj:  function($http, $stateParams){
+                return $http.put("/guest/activate/"+ $stateParams.acNum);
+             }}
+        })
         
         
         

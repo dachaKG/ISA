@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -60,5 +61,13 @@ public class GuestController {
 				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 		guest.setId(id);
 		return service.save(guest);
+	}
+	
+	
+	//kada se klikne na link iz maila
+	@PutMapping(path = "/activate/{acNum}")
+	@ResponseStatus(HttpStatus.OK)
+	public void activateGuest(@PathVariable String acNum){
+		service.activate(acNum);
 	}
 }

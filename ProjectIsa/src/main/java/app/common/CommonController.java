@@ -1,6 +1,7 @@
 package app.common;
 
 import java.util.NoSuchElementException;
+import java.util.Random;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -89,7 +90,10 @@ public class CommonController {
 		} else if (guestService.findOne(userInput.getMail(), userInput.getPassword()) != null) {
 			user = guestService.findOne(userInput.getMail(), userInput.getPassword());
 			id = guestService.findOne(userInput.getMail(), userInput.getPassword()).getId();
-			userType = "guest";
+			if(user.getRegistrated().equals("1"))
+				userType = "guest";
+			else
+				userType = "guestNotActivated";
 		} else if (bidderService.findOne(userInput.getMail(), userInput.getPassword()) != null) {
 			user = bidderService.findOne(userInput.getMail(), userInput.getPassword());
 			id = bidderService.findOne(userInput.getMail(), userInput.getPassword()).getId();
@@ -109,7 +113,7 @@ public class CommonController {
 		}
 		if (user != null) {
 			httpSession.setAttribute("user", user);
-			if (!user.getRegistrated().equals("0") || userType.equals("guest"))
+			if (!user.getRegistrated().equals("0") || userType.equals("guest") || userType.equals("guestNotActivated"))
 				return new ResponseEntity<>(userType, HttpStatus.OK);
 			return new ResponseEntity<>("" + id, HttpStatus.OK);
 		} else
@@ -130,16 +134,20 @@ public class CommonController {
 	@PostMapping(path = "/registration")
 	@ResponseStatus(HttpStatus.CREATED)
 	public void save(@Valid @RequestBody Guest guest) {
-		guest.setId(null);
-		guest.setRegistrated("0");
-		guestService.save(guest);
+		guest.setId(null);		
+		Random rand = new Random();
+	    int randomNum = rand.nextInt(1000) + 2;
+	    guest.setRegistrated(Integer.toString(randomNum));
 		
+	    guestService.save(guest);
+	    
+	    
 		//----Salje mejl sam sebi, zbog testiranja...
 		try{SimpleMailMessage mail = new SimpleMailMessage();
 		mail.setTo("isaRestorani@gmail.com");
 		mail.setFrom("isaRestorani@gmail.com");
 		mail.setSubject("Activation link");
-		mail.setText("Your activation link: ");
+		mail.setText("Your activation link is: http://localhost:8080/#/activation/"+randomNum);
 
 		javaMailSender.send(mail);
 		}catch(Exception m){m.printStackTrace();}

@@ -58,4 +58,14 @@ public class GuestServiceImpl implements GuestService {
 				return list.get(i);
 		return null;
 	}
+
+	@Override
+	public void activate(String regNum) {
+		List<Guest> list = findAll();
+		for (int i = 0; i < list.size(); i++)
+			if (list.get(i).getRegistrated().equals(regNum))
+				list.get(i).setRegistrated("1");
+	}
+	
+	
 }

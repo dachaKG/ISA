@@ -17,6 +17,8 @@ app.controller('loginRegistrationController', ['$scope','loginRegistrationServic
                     	$location.path('loggedIn/restaurantManager/info');
                     else if(response.data === "guest")
                     	$location.path('loggedIn/guest/home');
+                    else if(response.data ==="guestNotActivated")
+                    	$location.path('loggedIn/notActivated');
                     else if(response.data === "bidder")
                     	$location.path('loggedIn/bidder/home');
                     else if(response.data === "bartender")
@@ -39,7 +41,8 @@ app.controller('loginRegistrationController', ['$scope','loginRegistrationServic
 		$scope.submitRegistration = function () {  
 			loginRegistrationService.save($scope.user).then(
 				function (response) {
-                    alert("Uspesno registrovan. ");
+                    alert("Success,\n We sent you email with activation link on:\n isaRestorani@gmail.com\n pass: isaisaisa");
+                    $location.path('login');
                 },
                 function (response) {
                     alert("Greska pri registraciji.");
