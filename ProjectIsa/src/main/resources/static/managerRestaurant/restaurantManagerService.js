@@ -52,5 +52,9 @@ services.service('restaurantManagerService', ['$http', function($http){
 		return $http.get("/restaurantManager/restaurant/bidders");
 	}
 	
+	this.updateMangerProfile = function(){
+		return $http.get("/restaurantManager/restaurant/bidders");
+	}
+	
 	
 }]);

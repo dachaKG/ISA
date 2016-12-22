@@ -49,11 +49,11 @@ public class Orderr {
 	@ManyToMany
 	@JoinTable(name = "ORDER_FOOD", joinColumns = @JoinColumn(name = "ORDER_ID"), inverseJoinColumns = @JoinColumn(name = "DISH_ID"))
 	private List<Dish> food;
-	
+	/*
 	@OneToOne(cascade = CascadeType.MERGE)
 	@JoinTable(name = "ORDER_RESTAURANT", joinColumns = @JoinColumn(name = "ORDER_ID"), inverseJoinColumns = @JoinColumn(name = "RESTAURANT_ID"))
 	private Restaurant restaurant;
-	
+	*/
 	@ManyToOne
 	@JoinTable(name = "ORDER_TABLE", joinColumns = @JoinColumn(name = "ORDER_ID"), inverseJoinColumns = @JoinColumn(name = "TABLE_ID"))
 	private Table table;
