@@ -219,6 +219,10 @@ angular.module('routerApp', ['ui.router',
                 return $http.put("/guest/activate/"+ $stateParams.acNum);
              }}
         })
+        .state('loggedIn.guest.updateGuestProfile', {
+			url : '/updateGuestProfile',
+			templateUrl : 'guestt/guestProfileUpdate.html'
+		})
         
         
         

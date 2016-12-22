@@ -146,8 +146,8 @@ public class CommonController {
 		// ----Salje mejl sam sebi, zbog testiranja...
 		try {
 			SimpleMailMessage mail = new SimpleMailMessage();
-			mail.setTo("isaRestorani@gmail.com");
-			mail.setFrom("isaRestorani@gmail.com");
+			mail.setTo("isarestorani2@gmail.com");
+			mail.setFrom("isarestorani2@gmail.com");
 			mail.setSubject("Activation link");
 			mail.setText("Your activation link is: http://localhost:8080/#/activation/" + randomNum);
 

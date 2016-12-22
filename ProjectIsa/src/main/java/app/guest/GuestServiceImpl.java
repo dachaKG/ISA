@@ -73,7 +73,11 @@ public class GuestServiceImpl implements GuestService {
 		List<Guest> list = findAll();
 		List<Guest> output = new ArrayList<Guest>();
 		for (int i = 0; i < list.size(); i++){
-			if((list.get(i).getFirstname().startsWith(inputStr) || list.get(i).getLastname().startsWith(inputStr)) && inputStr!="" && output.size()<20)
+			if((list.get(i).getFirstname().toLowerCase().startsWith(inputStr.toLowerCase())
+				|| list.get(i).getLastname().toLowerCase().startsWith(inputStr.toLowerCase())) 
+				|| (list.get(i).getFirstname() + " "+list.get(i).getLastname()).toLowerCase().startsWith(inputStr.toLowerCase())
+				&& inputStr!="" && output.size()<20)
+				
 				output.add(list.get(i));
 		}
 		

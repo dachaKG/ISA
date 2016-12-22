@@ -16,4 +16,8 @@ services.service('guestService', ['$http', function($http){
 		return $http.get("/guest/findByFirstAndLastName/"+input);
 	}
 	
+	this.updateGuestProfile = function(guest){
+		return $http.put("/guest/"+guest.id,guest);
+	}
+	
 }]);

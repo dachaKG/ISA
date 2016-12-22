@@ -36,4 +36,21 @@ app.controller('guestController', ['$scope','guestService', '$location',
 			)
 		}
 		
+		
+		$scope.update = function() {
+			guestService.updateGuestProfile($scope.loggedUser).then(
+				function (response) {
+                    alert("Successfully change.");
+                    $scope.state = undefined;
+                    $location.path('loggedIn/guest/profile');
+                },
+                function (response) {
+                    alert("Error in changing.");
+                }
+			);
+		}
+		
+		
+		
+		
 }]);
