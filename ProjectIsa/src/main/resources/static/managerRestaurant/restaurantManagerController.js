@@ -75,6 +75,21 @@ app.controller('restaurantManagerController', ['$scope','restaurantManagerServic
 			);
 		}
 		
+		$scope.update = function() {
+			//$scope.drink.restaurant = $scope.restaurant;
+			restaurantManagerService.updateMangerProfile($scope.restaurant.restaurantManager).then(
+				function (response) {
+                    alert("Successfully change.");
+                    $scope.state = undefined;
+                    findAll();
+                    $location.path('loggedIn/restaurantManager/info');
+                },
+                function (response) {
+                    alert("Error in changing.");
+                }
+			);
+		}
+		
 		$scope.saveEmployed = function() {
 			//$scope.drink.restaurant = $scope.restaurant;
 			if($scope.employedType == 'Waiter') {

@@ -13,5 +13,9 @@ public interface GuestService {
 	
 	Guest findOneWithMail(String mail);
 	
+	void activate(String regNum);
+	
 	void delete(Long id);
+	
+	List<Guest> findByFirstAndLastName(String inputStr);
 }

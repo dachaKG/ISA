@@ -1,6 +1,7 @@
 package app.common;
 
 import java.util.NoSuchElementException;
+import java.util.Random;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -8,6 +9,8 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,12 +51,13 @@ public class CommonController {
 	private BartenderService bartenderService;
 	private CookService cookService;
 	private WaiterService waiterService;
+	private JavaMailSender javaMailSender;
 
 	@Autowired
 	public CommonController(final HttpSession httpSession, final BossManagerService bossManagerService,
 			final RestaurantManagerService restaurantManagerService, final GuestService guestService,
 			final SystemManagerService systemManagerService, final BidderService bidderService,
-			final CookService cookService, final WaiterService waiterService, final BartenderService bartenderService) {
+			final CookService cookService, final WaiterService waiterService, final BartenderService bartenderService, final JavaMailSender javaMailSender) {
 		this.httpSession = httpSession;
 		this.bossManagerService = bossManagerService;
 		this.restaurantManagerService = restaurantManagerService;
@@ -63,6 +67,7 @@ public class CommonController {
 		this.bartenderService = bartenderService;
 		this.cookService = cookService;
 		this.waiterService = waiterService;
+		this.javaMailSender  =javaMailSender;
 	}
 
 	@PostMapping(path = "/logIn")
@@ -85,7 +90,10 @@ public class CommonController {
 		} else if (guestService.findOne(userInput.getMail(), userInput.getPassword()) != null) {
 			user = guestService.findOne(userInput.getMail(), userInput.getPassword());
 			id = guestService.findOne(userInput.getMail(), userInput.getPassword()).getId();
-			userType = "guest";
+			if(user.getRegistrated().equals("1"))
+				userType = "guest";
+			else
+				userType = "guestNotActivated";
 		} else if (bidderService.findOne(userInput.getMail(), userInput.getPassword()) != null) {
 			user = bidderService.findOne(userInput.getMail(), userInput.getPassword());
 			id = bidderService.findOne(userInput.getMail(), userInput.getPassword()).getId();
@@ -105,7 +113,7 @@ public class CommonController {
 		}
 		if (user != null) {
 			httpSession.setAttribute("user", user);
-			if (!user.getRegistrated().equals("0") || userType.equals("guest"))
+			if (!user.getRegistrated().equals("0") || userType.equals("guest") || userType.equals("guestNotActivated"))
 				return new ResponseEntity<>(userType, HttpStatus.OK);
 			return new ResponseEntity<>("" + id, HttpStatus.OK);
 		} else
@@ -114,6 +122,7 @@ public class CommonController {
 
 	@GetMapping(path = "/logOut")
 	public void logOut() {
+		
 		httpSession.invalidate();
 	}
 
@@ -126,9 +135,23 @@ public class CommonController {
 	@PostMapping(path = "/registration")
 	@ResponseStatus(HttpStatus.CREATED)
 	public void save(@Valid @RequestBody Guest guest) {
-		guest.setId(null);
-		guest.setRegistrated("0");
-		guestService.save(guest);
+		guest.setId(null);		
+		Random rand = new Random();
+	    int randomNum = rand.nextInt(1000) + 2;
+	    guest.setRegistrated(Integer.toString(randomNum));
+		
+	    guestService.save(guest);
+	    
+	    
+		//----Salje mejl sam sebi, zbog testiranja...
+		try{SimpleMailMessage mail = new SimpleMailMessage();
+		mail.setTo("isaRestorani@gmail.com");
+		mail.setFrom("isaRestorani@gmail.com");
+		mail.setSubject("Activation link");
+		mail.setText("Your activation link is: http://localhost:8080/#/activation/"+randomNum);
+
+		javaMailSender.send(mail);
+		}catch(Exception m){m.printStackTrace();}
 	}
 
 	// izmena sifre nakon prvog logovanja

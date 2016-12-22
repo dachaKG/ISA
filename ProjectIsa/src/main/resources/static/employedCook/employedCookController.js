@@ -23,7 +23,7 @@ app.controller('employedCookController',['$scope','employedCookService','$locati
 				}
 			);
 			
-			/*employedCookService.findAllOrders().then(
+			employedCookService.findAllOrders().then(
 				function(response){
 					$scope.foodOrders = response.data;
 				}
@@ -33,11 +33,17 @@ app.controller('employedCookController',['$scope','employedCookService','$locati
 				function(response){
 					$scope.receivedFood = response.data;
 				}
-			);*/
+			);
+			
+			employedCookService.readyFood().then(
+					function(response){
+						$scope.readyFood = response.data;
+					}
+				);
 			
 		}
 		
-		/*$scope.received = function(foodOrder){
+		$scope.received = function(foodOrder){
 			employedCookService.received(foodOrder.id).then(
 				function(response){
 					$scope.foodOrders.splice($scope.foodOrders.indexOf(foodOrder),1);
@@ -46,7 +52,18 @@ app.controller('employedCookController',['$scope','employedCookService','$locati
 					alert("Error while signal");
 				}
 			);
-		}*/
+		}
+		
+		$scope.ready = function(receivedDish){
+			employedCookService.ready(receivedDish.id).then(
+				function(response){
+					$scope.receivedFood.splice($scope.receivedFood.indexOf(receivedDish),1);
+				},
+				function(response){
+					alert("Error while signal");
+				}
+			);
+		}
 		
 		$scope.changeProfile = function(cook){
 			employedCookService.changeProfile(cook.id,cook).then(

@@ -121,7 +121,7 @@ public class CookController {
 
 	@GetMapping(path = "/foodReceived/{orderId}")
 	@ResponseStatus(HttpStatus.OK)
-	public Orderr foodReady(@PathVariable Long orderId) {
+	public Orderr foodReceived(@PathVariable Long orderId) {
 		Long id = ((Cook) httpSession.getAttribute("user")).getId();
 		Cook cook = cookService.findOne(id);
 		Optional.ofNullable(cook).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
@@ -159,30 +159,13 @@ public class CookController {
 		
 	}
 
-	// 2.4. signalizira da su jela sa porudzbine prihvacena za spremanje
-	
-	 /* @GetMapping(path = "/foodReceived/{orderId}")
-	  @ResponseStatus(HttpStatus.OK) 
-	  public Orderr foodReceived(@PathVariable
-	 Long cookId, @PathVariable Long orderId) {
-	  Optional.ofNullable(cookService.findOne(cookId)) .orElseThrow(() -> new
-	  ResourceNotFoundException("Resource Not Found!"));
-	 
-	  Optional.ofNullable(orderService.findOne(orderId)) .orElseThrow(() -> new
-	  ResourceNotFoundException("Resource Not Found!"));
-	  
-	  Orderr order = orderService.findOne(orderId);
-	  
-	  orderService.findOne(orderId).setDishStatus(DishStatus.received);
-	  order.setId(orderId); return orderService.save(order); }*/
-	 
-
 	// 2.4 signazilira da je odgovarajuce jelo gotovo
-	@GetMapping(path = "/{cookId}/foodReady/{orderId}")
+	@GetMapping(path = "/foodReady/{orderId}")
 	@ResponseStatus(HttpStatus.OK)
-	public Orderr foodReady(@PathVariable Long cookId, @PathVariable Long orderId) {
-		Optional.ofNullable(cookService.findOne(cookId))
-				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
+	public Orderr foodReady(@PathVariable Long orderId) {
+		Long id = ((Cook) httpSession.getAttribute("user")).getId();
+		Cook cook = cookService.findOne(id);
+		Optional.ofNullable(cook).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 
 		Optional.ofNullable(orderService.findOne(orderId))
 				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
@@ -192,6 +175,28 @@ public class CookController {
 		orderService.findOne(orderId).setDishStatus(DishStatus.finished);
 		order.setId(orderId);
 		return orderService.save(order);
+	}
+	
+	@GetMapping(path = "/readyFood")
+	public ResponseEntity<List<Dish>> readyFood() {
+		Long id = ((Cook) httpSession.getAttribute("user")).getId();
+		Cook cook = cookService.findOne(id);
+		List<Orderr> orders = cook.getOrders();
+
+		Optional.ofNullable(orders).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
+
+		List<Dish> food = new ArrayList<Dish>();
+
+		for (int i = 0; i < orders.size(); i++) {
+			if (orders.get(i).getFood().size() != 0 && orders.get(i).getDishStatus() != null
+					&& orders.get(i).getDishStatus().compareTo(DishStatus.finished) == 0) {
+				for(int j = 0 ; j < orders.get(i).getFood().size(); j++){
+					food.add(orders.get(i).getFood().get(j));
+				}
+			}
+		}
+		return new ResponseEntity<>(food, HttpStatus.OK);
+		
 	}
 
 }

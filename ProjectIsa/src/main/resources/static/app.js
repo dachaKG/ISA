@@ -26,7 +26,12 @@ angular.module('routerApp', ['ui.router',
          
          .state('login.logOut', {
         	url : '/logout',
-         	templateUrl : 'loginRegistration/login.html',
+         	//templateUrl : 'loginRegistration/login.html',
+         	resolve: {
+        		promiseObj:  function($http,$location){
+        			$location.path('login');
+                    return $http.get("/commonController/logOut");
+                 }}
          })
          
          .state('registration', {
@@ -110,6 +115,10 @@ angular.module('routerApp', ['ui.router',
 			url : '/newBidder',
 			templateUrl : 'managerRestaurant/restaurantManagerNewBidder.html'
 		})
+		.state('loggedIn.restaurantManager.updateManagerProfile', {
+			url : '/updateManagerProfile',
+			templateUrl : 'managerRestaurant/restaurantManagerProfile.html'
+		})
         
         
         .state('loggedIn.bartender', {
@@ -153,6 +162,10 @@ angular.module('routerApp', ['ui.router',
         	url : '/receivedFood',
         	templateUrl : 'employedCook/employedCookReceivedFood.html'
         })
+        .state('loggedIn.cook.readyFood', {
+        	url : '/readyFood',
+        	templateUrl : 'employedCook/employedCookReadyFood.html'
+        })
          .state('loggedIn.cook.profile', {
         	url : '/profile',
         	templateUrl : 'employedCook/employedCookProfile.html'
@@ -181,6 +194,18 @@ angular.module('routerApp', ['ui.router',
         .state('loggedIn.guest.profile', {
         	url: '/profile',
         	templateUrl : 'guestt/guestProfile.html'
+        })
+        .state('loggedIn.notActivated', {
+        	url: '/notActivated',
+        	templateUrl : 'guestt/guestNotActivated.html'
+        })
+        .state('activation', {
+        	url: '/activation/:acNum',
+        	templateUrl: 'guestt/guestActivation.html',
+        	resolve: {
+        		promiseObj:  function($http, $stateParams){
+                return $http.put("/guest/activate/"+ $stateParams.acNum);
+             }}
         })
         
         
