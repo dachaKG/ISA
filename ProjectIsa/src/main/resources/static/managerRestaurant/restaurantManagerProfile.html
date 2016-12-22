@@ -1,17 +1,14 @@
 <div class = "col-sm-2">
 <form name = "change" ng-model="$parent.restaurantManager">
 
-	<label>Id</label>
-	<input type = "text" class = "form-control"  style="background-color : grey" disabled ></input>
-
 	<label>Email</label>
-	<input type = "text" class = "form-control" style="background-color : grey" disabled></input>
+	<input type = "text" class = "form-control" ng-model = "$parent.restaurant.restaurantManager.mail" style="background-color : grey" disabled></input>
 
 	<label>Firstname</label>
-	<input type = "text" class = "form-control" required></input>
+	<input type = "text" class = "form-control" ng-model = "$parent.restaurant.restaurantManager.firstname" required></input>
 
 	<label>Lastname</label>
-	<input type = "text" class = "form-control" required></input>
+	<input type = "text" class = "form-control" ng-model = "$parent.restaurant.restaurantManager.lastname" required></input>
 	
 <button class = "btn btn-default" ng-click = "update()"><span class = "glyphicon glyphicon-ok"></span>Update</button>
 <button class = "btn btn-default" ng-click = "cancel()"><span class = "glyphicon glyphicon-remove"></span>Cancel</button>

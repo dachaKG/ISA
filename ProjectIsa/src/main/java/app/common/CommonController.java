@@ -57,7 +57,8 @@ public class CommonController {
 	public CommonController(final HttpSession httpSession, final BossManagerService bossManagerService,
 			final RestaurantManagerService restaurantManagerService, final GuestService guestService,
 			final SystemManagerService systemManagerService, final BidderService bidderService,
-			final CookService cookService, final WaiterService waiterService, final BartenderService bartenderService, final JavaMailSender javaMailSender) {
+			final CookService cookService, final WaiterService waiterService, final BartenderService bartenderService,
+			final JavaMailSender javaMailSender) {
 		this.httpSession = httpSession;
 		this.bossManagerService = bossManagerService;
 		this.restaurantManagerService = restaurantManagerService;
@@ -67,7 +68,7 @@ public class CommonController {
 		this.bartenderService = bartenderService;
 		this.cookService = cookService;
 		this.waiterService = waiterService;
-		this.javaMailSender  =javaMailSender;
+		this.javaMailSender = javaMailSender;
 	}
 
 	@PostMapping(path = "/logIn")
@@ -90,7 +91,7 @@ public class CommonController {
 		} else if (guestService.findOne(userInput.getMail(), userInput.getPassword()) != null) {
 			user = guestService.findOne(userInput.getMail(), userInput.getPassword());
 			id = guestService.findOne(userInput.getMail(), userInput.getPassword()).getId();
-			if(user.getRegistrated().equals("1"))
+			if (user.getRegistrated().equals("1"))
 				userType = "guest";
 			else
 				userType = "guestNotActivated";
@@ -122,7 +123,7 @@ public class CommonController {
 
 	@GetMapping(path = "/logOut")
 	public void logOut() {
-		
+
 		httpSession.invalidate();
 	}
 
@@ -135,23 +136,25 @@ public class CommonController {
 	@PostMapping(path = "/registration")
 	@ResponseStatus(HttpStatus.CREATED)
 	public void save(@Valid @RequestBody Guest guest) {
-		guest.setId(null);		
+		guest.setId(null);
 		Random rand = new Random();
-	    int randomNum = rand.nextInt(1000) + 2;
-	    guest.setRegistrated(Integer.toString(randomNum));
-		
-	    guestService.save(guest);
-	    
-	    
-		//----Salje mejl sam sebi, zbog testiranja...
-		try{SimpleMailMessage mail = new SimpleMailMessage();
-		mail.setTo("isaRestorani@gmail.com");
-		mail.setFrom("isaRestorani@gmail.com");
-		mail.setSubject("Activation link");
-		mail.setText("Your activation link is: http://localhost:8080/#/activation/"+randomNum);
+		int randomNum = rand.nextInt(1000) + 2;
+		guest.setRegistrated(Integer.toString(randomNum));
 
-		javaMailSender.send(mail);
-		}catch(Exception m){m.printStackTrace();}
+		guestService.save(guest);
+
+		// ----Salje mejl sam sebi, zbog testiranja...
+		try {
+			SimpleMailMessage mail = new SimpleMailMessage();
+			mail.setTo("isaRestorani@gmail.com");
+			mail.setFrom("isaRestorani@gmail.com");
+			mail.setSubject("Activation link");
+			mail.setText("Your activation link is: http://localhost:8080/#/activation/" + randomNum);
+
+			javaMailSender.send(mail);
+		} catch (Exception m) {
+			m.printStackTrace();
+		}
 	}
 
 	// izmena sifre nakon prvog logovanja
@@ -176,16 +179,16 @@ public class CommonController {
 			systemManager.setRegistrated("1");
 			systemManager.setPassword(userInput.getPassword());
 			systemManagerService.save(systemManager);
-		} 
-		/*else if (guestService.findOneWithMail(userInput.getMail()) != null) {
-			Guest guest = guestService.findOne(id);
-			guest.setId(id);
-			guest.setRegistrated("1");
-			guest.setPassword(userInput.getPassword());
-			guestService.save(guest);
-		}*/
-		
-		  else if (bidderService.findOneWithMail(userInput.getMail()) != null) {
+		}
+		/*
+		 * else if (guestService.findOneWithMail(userInput.getMail()) != null) {
+		 * Guest guest = guestService.findOne(id); guest.setId(id);
+		 * guest.setRegistrated("1");
+		 * guest.setPassword(userInput.getPassword()); guestService.save(guest);
+		 * }
+		 */
+
+		else if (bidderService.findOneWithMail(userInput.getMail()) != null) {
 			Bidder bidder = bidderService.findOne(id);
 			bidder.setId(id);
 			bidder.setRegistrated("1");

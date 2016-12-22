@@ -8,6 +8,11 @@ services.service('systemManagerService', ['$http', function($http){
 		return $http.get("/systemManager/checkRights");
 	}
 	
+	
+	this.findSystemManager = function(id){
+		return $http.get("/systemManager");
+	}
+	
 	this.findAllRestaurantManagers = function(){
 		return $http.get("/systemManager/restaurantManager");
 	}
@@ -24,14 +29,17 @@ services.service('systemManagerService', ['$http', function($http){
 		return $http.get("/systemManager/restaurantManager/"+id);
 	}
 	
-	
 	this.deleteRestaurantManager = function(id){
 		return $http.delete("/systemManager/restaurantManager/"+id);
 	}
+	
 	this.updateRestaurantManager = function(restaurantManager){
 		return $http.put("/systemManager/restaurantManager/"+restaurantManager.id,restaurantManager);
 	}
 	
+	this.updateSystemMangerProfile = function(systemManager){
+		return $http.put("/systemManager/"+systemManager.id,systemManager);
+	}
 	
 	
 	

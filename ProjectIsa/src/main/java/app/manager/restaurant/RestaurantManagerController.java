@@ -1,15 +1,19 @@
 package app.manager.restaurant;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -18,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import app.bidder.Bidder;
 import app.dish.Dish;
 import app.drink.Drink;
-import app.drink.DrinkService;
 import app.employed.bartender.Bartender;
 import app.employed.cook.Cook;
 import app.employed.waiter.Waiter;
@@ -31,11 +34,14 @@ public class RestaurantManagerController {
 
 	private HttpSession httpSession;
 	private RestaurantService restaurantService;
-	
+	private RestaurantManagerService restaurantManagerService;
+
 	@Autowired
-	public RestaurantManagerController(final HttpSession httpSession, final RestaurantService restaurantService,final DrinkService drinkService) {
+	public RestaurantManagerController(final HttpSession httpSession, final RestaurantService restaurantService,
+			final RestaurantManagerService restaurantManagerService) {
 		this.httpSession = httpSession;
 		this.restaurantService = restaurantService;
+		this.restaurantManagerService = restaurantManagerService;
 	}
 
 	@SuppressWarnings("unused")
@@ -61,7 +67,7 @@ public class RestaurantManagerController {
 	public void saveDrink(@Valid @RequestBody Drink drink) {
 		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
 		Restaurant restaurant = restaurantService.findOne(restaurantId);
-		//drink.setRestaurant(restaurant);
+		// drink.setRestaurant(restaurant);
 		restaurant.getDrinks().add(drink);
 		restaurantService.save(restaurant);
 	}
@@ -71,7 +77,7 @@ public class RestaurantManagerController {
 	public void saveDish(@Valid @RequestBody Dish dish) {
 		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
 		Restaurant restaurant = restaurantService.findOne(restaurantId);
-		//dish.setRestaurant(restaurant);
+		// dish.setRestaurant(restaurant);
 		restaurant.getFood().add(dish);
 		restaurantService.save(restaurant);
 	}
@@ -82,7 +88,7 @@ public class RestaurantManagerController {
 		waiter.setRegistrated("0");
 		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
 		Restaurant restaurant = restaurantService.findOne(restaurantId);
-		//waiter.setRestaurant(restaurant);
+		// waiter.setRestaurant(restaurant);
 		restaurant.getWaiters().add(waiter);
 		restaurantService.save(restaurant);
 	}
@@ -93,7 +99,7 @@ public class RestaurantManagerController {
 		cook.setRegistrated("0");
 		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
 		Restaurant restaurant = restaurantService.findOne(restaurantId);
-		//cook.setRestaurant(restaurant);
+		// cook.setRestaurant(restaurant);
 		restaurant.getCooks().add(cook);
 		restaurantService.save(restaurant);
 	}
@@ -104,7 +110,7 @@ public class RestaurantManagerController {
 		bartender.setRegistrated("0");
 		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
 		Restaurant restaurant = restaurantService.findOne(restaurantId);
-		//bartender.setRestaurant(restaurant);
+		// bartender.setRestaurant(restaurant);
 		restaurant.getBartenders().add(bartender);
 		restaurantService.save(restaurant);
 	}
@@ -115,7 +121,7 @@ public class RestaurantManagerController {
 		bidder.setRegistrated("0");
 		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
 		Restaurant restaurant = restaurantService.findOne(restaurantId);
-		//bidder.setRestaurant(restaurant);
+		// bidder.setRestaurant(restaurant);
 		restaurant.getBidders().add(bidder);
 		restaurantService.save(restaurant);
 	}
@@ -155,4 +161,14 @@ public class RestaurantManagerController {
 		Restaurant restaurant = restaurantService.findOne(restaurantId);
 		return restaurant.getBidders();
 	}
+
+	@PutMapping(path = "/{id}")
+	public RestaurantManager updateRestaurantManager(@PathVariable Long id,
+			@Valid @RequestBody RestaurantManager restaurantManager) {
+		Optional.ofNullable(restaurantManagerService.findOne(id))
+				.orElseThrow(() -> new ResourceNotFoundException("resourceNotFound!"));
+		restaurantManager.setId(id);
+		return restaurantManagerService.save(restaurantManager);
+	}
+
 }

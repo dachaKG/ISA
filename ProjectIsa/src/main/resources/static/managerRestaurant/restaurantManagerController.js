@@ -76,7 +76,6 @@ app.controller('restaurantManagerController', ['$scope','restaurantManagerServic
 		}
 		
 		$scope.update = function() {
-			//$scope.drink.restaurant = $scope.restaurant;
 			restaurantManagerService.updateMangerProfile($scope.restaurant.restaurantManager).then(
 				function (response) {
                     alert("Successfully change.");

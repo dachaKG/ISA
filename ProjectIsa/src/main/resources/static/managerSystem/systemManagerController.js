@@ -18,11 +18,18 @@ app.controller('systemManagerController', ['$scope','systemManagerService','$loc
 		
 		
 		function findAll() {
+			systemManagerService.findSystemManager().then(
+				function (response) {
+					$scope.systemManager = response.data;
+				}
+		    );
+			
 			systemManagerService.findAllRestaurantManagers().then(
 				function (response) {
 					$scope.restaurantManagers = response.data;
 				}
 			);
+			
 			systemManagerService.findAllRestaurant().then(
 					function (response) {
 						$scope.restaurants = response.data;
@@ -76,6 +83,21 @@ app.controller('systemManagerController', ['$scope','systemManagerService','$loc
                 }
             ); 	
 		};
+		
+		$scope.update = function() {
+			systemManagerService.updateSystemMangerProfile($scope.systemManager).then(
+				function (response) {
+                    alert("Successfully change.");
+                    $scope.state = undefined;
+                    findAll();
+                    $location.path('loggedIn/systemManager/list');
+                },
+                function (response) {
+                    alert("Error in changing.");
+                }
+			);
+		}
+		
 		/*
 		$scope.deleteRestaurant = function (restaurant){
 	    	systemManagerService.deleteRestaurant(restaurant.id).then(
