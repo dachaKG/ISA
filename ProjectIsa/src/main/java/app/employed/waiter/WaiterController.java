@@ -3,6 +3,7 @@ package app.employed.waiter;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,27 +25,43 @@ import app.order.OrderService;
 import app.order.Orderr;
 
 @RestController
-@RequestMapping("/waiters")
+@RequestMapping("/waiter")
 public class WaiterController {
 
-	private final WaiterService service;
+	private HttpSession httpSession;
+	
+	private final WaiterService waiterService;
 	private final OrderService orderService;
 	// private final DrinkService drinkService;
 	// private List<Waiter> waiter;
 
 	@Autowired
-	public WaiterController(final WaiterService service, final OrderService orderService,
+	public WaiterController(final HttpSession httpSession,final WaiterService service, final OrderService orderService,
 			final DrinkService drinkService) {
-		this.service = service;
+		this.httpSession = httpSession;
+		this.waiterService = service;
 		this.orderService = orderService;
 		// this.drinkService = drinkService;
 		// this.waiter = service.findAll();
 	}
 
 
+	@SuppressWarnings("unused")
+	@GetMapping("/checkRights")
+	public boolean checkRights() {
+		try {
+			Waiter waiter = ((Waiter) httpSession.getAttribute("user"));
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
 	@GetMapping
-	public ResponseEntity<List<Waiter>> findAll() {
-		return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
+	public ResponseEntity<Waiter> findBartender(){
+		Long id = ((Waiter) httpSession.getAttribute("user")).getId();
+		Waiter waiter = waiterService.findOne(id);
+		return new ResponseEntity<Waiter>(waiter, HttpStatus.OK);
 	}
 
 	@PostMapping
@@ -52,13 +69,13 @@ public class WaiterController {
 	public void save(@Valid @RequestBody Waiter waiter) {
 		waiter.setId(null);
 		waiter.setRegistrated("0");
-		service.save(waiter);
+		waiterService.save(waiter);
 	}
 
 	@GetMapping(path = "/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public Waiter findOne(@PathVariable Long id) {
-		Waiter waiter = service.findOne(id);
+		Waiter waiter = waiterService.findOne(id);
 		Optional.ofNullable(waiter).orElseThrow(() -> new ResourceNotFoundException("resourceNotFound!"));
 		return waiter;
 	}
@@ -66,24 +83,24 @@ public class WaiterController {
 	@DeleteMapping(path = "/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@PathVariable Long id) {
-		service.delete(id);
+		waiterService.delete(id);
 	}
 
 	@PutMapping(path = "/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public Waiter update(@PathVariable Long id, @Valid @RequestBody Waiter waiter) {
-		Optional.ofNullable(service.findOne(id))
+		Optional.ofNullable(waiterService.findOne(id))
 				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 		waiter.setId(id);
-		return service.save(waiter);
+		return waiterService.save(waiter);
 	}
 
 	// sve narudzbine za odredjenog konobara
 	@GetMapping(path = "/{id}/order")
 	public ResponseEntity<List<Orderr>> findAllOrders(@PathVariable Long id) {
-		Optional.ofNullable(service.findOne(id).getOrders())
+		Optional.ofNullable(waiterService.findOne(id).getOrders())
 				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
-		return new ResponseEntity<>(service.findOne(id).getOrders(), HttpStatus.OK);
+		return new ResponseEntity<>(waiterService.findOne(id).getOrders(), HttpStatus.OK);
 
 	}
 
