@@ -1,5 +1,6 @@
 package app.employed.waiter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +21,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import app.dish.Dish;
+import app.drink.Drink;
 import app.drink.DrinkService;
+import app.employed.bartender.Bartender;
+import app.order.DishStatus;
+import app.order.DrinkStatus;
 import app.order.OrderService;
 import app.order.Orderr;
 
@@ -29,14 +35,14 @@ import app.order.Orderr;
 public class WaiterController {
 
 	private HttpSession httpSession;
-	
+
 	private final WaiterService waiterService;
 	private final OrderService orderService;
 	// private final DrinkService drinkService;
 	// private List<Waiter> waiter;
 
 	@Autowired
-	public WaiterController(final HttpSession httpSession,final WaiterService service, final OrderService orderService,
+	public WaiterController(final HttpSession httpSession, final WaiterService service, final OrderService orderService,
 			final DrinkService drinkService) {
 		this.httpSession = httpSession;
 		this.waiterService = service;
@@ -44,7 +50,6 @@ public class WaiterController {
 		// this.drinkService = drinkService;
 		// this.waiter = service.findAll();
 	}
-
 
 	@SuppressWarnings("unused")
 	@GetMapping("/checkRights")
@@ -56,12 +61,80 @@ public class WaiterController {
 			return false;
 		}
 	}
-	
+
 	@GetMapping
-	public ResponseEntity<Waiter> findBartender(){
+	public ResponseEntity<Waiter> findBartender() {
 		Long id = ((Waiter) httpSession.getAttribute("user")).getId();
 		Waiter waiter = waiterService.findOne(id);
 		return new ResponseEntity<Waiter>(waiter, HttpStatus.OK);
+	}
+
+	@GetMapping(path = "/readyFood")
+	public ResponseEntity<List<Dish>> readyFood() {
+		Long id = ((Waiter) httpSession.getAttribute("user")).getId();
+		Waiter waiter = waiterService.findOne(id);
+		List<Orderr> orders = waiter.getOrders();
+
+		Optional.ofNullable(orders).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
+
+		List<Dish> food = new ArrayList<Dish>();
+
+		for (int i = 0; i < orders.size(); i++) {
+			if (orders.get(i).getFood().size() != 0 && orders.get(i).getDishStatus() != null
+					&& orders.get(i).getDishStatus().compareTo(DishStatus.finished) == 0) {
+				for (int j = 0; j < orders.get(i).getFood().size(); j++) {
+					food.add(orders.get(i).getFood().get(j));
+				}
+			}
+		}
+		return new ResponseEntity<>(food, HttpStatus.OK);
+
+	}
+
+	@GetMapping(path = "/readyDrinks")
+	public ResponseEntity<List<Drink>> readyDrinks() {
+		Long id = ((Waiter) httpSession.getAttribute("user")).getId();
+		Waiter waiter = waiterService.findOne(id);
+		List<Orderr> orders = waiter.getOrders();
+
+		Optional.ofNullable(orders).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
+
+		List<Drink> drinks = new ArrayList<Drink>();
+
+		for (int i = 0; i < orders.size(); i++) {
+			if (orders.get(i).getDrinks().size() != 0 && orders.get(i).getDrinkStatus() != null
+					&& orders.get(i).getDrinkStatus().compareTo(DrinkStatus.finished) == 0) {
+				for (int j = 0; j < orders.get(i).getDrinks().size(); j++) {
+					drinks.add(orders.get(i).getDrinks().get(j));
+				}
+			}
+		}
+
+		return new ResponseEntity<>(drinks, HttpStatus.OK);
+	}
+
+	@GetMapping(path = "/readyOrders")
+	public ResponseEntity<List<Orderr>> readyOrder() {
+		Long id = ((Waiter) httpSession.getAttribute("user")).getId();
+		Waiter waiter = waiterService.findOne(id);
+		List<Orderr> orders = waiter.getOrders();
+
+		Optional.ofNullable(orders).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
+
+		List<Orderr> orderss = new ArrayList<Orderr>();
+
+		for (int i = 0; i < orders.size(); i++) {
+			if (orders.get(i).getDrinks().size() != 0 && orders.get(i).getDrinkStatus() != null
+					&& orders.get(i).getDrinkStatus().compareTo(DrinkStatus.finished) == 0
+					&& orders.get(i).getFood().size() != 0 && orders.get(i).getDishStatus() != null && 
+					orders.get(i).getDishStatus().compareTo(DishStatus.finished) == 0) {
+				//for (int j = 0; j < orders.get(i).getDrinks().size(); j++) {
+					orderss.add(orders.get(i));
+				//}
+			}
+		}
+
+		return new ResponseEntity<>(orderss, HttpStatus.OK);
 	}
 
 	@PostMapping
@@ -105,34 +178,37 @@ public class WaiterController {
 	}
 
 	// 2.4. Konobar izmeni porudzbinu za odredjeni sto
-	/*@PutMapping(path = "/{id}/order/{orderId}")
-	@ResponseStatus(HttpStatus.OK)
-	public Orderr update(@PathVariable("id") Long id, @PathVariable("orderId") Long orderId, @Valid @RequestBody Orderr order) {
-		Optional.ofNullable(service.findOne(id))
-				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
-		Optional.ofNullable(orderService.findOne(orderId))
-				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
-
-		order.setId(orderId);
-		// orderService.findOne(id1).getTable();
-		// service.findOne(id).getSegment().getTables().
-
-		return orderService.save(order);
-	}*/
+	/*
+	 * @PutMapping(path = "/{id}/order/{orderId}")
+	 * 
+	 * @ResponseStatus(HttpStatus.OK) public Orderr update(@PathVariable("id")
+	 * Long id, @PathVariable("orderId") Long orderId, @Valid @RequestBody
+	 * Orderr order) { Optional.ofNullable(service.findOne(id)) .orElseThrow(()
+	 * -> new ResourceNotFoundException("Resource Not Found!"));
+	 * Optional.ofNullable(orderService.findOne(orderId)) .orElseThrow(() -> new
+	 * ResourceNotFoundException("Resource Not Found!"));
+	 * 
+	 * order.setId(orderId); // orderService.findOne(id1).getTable(); //
+	 * service.findOne(id).getSegment().getTables().
+	 * 
+	 * return orderService.save(order); }
+	 */
 
 	// 2.4 zavrsi porudzbinu i kreira racun
-	/*@GetMapping(path = "/{id}/finishOrder/{id1}")
-	//@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<Orderr> finishTheOrder(@PathVariable Long id, @PathVariable Long id1, @Valid @RequestBody Orderr order) {
-		order = orderService.findOne(id1);
-		Optional.ofNullable(service.findOne(id))
-				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
-		Optional.ofNullable(order)
-				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
-	
-		orderService.findOne(id1).setStatus(true);
-		
-		return new ResponseEntity<>(orderService.findOne(id1), HttpStatus.OK);
-	
-	}*/
+	/*
+	 * @GetMapping(path = "/{id}/finishOrder/{id1}")
+	 * //@ResponseStatus(HttpStatus.OK) public ResponseEntity<Orderr>
+	 * finishTheOrder(@PathVariable Long id, @PathVariable Long
+	 * id1, @Valid @RequestBody Orderr order) { order =
+	 * orderService.findOne(id1); Optional.ofNullable(service.findOne(id))
+	 * .orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
+	 * Optional.ofNullable(order) .orElseThrow(() -> new
+	 * ResourceNotFoundException("Resource Not Found!"));
+	 * 
+	 * orderService.findOne(id1).setStatus(true);
+	 * 
+	 * return new ResponseEntity<>(orderService.findOne(id1), HttpStatus.OK);
+	 * 
+	 * }
+	 */
 }

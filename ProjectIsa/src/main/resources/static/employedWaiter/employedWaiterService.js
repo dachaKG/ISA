@@ -10,4 +10,16 @@ services.service('employedWaiterService',['$http', function($http){
 		return $http.get("/waiter");
 	}
 	
+	this.readyFood = function(id){
+		return $http.get("/waiter/readyFood");
+	}
+	
+	this.readyDrinks = function(id){
+		return $http.get("/waiter/readyDrinks");
+	}
+	
+	this.readyOrders = function(id){
+		return $http.get("/waiter/readyOrders");
+	}
+	
 }]);

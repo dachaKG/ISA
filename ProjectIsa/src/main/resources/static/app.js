@@ -181,6 +181,14 @@ angular.module('routerApp', ['ui.router',
         	url : '/home',
         	templateUrl : 'employedWaiter/employedWaiterHome.html'
         })
+         .state('loggedIn.waiter.ready', {
+        	url : '/ready',
+        	templateUrl : 'employedWaiter/employedWaiterReadyOrder.html'
+        })
+         .state('loggedIn.waiter.readyOrders', {
+        	url : '/readyOrders',
+        	templateUrl : 'employedWaiter/employedWaiterOrders.html'
+        })
         
         .state('loggedIn.guest', {
         	url: '/guest',

@@ -13,6 +13,7 @@ app.controller('employedWaiterController', [ '$scope', 'employedWaiterService','
 						}
 					}
 			);
+		
 		}
 		checkRights();
 		
@@ -22,6 +23,38 @@ app.controller('employedWaiterController', [ '$scope', 'employedWaiterService','
 					$scope.waiter = response.data;
 				}
 			);
+			
+			
+			employedWaiterService.readyDrinks().then(
+					function(response){
+						$scope.readyDrinks = response.data;
+					}
+				);
+			
+			employedWaiterService.readyFood().then(
+					function(response){
+						$scope.readyFood = response.data;
+					}
+				);
+			
+			employedWaiterService.readyOrders().then(
+					function(response){
+						$scope.orders = response.data;
+					}
+				);
 		}
+		
+		$scope.makeBill = function(order){
+			employedCookService.makeBill(order.id).then(
+				function(response){
+					$scope.orders.splice($scope.orders.indexOf(order),1);
+				},
+				function(response){
+					alert("Error while signal");
+				}
+			);
+		}
+		
+		
 		
 }]);
