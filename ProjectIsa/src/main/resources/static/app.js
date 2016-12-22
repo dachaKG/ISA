@@ -134,7 +134,7 @@ angular.module('routerApp', ['ui.router',
         
         
         .state('loggedIn.guest', {
-        	url: '/guestt',
+        	url: '/guest',
         	templateUrl : 'guestt/guestPartial.html',
         	controller : 'guestController'
         })

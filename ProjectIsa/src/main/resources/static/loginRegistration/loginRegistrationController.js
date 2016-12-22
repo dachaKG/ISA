@@ -39,7 +39,7 @@ app.controller('loginRegistrationController', ['$scope','loginRegistrationServic
 		$scope.submitRegistration = function () {  
 			loginRegistrationService.save($scope.user).then(
 				function (response) {
-                    alert("Uspesno registrovan.");
+                    alert("Uspesno registrovan. ");
                 },
                 function (response) {
                     alert("Greska pri registraciji.");

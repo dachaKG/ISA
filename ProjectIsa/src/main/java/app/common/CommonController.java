@@ -8,6 +8,8 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,12 +50,13 @@ public class CommonController {
 	private BartenderService bartenderService;
 	private CookService cookService;
 	private WaiterService waiterService;
+	private JavaMailSender javaMailSender;
 
 	@Autowired
 	public CommonController(final HttpSession httpSession, final BossManagerService bossManagerService,
 			final RestaurantManagerService restaurantManagerService, final GuestService guestService,
 			final SystemManagerService systemManagerService, final BidderService bidderService,
-			final CookService cookService, final WaiterService waiterService, final BartenderService bartenderService) {
+			final CookService cookService, final WaiterService waiterService, final BartenderService bartenderService, final JavaMailSender javaMailSender) {
 		this.httpSession = httpSession;
 		this.bossManagerService = bossManagerService;
 		this.restaurantManagerService = restaurantManagerService;
@@ -63,6 +66,7 @@ public class CommonController {
 		this.bartenderService = bartenderService;
 		this.cookService = cookService;
 		this.waiterService = waiterService;
+		this.javaMailSender  =javaMailSender;
 	}
 
 	@PostMapping(path = "/logIn")
@@ -129,6 +133,16 @@ public class CommonController {
 		guest.setId(null);
 		guest.setRegistrated("0");
 		guestService.save(guest);
+		
+		//----Salje mejl sam sebi, zbog testiranja...
+		try{SimpleMailMessage mail = new SimpleMailMessage();
+		mail.setTo("isaRestorani@gmail.com");
+		mail.setFrom("isaRestorani@gmail.com");
+		mail.setSubject("Activation link");
+		mail.setText("Your activation link: ");
+
+		javaMailSender.send(mail);
+		}catch(Exception m){m.printStackTrace();}
 	}
 
 	// izmena sifre nakon prvog logovanja
