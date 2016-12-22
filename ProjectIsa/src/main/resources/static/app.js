@@ -86,6 +86,10 @@ angular.module('routerApp', ['ui.router',
         	url : '/newRestaurant',
         	templateUrl : 'managerSystem/systemManagerNewRestaurant.html'
         })
+        .state('loggedIn.systemManager.updateSystemManagerProfile', {
+			url : '/updateSystemManagerProfile',
+			templateUrl : 'managerSystem/systemManagerProfile.html'
+		})
         
         
         .state('loggedIn.restaurantManager', {

@@ -29,7 +29,7 @@ app.controller('bossManagerController', ['$scope','bossManagerService', '$locati
 				function (response) {
                     alert("Uspesno dodat.");
                     $scope.state = undefined;
-                    $location.path('bossManager/list');
+                    $location.path('loggedIn/bossManager/list');
                 },
                 function (response) {
                     alert("Greska pri dodavanju.");

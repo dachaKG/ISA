@@ -33,13 +33,16 @@ public class SystemManagerController {
 	private HttpSession httpSession;
 	private final RestaurantManagerService restaurantManagerService;
 	private final RestaurantService restaurantService;
+	private final SystemManagerService systemManagerService;
 
 	@Autowired
 	public SystemManagerController(final RestaurantManagerService restaurantManagerService,
-			final RestaurantService restaurantService, final HttpSession httpSession) {
+			final RestaurantService restaurantService, final HttpSession httpSession,
+			SystemManagerService systemManagerService) {
 		this.restaurantManagerService = restaurantManagerService;
 		this.httpSession = httpSession;
 		this.restaurantService = restaurantService;
+		this.systemManagerService = systemManagerService;
 	}
 
 	@SuppressWarnings("unused")
@@ -57,6 +60,12 @@ public class SystemManagerController {
 	@GetMapping("/restaurantManager")
 	public ResponseEntity<List<RestaurantManager>> findAllRestaurantManagers() {
 		return new ResponseEntity<>(restaurantManagerService.findAll(), HttpStatus.OK);
+	}
+
+	// izlistavanje svih menadzera restorana
+	@GetMapping
+	public SystemManager findSystemManager() {
+		return ((SystemManager) httpSession.getAttribute("user"));
 	}
 
 	// izlistavanje svih menadzera restorana koji nemaju radno mesto
@@ -108,9 +117,6 @@ public class SystemManagerController {
 		return restaurantManagerService.save(restaurantManager);
 	}
 
-	
-	
-	
 	// izlistavanje svih restorana
 	@GetMapping(path = "/restaurant")
 	@ResponseStatus(HttpStatus.OK)
@@ -147,13 +153,11 @@ public class SystemManagerController {
 		restaurantService.delete(id);
 	}
 
-	// izmena restorana
-	@PutMapping(path = "/restaurant/{id}")
-	@ResponseStatus(HttpStatus.OK)
-	public Restaurant updateRestaurant(@PathVariable Long id, @Valid @RequestBody Restaurant restaurant) {
-		Optional.ofNullable(restaurantService.findOne(id))
-				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
-		restaurant.setId(id);
-		return restaurantService.save(restaurant);
+	@PutMapping(path = "/{id}")
+	public SystemManager updateSystemManager(@PathVariable Long id, @Valid @RequestBody SystemManager systemManager) {
+		Optional.ofNullable(restaurantManagerService.findOne(id))
+				.orElseThrow(() -> new ResourceNotFoundException("resourceNotFound!"));
+		systemManager.setId(id);
+		return systemManagerService.save(systemManager);
 	}
 }
