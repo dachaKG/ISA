@@ -7,6 +7,8 @@ angular.module('routerApp', ['ui.router',
 	'guest.services','guest.controllers',
 	'bidder.services', 'bidder.controllers',
 	'employedBartender.services','employedBartender.controllers',
+	'employedCook.services','employedCook.controllers',
+	'employedWaiter.services','employedWaiter.controllers',
 	'bossManager.services', 'bossManager.controllers',
 	'loginRegistration.services','loginRegistration.controllers'
 	])
@@ -133,8 +135,42 @@ angular.module('routerApp', ['ui.router',
         })
         
         
+        
+        .state('loggedIn.cook', {
+        	url: '/cook',
+        	templateUrl : 'employedCook/employedCookPartial.html',
+        	controller : 'employedCookController'
+        })
+        .state('loggedIn.cook.home', {
+        	url : '/home',
+        	templateUrl : 'employedCook/employedCookHome.html'
+        })
+        .state('loggedIn.cook.orders', {
+        	url : '/orders',
+        	templateUrl : 'employedCook/employedCookOrders.html'
+        })
+         .state('loggedIn.cook.received', {
+        	url : '/receivedFood',
+        	templateUrl : 'employedCook/employedCookReceivedFood.html'
+        })
+         .state('loggedIn.cook.profile', {
+        	url : '/profile',
+        	templateUrl : 'employedCook/employedCookProfile.html'
+        })
+
+        
+        .state('loggedIn.waiter', {
+        	url: '/waiter',
+        	templateUrl : 'employedWaiter/employedWaiterPartial.html',
+        	controller : 'employedWaiterController'
+        })
+        .state('loggedIn.waiter.home', {
+        	url : '/home',
+        	templateUrl : 'employedWaiter/employedWaiterHome.html'
+        })
+        
         .state('loggedIn.guest', {
-        	url: '/guestt',
+        	url: '/guest',
         	templateUrl : 'guestt/guestPartial.html',
         	controller : 'guestController'
         })

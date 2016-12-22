@@ -44,7 +44,21 @@ app.controller('employedBartenderController', [ '$scope', 'employedBartenderServ
 				function(response){
 					alert("Error while signal")
 				}
-			)
+			);
+		}
+		
+		$scope.changeProfile = function(){
+			employedBartenderService.changeProfile($scope.bartender).then(
+				function(response){
+					alert("successfully added");
+					$scope.state = undefined;
+					findAll();
+					$location.path('loggedIn/bartender/home');
+				},
+				function(response){
+					alert("Error in changing");
+				}
+			);
 		}
 		
 		

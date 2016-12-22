@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,20 +29,42 @@ import app.order.Orderr;
 @RestController
 @RequestMapping("/cook")
 public class CookController {
+	HttpSession httpSession;
 
 	private final CookService cookService;
 	private final OrderService orderService;
 
 	@Autowired
-	public CookController(final CookService cookService, final OrderService orderService) {
+	public CookController(final HttpSession httpSession, final CookService cookService,
+			final OrderService orderService) {
+		this.httpSession = httpSession;
 		this.cookService = cookService;
 		this.orderService = orderService;
 	}
 
-	@GetMapping
-	public ResponseEntity<List<Cook>> findAll() {
-		return new ResponseEntity<>(cookService.findAll(), HttpStatus.OK);
+	@SuppressWarnings("unused")
+	@GetMapping("/checkRights")
+	public boolean checkRights() {
+		try {
+			Cook cook = ((Cook) httpSession.getAttribute("user"));
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
+
+	@GetMapping
+	@ResponseStatus(HttpStatus.OK)
+	public Cook findCook() {
+		Long id = ((Cook) httpSession.getAttribute("user")).getId();
+		Cook cook = cookService.findOne(id);
+		return cook;
+	}
+
+	/*
+	 * @GetMapping public ResponseEntity<List<Cook>> findAll() { return new
+	 * ResponseEntity<>(cookService.findAll(), HttpStatus.OK); }
+	 */
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
@@ -66,7 +89,7 @@ public class CookController {
 	}
 
 	// 2.4. kuvar ima mogucnost da azurira podatke
-	@PutMapping(path = "/{id}")
+	@PutMapping(path = "/profile/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public Cook update(@PathVariable Long id, @Valid @RequestBody Cook cook) {
 		Optional.ofNullable(cookService.findOne(id))
@@ -76,11 +99,13 @@ public class CookController {
 	}
 
 	// 2.4 vidi listu porudzbina jela koje je potrebno pripremiti
-	@GetMapping(path = "/{id}/order")
-	public ResponseEntity<List<Dish>> findAllOrders(@PathVariable Long id) {
-
+	@GetMapping(path = "/orders")
+	public ResponseEntity<List<Dish>> findAllOrdrers() {
+		Long id = ((Cook) httpSession.getAttribute("user")).getId();
+		// Bartender bartender = ((Bartender) httpSession.getAttribute("user"));
 		List<Orderr> orders = cookService.findOne(id).getOrders();
 		Optional.ofNullable(orders).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
+
 		List<Dish> food = new ArrayList<Dish>();
 
 		for (int i = 0; i < orders.size(); i++) {
@@ -92,25 +117,65 @@ public class CookController {
 		}
 
 		return new ResponseEntity<>(food, HttpStatus.OK);
-
 	}
 
-	// 2.4. signalizira da su jela sa porudzbine prihvacena za spremanje
-	@GetMapping(path = "/{cookId}/foodReceived/{orderId}")
+	@GetMapping(path = "/foodReceived/{orderId}")
 	@ResponseStatus(HttpStatus.OK)
-	public Orderr foodReceived(@PathVariable Long cookId, @PathVariable Long orderId) {
-		Optional.ofNullable(cookService.findOne(cookId))
-				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
+	public Orderr foodReady(@PathVariable Long orderId) {
+		Long id = ((Cook) httpSession.getAttribute("user")).getId();
+		Cook cook = cookService.findOne(id);
+		Optional.ofNullable(cook).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 
 		Optional.ofNullable(orderService.findOne(orderId))
 				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 
 		Orderr order = orderService.findOne(orderId);
 
-		orderService.findOne(orderId).setDishStatus(DishStatus.received);
+		order.setDishStatus(DishStatus.received);
 		order.setId(orderId);
 		return orderService.save(order);
 	}
+
+	
+	@GetMapping(path = "/receivedFood")
+	public ResponseEntity<List<Dish>> receivedFood() {
+		Long id = ((Cook) httpSession.getAttribute("user")).getId();
+		Cook cook = cookService.findOne(id);
+		List<Orderr> orders = cook.getOrders();
+
+		Optional.ofNullable(orders).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
+
+		List<Dish> food = new ArrayList<Dish>();
+
+		for (int i = 0; i < orders.size(); i++) {
+			if (orders.get(i).getFood().size() != 0 && orders.get(i).getDishStatus() != null
+					&& orders.get(i).getDishStatus().compareTo(DishStatus.received) == 0) {
+				for(int j = 0 ; j < orders.get(i).getFood().size(); j++){
+					food.add(orders.get(i).getFood().get(j));
+				}
+			}
+		}
+		return new ResponseEntity<>(food, HttpStatus.OK);
+		
+	}
+
+	// 2.4. signalizira da su jela sa porudzbine prihvacena za spremanje
+	
+	 /* @GetMapping(path = "/foodReceived/{orderId}")
+	  @ResponseStatus(HttpStatus.OK) 
+	  public Orderr foodReceived(@PathVariable
+	 Long cookId, @PathVariable Long orderId) {
+	  Optional.ofNullable(cookService.findOne(cookId)) .orElseThrow(() -> new
+	  ResourceNotFoundException("Resource Not Found!"));
+	 
+	  Optional.ofNullable(orderService.findOne(orderId)) .orElseThrow(() -> new
+	  ResourceNotFoundException("Resource Not Found!"));
+	  
+	  Orderr order = orderService.findOne(orderId);
+	  
+	  orderService.findOne(orderId).setDishStatus(DishStatus.received);
+	  order.setId(orderId); return orderService.save(order); }*/
+	 
 
 	// 2.4 signazilira da je odgovarajuce jelo gotovo
 	@GetMapping(path = "/{cookId}/foodReady/{orderId}")

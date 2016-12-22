@@ -22,9 +22,9 @@ app.controller('loginRegistrationController', ['$scope','loginRegistrationServic
                     else if(response.data === "bartender")
                     	$location.path('loggedIn/bartender/home');
                     else if(response.data === "cook")
-                    	$location.path('login');
+                    	$location.path('loggedIn/cook/home');
                     else if(response.data === "waiter")
-                    	$location.path('login');
+                    	$location.path('loggedIn/waiter/home');
                     else {
                     	firstLoginId = response.data;
                     	$location.path('firstLogin');

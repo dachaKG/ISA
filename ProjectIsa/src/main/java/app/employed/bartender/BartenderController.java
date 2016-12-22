@@ -84,13 +84,19 @@ public class BartenderController {
 	}
 
 	// 2.4. sanker ima mogucnost da azurira podatke
-	@PutMapping(path = "/{id}")
+	@PutMapping(path = "/profile")
 	@ResponseStatus(HttpStatus.OK)
-	public Bartender update(@PathVariable Long id, @Valid @RequestBody Bartender bartender) {
-		Optional.ofNullable(bartenderService.findOne(id))
-				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
-		bartender.setId(id);
-		return bartenderService.save(bartender);
+	public void update(@Valid @RequestBody Bartender bartender) {
+		Long restaurantId = ((Bartender) httpSession.getAttribute("user")).getRestaurant().getId();
+		Restaurant restaurant = restaurantService.findOne(restaurantId);
+		for(int i = 0 ; i < restaurant.getBartenders().size(); i++){
+			if(restaurant.getBartenders().get(i).getId() == bartender.getId()){
+				restaurant.getBartenders().set(i, bartender);
+				//restaurant.getBartenders()
+			}
+		}
+		
+			restaurantService.save(restaurant);
 	}
 
 	// 2.4 prikaz porudzbina za sankera
@@ -114,6 +120,7 @@ public class BartenderController {
 		return new ResponseEntity<>(drinks, HttpStatus.OK);
 	}
 	
+	// spisak pica koja su spremna
 	@GetMapping(path = "/readyDrinks")
 	public ResponseEntity<List<Drink>> readyDrinks() {
 		Long id = ((Bartender) httpSession.getAttribute("user")).getId();
@@ -126,7 +133,6 @@ public class BartenderController {
 		List<Drink> drinks = new ArrayList<Drink>();
 		
 		for (int i = 0; i < orders.size(); i++) {
-			System.out.println(orders.get(i).getId());
 			if (orders.get(i).getDrinks().size() != 0 && orders.get(i).getDrinkStatus() != null &&
 					orders.get(i).getDrinkStatus().compareTo(DrinkStatus.finished) == 0) {
 				for (int j = 0; j < orders.get(i).getDrinks().size(); j++) {
