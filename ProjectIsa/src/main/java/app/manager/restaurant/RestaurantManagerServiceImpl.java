@@ -55,6 +55,7 @@ public class RestaurantManagerServiceImpl implements RestaurantManagerService {
 				return list.get(i);
 		return null;
 	}
+	
 
 	@Override
 	public void delete(Long id) {
