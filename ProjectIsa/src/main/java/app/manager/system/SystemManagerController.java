@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -62,7 +61,6 @@ public class SystemManagerController {
 		return new ResponseEntity<>(restaurantManagerService.findAll(), HttpStatus.OK);
 	}
 
-	// izlistavanje svih menadzera restorana
 	@GetMapping
 	public SystemManager findSystemManager() {
 		return ((SystemManager) httpSession.getAttribute("user"));
@@ -74,15 +72,15 @@ public class SystemManagerController {
 		// ovo ce se kasnije promeniti da ide odmah na bazu, sa posebnim upitom
 		List<RestaurantManager> managers = restaurantManagerService.findAll();
 		List<Restaurant> restaurants = restaurantService.findAll();
-		
+
 		List<RestaurantManager> result = new ArrayList<RestaurantManager>();
 		for (int i = 0; i < managers.size(); i++) {
-			for (int j = 0; j < restaurants.size(); j++) 
-				if(managers.get(i).getId() == restaurants.get(j).getId())
+			for (int j = 0; j < restaurants.size(); j++)
+				if (managers.get(i).getId() == restaurants.get(j).getId())
 					break;
 			result.add(managers.get(i));
 		}
-			
+
 		return result;
 	}
 
@@ -95,47 +93,11 @@ public class SystemManagerController {
 		restaurantManagerService.save(restaurantManager);
 	}
 
-	// nalazenje trazenog menadzera restorana
-	@GetMapping(path = "/restaurantManager/{id}")
-	@ResponseStatus(HttpStatus.OK)
-	public RestaurantManager findOneRestaurantManager(@PathVariable Long id) {
-		RestaurantManager restaurantManager = restaurantManagerService.findOne(id);
-		Optional.ofNullable(restaurantManager).orElseThrow(() -> new ResourceNotFoundException("resourceNotFound!"));
-		return restaurantManager;
-	}
-
-	// brisanje menadzera restorana
-	@DeleteMapping(path = "/restaurantManager/{id}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteRestaurantManager(@PathVariable Long id) {
-		restaurantManagerService.delete(id);
-	}
-
-	// izmena postojeceg menadzera
-	@PutMapping(path = "/restaurantManager/{id}")
-	@ResponseStatus(HttpStatus.OK)
-	public RestaurantManager updateRestaurantManager(@PathVariable Long id,
-			@Valid @RequestBody RestaurantManager restaurantManager) {
-		Optional.ofNullable(restaurantManagerService.findOne(id))
-				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
-		restaurantManager.setId(id);
-		return restaurantManagerService.save(restaurantManager);
-	}
-
 	// izlistavanje svih restorana
 	@GetMapping(path = "/restaurant")
 	@ResponseStatus(HttpStatus.OK)
 	public List<Restaurant> findAllRestaurant() {
 		return restaurantService.findAll();
-	}
-
-	// pronalazak bilo kog restorana
-	@GetMapping(path = "/restaurant/{id}")
-	@ResponseStatus(HttpStatus.OK)
-	public Restaurant findOneRestaurant(@PathVariable Long id) {
-		Restaurant restaurant = restaurantService.findOne(id);
-		Optional.ofNullable(restaurant).orElseThrow(() -> new ResourceNotFoundException("resourceNotFound!"));
-		return restaurant;
 	}
 
 	// 2.3
@@ -147,15 +109,6 @@ public class SystemManagerController {
 	public void saveRestaurant(@Valid @RequestBody Restaurant restaurant) {
 		restaurant.setId(null);
 		restaurantService.save(restaurant);
-	}
-
-	// brisanje restorana
-	@DeleteMapping(path = "/restaurant/{id}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteRestaurant(@PathVariable Long id) {
-		Optional.ofNullable(restaurantService.findOne(id))
-				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
-		restaurantService.delete(id);
 	}
 
 	@PutMapping(path = "/{id}")

@@ -36,11 +36,10 @@ app.controller('employedCookController',['$scope','employedCookService','$locati
 			);
 			
 			employedCookService.readyFood().then(
-					function(response){
-						$scope.readyFood = response.data;
-					}
-				);
-			
+				function(response){
+					$scope.readyFood = response.data;
+				}
+			);
 		}
 		
 		$scope.received = function(foodOrder){

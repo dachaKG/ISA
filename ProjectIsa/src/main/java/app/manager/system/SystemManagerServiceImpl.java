@@ -34,25 +34,14 @@ public class SystemManagerServiceImpl implements SystemManagerService {
 		return repository.findOne(id);
 	}
 
-	// ovo se kasnije na repo spusta
 	@Override
 	public SystemManager findOne(String mail, String password) {
-		List<SystemManager> systemManagers = (List<SystemManager>) repository.findAll();
-		for (int i = 0; i < systemManagers.size(); i++) {
-			if (systemManagers.get(i).getMail().equals(mail)
-					&& systemManagers.get(i).getPassword().equals(password))
-				return systemManagers.get(i);
-		}
-		return null;
+		return repository.findByMailAndPassword(mail, password);
 	}
 	
 	@Override
 	public SystemManager findOneWithMail(String mail) {
-		List<SystemManager> list = findAll();
-		for(int i=0;i<list.size();i++)
-			if(list.get(i).getMail().equals(mail))
-				return list.get(i);
-		return null;
+		return repository.findByMail(mail);
 	}
 
 	@Override

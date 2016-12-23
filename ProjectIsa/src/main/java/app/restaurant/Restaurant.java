@@ -16,8 +16,6 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import app.bidder.Bidder;
 import app.dish.Dish;
 import app.drink.Drink;

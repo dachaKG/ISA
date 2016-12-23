@@ -129,5 +129,4 @@ public class RestaurantManagerController {
 		restaurantManager.setId(id);
 		return restaurantManagerService.save(restaurantManager);
 	}
-
 }

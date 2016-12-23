@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import com.google.common.collect.Lists;
 
 @Service
-@Transactional 
+@Transactional
 public class FriendsServiceImpl implements FriendsService {
 	private final FriendsRepository repository;
 
@@ -21,7 +21,6 @@ public class FriendsServiceImpl implements FriendsService {
 
 	@Override
 	public void save(Friends friends) {
-		System.out.println("SUCCES SAVING ! ");
 		repository.save(friends);
 	}
 

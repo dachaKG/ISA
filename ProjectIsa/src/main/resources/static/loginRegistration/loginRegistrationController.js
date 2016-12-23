@@ -39,7 +39,6 @@ app.controller('loginRegistrationController', ['$scope','loginRegistrationServic
 		}
 		
 		$scope.submitRegistration = function () {  
-			
 			if($("#pass").val() != $("#passRepeat").val()){
 				alert("Password does not match the confirm password");
 				return;
@@ -48,7 +47,6 @@ app.controller('loginRegistrationController', ['$scope','loginRegistrationServic
 			alert("Success,\n We sent you email with activation link to:\n isaRestorani3@gmail.com\n pass: isaisaisa");
 			loginRegistrationService.save($scope.user).then(
 				function (response) {
-                  //  alert("Success,\n We sent you email with activation link to:\n isaRestorani3@gmail.com\n pass: isaisaisa");
                     $location.path('login');
                 },
                 function (response) {
@@ -58,12 +56,10 @@ app.controller('loginRegistrationController', ['$scope','loginRegistrationServic
 		};
 		
 		$scope.firstLogin = function () {
-			
 			if($("input[name='password']").val() != $("input[name='passwordRepeat']").val()){
 				alert("Password does not match the confirm password: ");
 				return;
 			}
-			
 			$scope.user.firstname = "zz";
 			$scope.user.lastname = "zz";
 			loginRegistrationService.firstLogin(firstLoginId,$scope.user).then(
@@ -73,15 +69,11 @@ app.controller('loginRegistrationController', ['$scope','loginRegistrationServic
             ); 	
 		};
 		
-		
 		$scope.logOut = function() {
 			loginRegistrationService.logOut().then(
 				function (response) {
 					$location.path('login/logout');
 	            }		
 			)
-		}
-		
-		
-		
+		}		
 }]);

@@ -34,7 +34,7 @@
 <div id="friendFind">
 <label>Find friends</label>
 <form>
-<input  id="inputStr" placeholder="Enter firstname or lastname" type="text" class="form-control x3" ng-model = "inputStr" ng-change = "findFriends()" >
+<input placeholder="Enter firstname or lastname" type="text" class="form-control x3" ng-model = "$parent.inputStr" ng-change = "findFriends()" >
 </form>
 
 <table  class="table table-bordered tableBG" border="1">

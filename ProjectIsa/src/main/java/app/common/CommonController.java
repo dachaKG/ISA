@@ -76,21 +76,21 @@ public class CommonController {
 		User user = null;
 		String userType = "";
 		Long id = 0l;
-		if (bossManagerService.findOne(userInput.getMail(), userInput.getPassword()) != null) {
-			user = bossManagerService.findOne(userInput.getMail(), userInput.getPassword());
-			id = bossManagerService.findOne(userInput.getMail(), userInput.getPassword()).getId();
+		if (bossManagerService.findByMailAndPassword(userInput.getMail(), userInput.getPassword()) != null) {
+			user = bossManagerService.findByMailAndPassword(userInput.getMail(), userInput.getPassword());
+			id = bossManagerService.findByMailAndPassword(userInput.getMail(), userInput.getPassword()).getId();
 			userType = "boss";
-		} else if (restaurantManagerService.findOne(userInput.getMail(), userInput.getPassword()) != null) {
-			user = restaurantManagerService.findOne(userInput.getMail(), userInput.getPassword());
-			id = restaurantManagerService.findOne(userInput.getMail(), userInput.getPassword()).getId();
+		} else if (restaurantManagerService.findByMailAndPassword(userInput.getMail(), userInput.getPassword()) != null) {
+			user = restaurantManagerService.findByMailAndPassword(userInput.getMail(), userInput.getPassword());
+			id = restaurantManagerService.findByMailAndPassword(userInput.getMail(), userInput.getPassword()).getId();
 			userType = "restaurant";
 		} else if (systemManagerService.findOne(userInput.getMail(), userInput.getPassword()) != null) {
 			user = systemManagerService.findOne(userInput.getMail(), userInput.getPassword());
 			id = systemManagerService.findOne(userInput.getMail(), userInput.getPassword()).getId();
 			userType = "system";
-		} else if (guestService.findOne(userInput.getMail(), userInput.getPassword()) != null) {
-			user = guestService.findOne(userInput.getMail(), userInput.getPassword());
-			id = guestService.findOne(userInput.getMail(), userInput.getPassword()).getId();
+		} else if (guestService.findByMailAndPassword(userInput.getMail(), userInput.getPassword()) != null) {
+			user = guestService.findByMailAndPassword(userInput.getMail(), userInput.getPassword());
+			id = guestService.findByMailAndPassword(userInput.getMail(), userInput.getPassword()).getId();
 			if (user.getRegistrated().equals("1"))
 				userType = "guest";
 			else
@@ -161,13 +161,13 @@ public class CommonController {
 	@PutMapping(path = "/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public void update(@PathVariable Long id, @Valid @RequestBody User userInput) {
-		if (bossManagerService.findOneWithMail(userInput.getMail()) != null) {
+		if (bossManagerService.findByMail(userInput.getMail()) != null) {
 			BossManager bossManager = bossManagerService.findOne(id);
 			bossManager.setId(id);
 			bossManager.setRegistrated("1");
 			bossManager.setPassword(userInput.getPassword());
 			bossManagerService.save(bossManager);
-		} else if (restaurantManagerService.findOneWithMail(userInput.getMail()) != null) {
+		} else if (restaurantManagerService.findByMail(userInput.getMail()) != null) {
 			RestaurantManager restaurantManager = restaurantManagerService.findOne(id);
 			restaurantManager.setId(id);
 			restaurantManager.setRegistrated("1");
@@ -180,14 +180,6 @@ public class CommonController {
 			systemManager.setPassword(userInput.getPassword());
 			systemManagerService.save(systemManager);
 		}
-		/*
-		 * else if (guestService.findOneWithMail(userInput.getMail()) != null) {
-		 * Guest guest = guestService.findOne(id); guest.setId(id);
-		 * guest.setRegistrated("1");
-		 * guest.setPassword(userInput.getPassword()); guestService.save(guest);
-		 * }
-		 */
-
 		else if (bidderService.findOneWithMail(userInput.getMail()) != null) {
 			Bidder bidder = bidderService.findOne(id);
 			bidder.setId(id);

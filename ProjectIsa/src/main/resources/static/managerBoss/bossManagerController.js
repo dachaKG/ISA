@@ -17,11 +17,17 @@ app.controller('bossManagerController', ['$scope','bossManagerService', '$locati
 		checkRights();		
 		
 		function findAll() {
-			bossManagerService.findAll().then(
+			bossManagerService.findAllSystemManagers().then(
 				function (response) {
 					$scope.systemMenagers = response.data;
 				}
 			);
+			
+			bossManagerService.findBossManager().then(
+					function (response) {
+						$scope.bossManager = response.data;
+					}
+			    );
 		}
 		
 		$scope.saveSystemManager = function () {            
@@ -39,15 +45,17 @@ app.controller('bossManagerController', ['$scope','bossManagerService', '$locati
             ); 	
 		};
 		
-		/*
-	    $scope.delete = function (systemManager){
-	    	bossManagerService.delete(systemManager.id).then(
-	    		function (response) {
-	    		     $scope.systemMenagers.splice($scope.systemMenagers.indexOf(systemManager), 1);
-			    },
-		        function (response) {
-		        	alert("Error while deleting component.");
-		        }
-	    	);
-		};		*/ 
+		$scope.update = function() {
+			bossManagerService.updateBossMangerProfile($scope.bossManager).then(
+				function (response) {
+                    alert("Successfully change.");
+                    $scope.state = undefined;
+                    findAll();
+                    $location.path('loggedIn/boss/list');
+                },
+                function (response) {
+                    alert("Error in changing.");
+                }
+			);
+		}
 }]);

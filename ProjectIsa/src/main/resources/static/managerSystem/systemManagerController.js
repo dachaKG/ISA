@@ -16,7 +16,6 @@ app.controller('systemManagerController', ['$scope','systemManagerService','$loc
 		}
 		checkRights();
 		
-		
 		function findAll() {
 			systemManagerService.findSystemManager().then(
 				function (response) {
@@ -58,17 +57,6 @@ app.controller('systemManagerController', ['$scope','systemManagerService','$loc
                 }
             ); 	
 		};
-		/*
-		$scope.deleteRestaurantManager = function (restaurantManager){
-	    	systemManagerService.deleteRestaurantManager(restaurantManager.id).then(
-	    		function (response) {
-	    		     $scope.restaurantManagers.splice($scope.restaurantMenagers.indexOf(restaurantManager), 1);
-			    },
-		        function (response) {
-		        	alert("Greska pri brisanju menazdera.");
-		        }
-	    	);
-		};*/
 		
 		$scope.saveRestaurant = function () {            
 			systemManagerService.saveRestaurant($scope.restaurant).then(
@@ -97,16 +85,4 @@ app.controller('systemManagerController', ['$scope','systemManagerService','$loc
                 }
 			);
 		}
-		
-		/*
-		$scope.deleteRestaurant = function (restaurant){
-	    	systemManagerService.deleteRestaurant(restaurant.id).then(
-	    		function (response) {
-	    		     $scope.restaurants.splice($scope.restaurants.indexOf(restaurant), 1);
-			    },
-		        function (response) {
-		        	alert("Greska pri brisanju restorana.");
-		        }
-	    	);
-		};*/
 }]);

@@ -69,7 +69,10 @@ angular.module('routerApp', ['ui.router',
         	url : '/new',
         	templateUrl : 'managerBoss/bossManagerNew.html'
         })
-        
+         .state('loggedIn.bossManager.updateBossManagerProfile', {
+			url : '/updateBossManagerProfile',
+			templateUrl : 'managerBoss/bossManagerProfile.html'
+		})
         
         .state('loggedIn.systemManager', {
         	url : '/systemManager',

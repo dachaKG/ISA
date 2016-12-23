@@ -4,21 +4,19 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
   	function ($scope,$window, guestService, $location) {
 		function checkRights() {			
 			guestService.checkRights().then(
-					function (response) {
-						if(response.data === 'true'){
-							
-						}
-						else {
-							$location.path('login');
-						}
+				function (response) {
+					if(response.data === 'true'){
+						
 					}
+					else {
+						$location.path('login');
+					}
+				}
 			);
 		}
 		checkRights();	
 	
-	
 		$scope.getLoggedUser = function() {
-			
 			guestService.getLoggedUser().then(
 				function (response) {
 					$scope.loggedUser = response.data;
@@ -26,16 +24,15 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			)
 		}
 		
-		
 		$scope.findFriends = function(){
-			var inputStr = $("#inputStr").val();
-			guestService.findFriends(inputStr).then(
+			if($scope.inputStr !== '') {
+				guestService.findFriends($scope.inputStr).then(
 					function(response){
 						$scope.guests = response.data;
 					}
-			)
+				)
+			}
 		}
-		
 		
 		$scope.update = function() {
 			guestService.updateGuestProfile($scope.loggedUser).then(
@@ -57,13 +54,9 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		
 		$scope.listFriends = function(){
 			guestService.listFriends().then(
-					function (response) {
-						$scope.friends = response.data;
-		            }		
-				);
+				function (response) {
+					$scope.friends = response.data;
+		        }		
+			);
 		}
-		
-		
-		
-		
 }]);

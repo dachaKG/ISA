@@ -9,13 +9,11 @@ public interface GuestService {
 
 	Guest findOne(Long id);
 
-	Guest findOne(String mail,String password);
+	Guest findByMailAndPassword(String mail,String password);
 	
-	Guest findOneWithMail(String mail);
+	Guest findByMail(String mail);
 	
 	void activate(String regNum);
-	
-	void delete(Long id);
 	
 	List<Guest> findByFirstAndLastName(String inputStr);
 }

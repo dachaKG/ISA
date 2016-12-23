@@ -70,6 +70,20 @@ app.controller('restaurantManagerController', ['$scope','restaurantManagerServic
 			);
 		}
 		
+		$scope.saveBidder = function() {
+			restaurantManagerService.saveBidder($scope.bidder).then(
+				function (response) {
+                    alert("Successfully added.");
+                    $scope.state = undefined;
+                    findAll();
+                    $location.path('loggedIn/restaurantManager/info');
+                },
+                function (response) {
+                    alert("Error in adding.");
+                }
+			);
+		}
+		
 		$scope.saveEmployed = function() {
 			//$scope.drink.restaurant = $scope.restaurant;
 			if($scope.employedType == 'Waiter') {

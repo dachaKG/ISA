@@ -19,5 +19,4 @@ services.service('loginRegistrationService', ['$http', function($http){
 	this.firstLogin = function(id,user){
 		return $http.put("/commonController/"+id,user);
 	}
-	
 }]);

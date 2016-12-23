@@ -37,52 +37,27 @@ public class GuestServiceImpl implements GuestService {
 
 	// ovo se kasnije na repo spusta
 	@Override
-	public Guest findOne(String mail, String password) {
-		List<Guest> guests = (List<Guest>) repository.findAll();
-		for (int i = 0; i < guests.size(); i++) {
-			if (guests.get(i).getMail().equals(mail) && guests.get(i).getPassword().equals(password))
-				return guests.get(i);
-		}
-		return null;
+	public Guest findByMailAndPassword (String mail, String password) {
+		return repository.findByMailAndPassword(mail, password);
 	}
 
 	@Override
-	public void delete(Long id) {
-		repository.delete(id);
-	}
-
-	@Override
-	public Guest findOneWithMail(String mail) {
-		List<Guest> list = findAll();
-		for (int i = 0; i < list.size(); i++)
-			if (list.get(i).getMail().equals(mail))
-				return list.get(i);
-		return null;
+	public Guest findByMail(String mail) {
+		return repository.findByMail(mail);
 	}
 
 	@Override
 	public void activate(String regNum) {
-		List<Guest> list = findAll();
-		for (int i = 0; i < list.size(); i++)
-			if (list.get(i).getRegistrated().equals(regNum))
-				list.get(i).setRegistrated("1");
+		Guest guest = repository.findByRegistrated(regNum);
+		guest.setRegistrated("1");
 	}
 
+	//treba da se iskljuci taj sam koji je logovan
 	@Override
 	public List<Guest> findByFirstAndLastName(String inputStr) {
-		List<Guest> list = findAll();
-		List<Guest> output = new ArrayList<Guest>();
-		for (int i = 0; i < list.size(); i++){
-			if((list.get(i).getFirstname().toLowerCase().startsWith(inputStr.toLowerCase())
-				|| list.get(i).getLastname().toLowerCase().startsWith(inputStr.toLowerCase())) 
-				|| (list.get(i).getFirstname() + " "+list.get(i).getLastname()).toLowerCase().startsWith(inputStr.toLowerCase())
-				&& inputStr!="" && output.size()<20)
-				
-				output.add(list.get(i));
-		}
-		
-		return output;
-	}
-	
-	
+		List<Guest> list1 = new ArrayList<Guest>();
+		list1.addAll(repository.findByFirstnameContaining(inputStr));
+		list1.addAll(repository.findByLastnameContaining(inputStr));
+		return list1;
+	}	
 }

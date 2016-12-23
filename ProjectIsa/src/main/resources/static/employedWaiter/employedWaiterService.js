@@ -21,5 +21,4 @@ services.service('employedWaiterService',['$http', function($http){
 	this.readyOrders = function(id){
 		return $http.get("/waiter/readyOrders");
 	}
-	
 }]);

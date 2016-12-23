@@ -4,16 +4,15 @@ app.controller('employedWaiterController', [ '$scope', 'employedWaiterService','
 	function($scope, employedWaiterService, $location) {
 		function checkRights(){
 			employedWaiterService.checkRights().then(
-					function(response){
-						if(response.data === 'true')
-							findAll();
-						else{
-							$location.path('login')
-							alert("Access denied");
-						}
+				function(response){
+					if(response.data === 'true')
+						findAll();
+					else{
+						$location.path('login')
+						alert("Access denied");
 					}
+				}
 			);
-		
 		}
 		checkRights();
 		
@@ -26,22 +25,22 @@ app.controller('employedWaiterController', [ '$scope', 'employedWaiterService','
 			
 			
 			employedWaiterService.readyDrinks().then(
-					function(response){
-						$scope.readyDrinks = response.data;
-					}
-				);
+				function(response){
+					$scope.readyDrinks = response.data;
+				}
+			);
 			
 			employedWaiterService.readyFood().then(
-					function(response){
-						$scope.readyFood = response.data;
-					}
-				);
+				function(response){
+					$scope.readyFood = response.data;
+				}
+			);
 			
 			employedWaiterService.readyOrders().then(
-					function(response){
-						$scope.orders = response.data;
-					}
-				);
+				function(response){
+					$scope.orders = response.data;
+				}
+			);
 		}
 		
 		$scope.makeBill = function(order){
@@ -53,8 +52,5 @@ app.controller('employedWaiterController', [ '$scope', 'employedWaiterService','
 					alert("Error while signal");
 				}
 			);
-		}
-		
-		
-		
+		}		
 }]);

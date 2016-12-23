@@ -141,9 +141,9 @@ public class BartenderController {
 	@ResponseStatus(HttpStatus.OK)
 	public Orderr drinkReady(@PathVariable Long orderId) {
 		Long id = ((Bartender) httpSession.getAttribute("user")).getId();
+		Optional.ofNullable(bartenderService.findOne(id)).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 		Bartender bartender = bartenderService.findOne(id);
-		Optional.ofNullable(bartender).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
-
+		
 		Optional.ofNullable(orderService.findOne(orderId))
 				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 

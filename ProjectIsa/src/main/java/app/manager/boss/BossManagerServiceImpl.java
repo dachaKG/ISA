@@ -30,25 +30,17 @@ public class BossManagerServiceImpl implements BossManagerService {
 	}
 
 	@Override
-	public BossManager findOne(String mail, String password) {
-		List<BossManager> list = findAll();
-		BossManager bossManager = list.get(0);
-		if (bossManager.getMail().equals(mail) && bossManager.getPassword().equals(password))
-			return bossManager;
-		return null;
-	}
-
-	@Override
 	public BossManager findOne(Long id) {
 		return repository.findOne(id);
 	}
 
 	@Override
-	public BossManager findOneWithMail(String mail) {
-		List<BossManager> list = findAll();
-		for (int i = 0; i < list.size(); i++)
-			if (list.get(i).getMail().equals(mail))
-				return list.get(i);
-		return null;
+	public BossManager findByMailAndPassword(String mail, String password) {
+		return repository.findByMailAndPassword(mail, password);
+	}
+
+	@Override
+	public BossManager findByMail(String mail) {
+		return repository.findByMail(mail);
 	}
 }

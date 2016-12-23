@@ -8,7 +8,11 @@ services.service('bossManagerService', ['$http', function($http){
 		return $http.get("/bossManager/checkRights");
 	}
 	
-	this.findAll = function(){
+	this.findBossManager = function(){
+		return $http.get("/bossManager/boss");
+	}
+	
+	this.findAllSystemManagers = function(){
 		return $http.get("/bossManager");
 	}
 	
@@ -20,11 +24,7 @@ services.service('bossManagerService', ['$http', function($http){
 		return $http.post("/bossManager",systemManager);
 	}
 	
-	this.update = function(systemManager){
-		return $http.put("/bossManager/"+systemManager.id,systemManager);
-	}
-	
-	this.delete = function(id){
-		return $http.delete("/bossManager/"+id);
+	this.updateBossMangerProfile = function(boss){
+		return $http.put("/bossManager/"+boss.id,boss);
 	}
 }]);

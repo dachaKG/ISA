@@ -4,14 +4,14 @@ app.controller('employedBartenderController', [ '$scope', 'employedBartenderServ
 	function($scope, employedBartenderService, $location) {
 		function checkRights(){
 			employedBartenderService.checkRights().then(
-					function(response){
-						if(response.data === 'true')
-							findAll();
-						else{
-							$location.path('login')
-							alert("Access denied");
-						}
+				function(response){
+					if(response.data === 'true')
+						findAll();
+					else{
+						$location.path('login')
+						alert("Access denied");
 					}
+				}
 			);
 		}
 		checkRights();
@@ -30,10 +30,10 @@ app.controller('employedBartenderController', [ '$scope', 'employedBartenderServ
 			);
 			
 			employedBartenderService.readyDrinks().then(
-					function(response){
-						$scope.readyDrinks = response.data;
-					}
-				);
+				function(response){
+					$scope.readyDrinks = response.data;
+				}
+			);
 		}
 		
 		$scope.ready = function(drinkOrder){
@@ -59,7 +59,5 @@ app.controller('employedBartenderController', [ '$scope', 'employedBartenderServ
 					alert("Error in changing");
 				}
 			);
-		}
-		
-		
+		}		
 }]);

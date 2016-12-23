@@ -27,5 +27,4 @@ services.service('guestService', ['$http', function($http){
 	this.listFriends = function(){
 		return $http.get("/friends/list");
 	}
-	
 }]);

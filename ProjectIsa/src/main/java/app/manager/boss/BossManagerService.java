@@ -8,9 +8,9 @@ public interface BossManagerService {
 	
 	BossManager save(BossManager guest);
 	
-	BossManager findOne(String mail,String password);
+	BossManager findByMailAndPassword(String mail,String password);
 
-	BossManager findOneWithMail(String mail);
+	BossManager findByMail(String mail);
 	
 	BossManager findOne(Long id);
 }
