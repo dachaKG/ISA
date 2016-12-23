@@ -9,7 +9,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -55,19 +54,25 @@ public class RestaurantManagerController {
 		}
 	}
 
+	// spusta se pretraga na repo,menja se kasnije kad se uvede da restoran
+	// sadrzi vise menadzera
 	@GetMapping("/restaurant")
-	public ResponseEntity<Restaurant> findRestaurant() {
-		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
-		Restaurant restaurant = restaurantService.findOne(restaurantId);
-		return new ResponseEntity<>(restaurant, HttpStatus.OK);
+	@ResponseStatus(HttpStatus.OK)
+	public Restaurant findRestaurantForRestaurantManager() {
+		Long userId = ((RestaurantManager) httpSession.getAttribute("user")).getId();
+		List<Restaurant> restaurants = restaurantService.findAll();
+		for (int i = 0; i < restaurants.size(); i++) {
+			Restaurant restaurant = restaurants.get(i);
+			if (restaurant.getRestaurantManager().getId() == userId)
+				return restaurant;
+		}
+		return null;
 	}
 
 	@PostMapping(path = "/restaurant/saveDrink")
 	@ResponseStatus(HttpStatus.CREATED)
 	public void saveDrink(@Valid @RequestBody Drink drink) {
-		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
-		Restaurant restaurant = restaurantService.findOne(restaurantId);
-		// drink.setRestaurant(restaurant);
+		Restaurant restaurant = findRestaurantForRestaurantManager();
 		restaurant.getDrinks().add(drink);
 		restaurantService.save(restaurant);
 	}
@@ -75,9 +80,7 @@ public class RestaurantManagerController {
 	@PostMapping(path = "/restaurant/saveDish")
 	@ResponseStatus(HttpStatus.CREATED)
 	public void saveDish(@Valid @RequestBody Dish dish) {
-		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
-		Restaurant restaurant = restaurantService.findOne(restaurantId);
-		// dish.setRestaurant(restaurant);
+		Restaurant restaurant = findRestaurantForRestaurantManager();
 		restaurant.getFood().add(dish);
 		restaurantService.save(restaurant);
 	}
@@ -86,9 +89,7 @@ public class RestaurantManagerController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public void saveWaiter(@Valid @RequestBody Waiter waiter) {
 		waiter.setRegistrated("0");
-		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
-		Restaurant restaurant = restaurantService.findOne(restaurantId);
-		// waiter.setRestaurant(restaurant);
+		Restaurant restaurant = findRestaurantForRestaurantManager();
 		restaurant.getWaiters().add(waiter);
 		restaurantService.save(restaurant);
 	}
@@ -97,9 +98,7 @@ public class RestaurantManagerController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public void saveCook(@Valid @RequestBody Cook cook) {
 		cook.setRegistrated("0");
-		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
-		Restaurant restaurant = restaurantService.findOne(restaurantId);
-		// cook.setRestaurant(restaurant);
+		Restaurant restaurant = findRestaurantForRestaurantManager();
 		restaurant.getCooks().add(cook);
 		restaurantService.save(restaurant);
 	}
@@ -108,9 +107,7 @@ public class RestaurantManagerController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public void saveCook(@Valid @RequestBody Bartender bartender) {
 		bartender.setRegistrated("0");
-		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
-		Restaurant restaurant = restaurantService.findOne(restaurantId);
-		// bartender.setRestaurant(restaurant);
+		Restaurant restaurant = findRestaurantForRestaurantManager();
 		restaurant.getBartenders().add(bartender);
 		restaurantService.save(restaurant);
 	}
@@ -119,47 +116,9 @@ public class RestaurantManagerController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public void saveBidder(@Valid @RequestBody Bidder bidder) {
 		bidder.setRegistrated("0");
-		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
-		Restaurant restaurant = restaurantService.findOne(restaurantId);
-		// bidder.setRestaurant(restaurant);
+		Restaurant restaurant = findRestaurantForRestaurantManager();
 		restaurant.getBidders().add(bidder);
 		restaurantService.save(restaurant);
-	}
-
-	// mora da postoji zbog json igrnore sa strane restorana
-	@GetMapping(path = "/restaurant/waitres")
-	@ResponseStatus(HttpStatus.CREATED)
-	public List<Waiter> findAllWaitresInRestaurant() {
-		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
-		Restaurant restaurant = restaurantService.findOne(restaurantId);
-		return restaurant.getWaiters();
-	}
-
-	// mora da postoji zbog json igrnore sa strane restorana
-	@GetMapping(path = "/restaurant/cooks")
-	@ResponseStatus(HttpStatus.CREATED)
-	public List<Cook> findAllCooksInRestaurant() {
-		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
-		Restaurant restaurant = restaurantService.findOne(restaurantId);
-		return restaurant.getCooks();
-	}
-
-	// mora da postoji zbog json igrnore sa strane restorana
-	@GetMapping(path = "/restaurant/bartenders")
-	@ResponseStatus(HttpStatus.CREATED)
-	public List<Bartender> findAllBartendersInRestaurant() {
-		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
-		Restaurant restaurant = restaurantService.findOne(restaurantId);
-		return restaurant.getBartenders();
-	}
-
-	// mora da postoji zbog json igrnore sa strane restorana
-	@GetMapping(path = "/restaurant/bidders")
-	@ResponseStatus(HttpStatus.CREATED)
-	public List<Bidder> findAllBiddersInRestaurant() {
-		Long restaurantId = ((RestaurantManager) httpSession.getAttribute("user")).getRestaurant().getId();
-		Restaurant restaurant = restaurantService.findOne(restaurantId);
-		return restaurant.getBidders();
 	}
 
 	@PutMapping(path = "/{id}")

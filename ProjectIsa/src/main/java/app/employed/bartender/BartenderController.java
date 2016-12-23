@@ -24,26 +24,24 @@ import app.drink.Drink;
 import app.order.DrinkStatus;
 import app.order.OrderService;
 import app.order.Orderr;
-import app.restaurant.Restaurant;
-import app.restaurant.RestaurantService;
 
 @RestController
 @RequestMapping("/bartender")
 public class BartenderController {
 
 	private HttpSession httpSession;
-	
+
 	private final BartenderService bartenderService;
 	private final OrderService orderService;
-	private final RestaurantService restaurantService;
+
 	@Autowired
-	public BartenderController(final HttpSession httpSession, final BartenderService bartenderService, final OrderService orderService, final RestaurantService restaurantService) {
+	public BartenderController(final HttpSession httpSession, final BartenderService bartenderService,
+			final OrderService orderService) {
 		this.httpSession = httpSession;
 		this.bartenderService = bartenderService;
 		this.orderService = orderService;
-		this.restaurantService = restaurantService;
 	}
-	
+
 	@SuppressWarnings("unused")
 	@GetMapping("/checkRights")
 	public boolean checkRights() {
@@ -54,18 +52,18 @@ public class BartenderController {
 			return false;
 		}
 	}
-	
+
 	@GetMapping
-	public ResponseEntity<Bartender> findBartender(){
+	public ResponseEntity<Bartender> findBartender() {
 		Long id = ((Bartender) httpSession.getAttribute("user")).getId();
 		Bartender bartender = bartenderService.findOne(id);
 		return new ResponseEntity<Bartender>(bartender, HttpStatus.OK);
 	}
 
-	/*@GetMapping
-	public ResponseEntity<List<Bartender>> findAll() {
-		return new ResponseEntity<>(bartenderService.findAll(), HttpStatus.OK);
-	}*/
+	/*
+	 * @GetMapping public ResponseEntity<List<Bartender>> findAll() { return new
+	 * ResponseEntity<>(bartenderService.findAll(), HttpStatus.OK); }
+	 */
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
@@ -84,26 +82,20 @@ public class BartenderController {
 	}
 
 	// 2.4. sanker ima mogucnost da azurira podatke
-	@PutMapping(path = "/profile")
+	@PutMapping(path = "/profile{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public void update(@Valid @RequestBody Bartender bartender) {
-		Long restaurantId = ((Bartender) httpSession.getAttribute("user")).getRestaurant().getId();
-		Restaurant restaurant = restaurantService.findOne(restaurantId);
-		for(int i = 0 ; i < restaurant.getBartenders().size(); i++){
-			if(restaurant.getBartenders().get(i).getId() == bartender.getId()){
-				restaurant.getBartenders().set(i, bartender);
-				//restaurant.getBartenders()
-			}
-		}
-		
-			restaurantService.save(restaurant);
+	public Bartender update(@PathVariable Long id, @Valid @RequestBody Bartender bartender) {
+		Optional.ofNullable(bartenderService.findOne(id))
+				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
+		bartender.setId(id);
+		return bartenderService.save(bartender);
 	}
 
 	// 2.4 prikaz porudzbina za sankera
 	@GetMapping(path = "/orders")
 	public ResponseEntity<List<Drink>> findAllOrdrers() {
 		Long id = ((Bartender) httpSession.getAttribute("user")).getId();
-	//	Bartender bartender = ((Bartender) httpSession.getAttribute("user"));
+		// Bartender bartender = ((Bartender) httpSession.getAttribute("user"));
 		List<Orderr> orders = bartenderService.findOne(id).getOrders();
 		Optional.ofNullable(orders).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 
@@ -119,22 +111,22 @@ public class BartenderController {
 
 		return new ResponseEntity<>(drinks, HttpStatus.OK);
 	}
-	
+
 	// spisak pica koja su spremna
 	@GetMapping(path = "/readyDrinks")
 	public ResponseEntity<List<Drink>> readyDrinks() {
 		Long id = ((Bartender) httpSession.getAttribute("user")).getId();
-	//	Bartender bartender = ((Bartender) httpSession.getAttribute("user"));
+		// Bartender bartender = ((Bartender) httpSession.getAttribute("user"));
 		Bartender bartender = bartenderService.findOne(id);
 		List<Orderr> orders = bartender.getOrders();
-		
+
 		Optional.ofNullable(orders).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 
 		List<Drink> drinks = new ArrayList<Drink>();
-		
+
 		for (int i = 0; i < orders.size(); i++) {
-			if (orders.get(i).getDrinks().size() != 0 && orders.get(i).getDrinkStatus() != null &&
-					orders.get(i).getDrinkStatus().compareTo(DrinkStatus.finished) == 0) {
+			if (orders.get(i).getDrinks().size() != 0 && orders.get(i).getDrinkStatus() != null
+					&& orders.get(i).getDrinkStatus().compareTo(DrinkStatus.finished) == 0) {
 				for (int j = 0; j < orders.get(i).getDrinks().size(); j++) {
 					drinks.add(orders.get(i).getDrinks().get(j));
 				}
@@ -144,20 +136,19 @@ public class BartenderController {
 		return new ResponseEntity<>(drinks, HttpStatus.OK);
 	}
 
-	//2.4 sanker signalizir da je odgovarajuce pice spremno
+	// 2.4 sanker signalizir da je odgovarajuce pice spremno
 	@GetMapping(path = "/drinkReady/{orderId}")
 	@ResponseStatus(HttpStatus.OK)
 	public Orderr drinkReady(@PathVariable Long orderId) {
 		Long id = ((Bartender) httpSession.getAttribute("user")).getId();
 		Bartender bartender = bartenderService.findOne(id);
-		Optional.ofNullable(bartender)
-				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
-		
+		Optional.ofNullable(bartender).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
+
 		Optional.ofNullable(orderService.findOne(orderId))
 				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
-		
+
 		Orderr order = orderService.findOne(orderId);
-		
+
 		order.setDrinkStatus(DrinkStatus.finished);
 		order.setId(orderId);
 		return orderService.save(order);

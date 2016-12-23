@@ -25,6 +25,7 @@ import app.dish.Dish;
 import app.order.DishStatus;
 import app.order.OrderService;
 import app.order.Orderr;
+import app.restaurant.Restaurant;
 
 @RestController
 @RequestMapping("/cook")
@@ -94,6 +95,8 @@ public class CookController {
 	public Cook update(@PathVariable Long id, @Valid @RequestBody Cook cook) {
 		Optional.ofNullable(cookService.findOne(id))
 				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
+		Restaurant restaurant = cookService.findOne(id).getRestaurant();
+		cook.setRestaurant(restaurant);
 		cook.setId(id);
 		return cookService.save(cook);
 	}

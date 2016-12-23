@@ -20,33 +20,15 @@ app.controller('restaurantManagerController', ['$scope','restaurantManagerServic
 			restaurantManagerService.findRestaurant().then(
 				function (response) {
 					$scope.restaurant = response.data;
+					$scope.waiters = response.data.waiters;
+					$scope.cooks = response.data.cooks;
+					$scope.bartenders = response.data.bartenders;
+					$scope.bidders = response.data.bidders;
 				}
 	        );
-			
-			restaurantManagerService.findAllWaitresInRestaurant().then(
-				function (response) {
-					$scope.waiters = response.data;
-				}
-	         );
-			restaurantManagerService.findAllCooksInRestaurant().then(
-				function (response) {
-					$scope.cooks = response.data;
-				}
-		     );
-			restaurantManagerService.findAllBartendersInRestaurant().then(
-				function (response) {
-					$scope.bartenders = response.data;
-				}
-			);
-			restaurantManagerService.findAllBiddersInRestaurant().then(
-				function (response) {
-					$scope.bidders = response.data;
-				}
-		    );
 		}
 		
 		$scope.saveDrink = function() {
-			//$scope.drink.restaurant = $scope.restaurant;
 			restaurantManagerService.saveDrink($scope.drink).then(
 				function (response) {
                     alert("Successfully added.");
@@ -61,7 +43,6 @@ app.controller('restaurantManagerController', ['$scope','restaurantManagerServic
 		}
 		
 		$scope.saveDish = function() {
-			//$scope.drink.restaurant = $scope.restaurant;
 			restaurantManagerService.saveDish($scope.dish).then(
 				function (response) {
                     alert("Successfully added.");

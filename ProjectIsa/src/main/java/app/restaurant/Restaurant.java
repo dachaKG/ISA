@@ -56,23 +56,18 @@ public class Restaurant {
 	@OneToMany(mappedBy = "restaurant")
 	private List<Segment> segments;
 
-	// proveriti kardinalitete
-	@JsonIgnore
-	@OneToMany(cascade = CascadeType.ALL,mappedBy = "restaurant")
-	//@JoinTable(name = "RESTAURANT_WAITERS", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "WAITER_ID"))
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "RESTAURANT_WAITERS", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "WAITER_ID"))
 	private List<Waiter> waiters;
 
-	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "RESTAURANT_COOKS", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "COOK_ID"))
 	private List<Cook> cooks;
 
-	@JsonIgnore
-	@OneToMany(cascade = CascadeType.ALL,mappedBy = "restaurant")
-//	@JoinTable(name = "RESTAURANT_BARTENDERS", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "BARTENDER_ID"))
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "RESTAURANT_BARTENDERS", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "BARTENDER_ID"))
 	private List<Bartender> bartenders;
 
-	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "RESTAURANT_BIDDERS", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "BIDDER_ID"))
 	private List<Bidder> bidders;

@@ -35,7 +35,7 @@ public class BidderController {
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
 	public Bidder findAllLastOrders() {
-		Long bidderId = ((Bidder) httpSession.getAttribute("user")).getRestaurant().getId();
+		Long bidderId = ((Bidder) httpSession.getAttribute("user")).getId();
 		Bidder bidder = bidderService.findOne(bidderId);
 		return bidder;
 	}

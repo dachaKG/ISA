@@ -33,7 +33,7 @@ services.service('employedCookService',['$http', function($http){
 	}
 	
 	this.changeProfile = function(id, cook){
-		return $http.put("/cook/profile/"+id,bartender);
+		return $http.put("/cook/profile/"+id,cook);
 	}
 	
 	

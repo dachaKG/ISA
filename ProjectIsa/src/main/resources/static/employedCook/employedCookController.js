@@ -65,8 +65,8 @@ app.controller('employedCookController',['$scope','employedCookService','$locati
 			);
 		}
 		
-		$scope.changeProfile = function(cook){
-			employedCookService.changeProfile(cook.id,cook).then(
+		$scope.changeProfile = function(){
+			employedCookService.changeProfile($scope.cook.id,$scope.cook).then(
 				function(response){
 					alert("successfully added");
 					$scope.state = undefined;
