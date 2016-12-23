@@ -140,15 +140,9 @@ public class BartenderController {
 	@GetMapping(path = "/drinkReady/{orderId}")
 	@ResponseStatus(HttpStatus.OK)
 	public Orderr drinkReady(@PathVariable Long orderId) {
-		Long id = ((Bartender) httpSession.getAttribute("user")).getId();
-		Optional.ofNullable(bartenderService.findOne(id)).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
-		Bartender bartender = bartenderService.findOne(id);
-		
 		Optional.ofNullable(orderService.findOne(orderId))
 				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
-
 		Orderr order = orderService.findOne(orderId);
-
 		order.setDrinkStatus(DrinkStatus.finished);
 		order.setId(orderId);
 		return orderService.save(order);
