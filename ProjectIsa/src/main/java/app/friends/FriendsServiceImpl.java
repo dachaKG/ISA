@@ -21,6 +21,7 @@ public class FriendsServiceImpl implements FriendsService {
 
 	@Override
 	public void save(Friends friends) {
+		System.out.println("SUCCES SAVING ! ");
 		repository.save(friends);
 	}
 

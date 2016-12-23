@@ -20,4 +20,12 @@ services.service('guestService', ['$http', function($http){
 		return $http.put("/guest/"+guest.id,guest);
 	}
 	
+	this.sendRequest = function(id){
+		return $http.get("friends/addFriend/"+id);
+	}
+	
+	this.listFriends = function(){
+		return $http.get("/friends/list");
+	}
+	
 }]);

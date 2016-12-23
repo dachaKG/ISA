@@ -223,6 +223,11 @@ angular.module('routerApp', ['ui.router',
 			url : '/updateGuestProfile',
 			templateUrl : 'guestt/guestProfileUpdate.html'
 		})
+		.state('loggedIn.guest.friends', {
+			url : '/friends',
+			templateUrl : 'guestt/guestFriends.html'
+			
+		})
         
         
         

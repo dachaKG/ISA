@@ -1,7 +1,7 @@
 var app = angular.module('guest.controllers', []);
  
-app.controller('guestController', ['$scope','guestService', '$location',
-  	function ($scope, guestService, $location) {
+app.controller('guestController', ['$scope','$window','guestService', '$location',
+  	function ($scope,$window, guestService, $location) {
 		function checkRights() {			
 			guestService.checkRights().then(
 					function (response) {
@@ -48,6 +48,19 @@ app.controller('guestController', ['$scope','guestService', '$location',
                     alert("Error in changing.");
                 }
 			);
+		}
+		
+		$scope.sendRequest = function(id) {
+			guestService.sendRequest(id);
+			$window.location.reload();
+		}
+		
+		$scope.listFriends = function(){
+			guestService.listFriends().then(
+					function (response) {
+						$scope.friends = response.data;
+		            }		
+				);
 		}
 		
 		

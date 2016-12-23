@@ -57,10 +57,9 @@ public class GuestController {
 	@PutMapping(path = "/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public Guest update(@PathVariable Long id, @Valid @RequestBody Guest guest) {
-	/*	Optional.ofNullable(service.findOne(id))
+		Optional.ofNullable(service.findOne(id))
 				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
-		guest.setId(id);*/
-		System.out.println("ne zovi ne pisi i ne dolazi");
+		guest.setId(id);
 		return service.save(guest);
 	}
 	
