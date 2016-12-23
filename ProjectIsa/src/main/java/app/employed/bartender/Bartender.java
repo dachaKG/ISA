@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
@@ -30,8 +31,10 @@ public class Bartender extends Employed {
 	@OneToMany
 	@JoinTable(name = "BARTENDER_ORDERS", joinColumns = @JoinColumn(name = "BARTENDER_ID"), inverseJoinColumns = @JoinColumn(name = "ORDER_ID"))
 	private List<Orderr> orders;
-
+/*
 	@OneToOne(cascade = CascadeType.MERGE)
 	@JoinColumn(name = "RESTAURANT_ID")
+	*/
+	@ManyToOne
 	private Restaurant restaurant;
 }
