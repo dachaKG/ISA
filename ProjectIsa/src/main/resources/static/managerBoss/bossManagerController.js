@@ -25,10 +25,12 @@ app.controller('bossManagerController', ['$scope','bossManagerService', '$locati
 		}
 		
 		$scope.saveSystemManager = function () {            
+			$scope.systemManager.registrated = "0";
 			bossManagerService.save($scope.systemManager).then(
 				function (response) {
                     alert("Uspesno dodat.");
-                    $scope.state = undefined;
+                	findAll();
+					$scope.state = undefined;
                     $location.path('loggedIn/bossManager/list');
                 },
                 function (response) {

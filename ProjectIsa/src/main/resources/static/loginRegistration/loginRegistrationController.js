@@ -45,10 +45,10 @@ app.controller('loginRegistrationController', ['$scope','loginRegistrationServic
 				return;
 			}
 			
-			
+			alert("Success,\n We sent you email with activation link to:\n isaRestorani3@gmail.com\n pass: isaisaisa");
 			loginRegistrationService.save($scope.user).then(
 				function (response) {
-                    alert("Success,\n We sent you email with activation link to:\n isaRestorani2@gmail.com\n pass: isaisaisa");
+                  //  alert("Success,\n We sent you email with activation link to:\n isaRestorani3@gmail.com\n pass: isaisaisa");
                     $location.path('login');
                 },
                 function (response) {
