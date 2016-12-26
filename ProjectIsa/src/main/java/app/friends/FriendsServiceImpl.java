@@ -33,6 +33,11 @@ public class FriendsServiceImpl implements FriendsService {
 	public void remove(Friends friends) {
 		repository.delete(friends);
 	}
+
+	@Override
+	public void remove(Long id) {
+		repository.delete(id);
+	}
 	
 	
 	

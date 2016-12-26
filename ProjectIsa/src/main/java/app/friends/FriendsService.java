@@ -8,5 +8,7 @@ public interface FriendsService {
 	List<Friends> findAll();
 	
 	void remove(Friends friends);
+	
+	void remove(Long id);
 
 }

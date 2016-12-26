@@ -40,5 +40,9 @@ services.service('guestService', ['$http', function($http){
 		return $http.get("/friends/rejectRequest/"+id);
 	}
 	
+	this.unfriend = function(id){
+		return $http.get("/friends/unfriend/"+id);
+	}
+	
 	
 }]);

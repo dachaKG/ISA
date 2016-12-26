@@ -132,13 +132,21 @@ public class FriendsController {
 		for (int i = 0; i < friends.size(); i++){
 			if(friends.get(i).getFriendReciveRequest().equals(logovani) && 
 			   friends.get(i).getFriendSendRequest().equals(senderGuest) ){
-				friendService.remove(friends.get(i));	//nzm kako drugacije da promenim vrednost kolone status.
+				friendService.remove(friends.get(i));	//nzm kako drugacije da promenim vrednost kolone status. Promeniti OBAVEZNO!
 				friendService.save(new Friends(senderGuest,logovani,Friends.REJECTED));
 				System.out.println("rejected");
 			}
 		}
 
 		
+	}
+	
+	
+	//Brisanje prijateljstva
+	@GetMapping(path = "/unfriend/{idFriend}")
+	@ResponseStatus(HttpStatus.OK)
+	public void unfriend(@PathVariable Long idFriend) {
+		friendService.remove(idFriend);
 	}
 	
 }

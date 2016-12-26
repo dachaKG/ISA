@@ -26,6 +26,7 @@
                 <th>Lastname</th>
                 <th>Mail</th>
                 <th>Status</th>
+                <th>&nbsp</th>
             </tr>
 			<tr ng-repeat="friend in friends">
 				<td> 
@@ -39,6 +40,9 @@
 				</td>
 				<td>
 					{{friend.status}}
+				</td>
+				<td>
+					<button class="btn btn-default navbar-btn" ng-click="unfriend(friend.id)">Unfriend</button>
 				</td>
 				
 			</tr>
