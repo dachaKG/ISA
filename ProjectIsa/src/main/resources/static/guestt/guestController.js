@@ -55,8 +55,49 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		$scope.listFriends = function(){
 			guestService.listFriends().then(
 				function (response) {
-					$scope.friends = response.data;
+					$scope.friends = [];	//pravim niz parova: Guest za prikaz, status(pending, friends, rejected)
+					angular.forEach(response.data, function(value, key){
+						if(value.friendSendRequest.id == $scope.loggedUser.id){	
+							var guestAndStatus = {guest: value.friendReciveRequest, status: value.status };
+							$scope.friends.push(guestAndStatus);
+						}
+						else{
+							if(value.status == "Friends"){	//jer ne zelim da stoji pending ili rejected status kod primaoca zahteva
+								var guestAndStatus = {guest: value.friendSendRequest, status: value.status };
+								$scope.friends.push(guestAndStatus);
+							}
+						}
+					});
 		        }		
 			);
 		}
+		
+		$scope.getRequests = function(){
+			guestService.findAllRecivedPendingRequests().then(
+					function (response) {
+						$scope.recivedPending = response.data;
+					}
+			)
+		}
+		
+		$scope.acceptRequest = function(id){
+			guestService.acceptFriendRequest(id).then(
+					function() {
+						alert("Friend request acccepted.");
+						$window.location.reload();
+					}
+			)
+		}
+		
+		$scope.rejectRequest = function(id){
+			guestService.rejectFriendRequest(id).then(
+					function() {
+						alert("Friend request rejected.");
+						$window.location.reload();
+					}
+			)
+		}
+		
+		
+		
 }]);
