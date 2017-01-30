@@ -11,8 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -38,10 +36,9 @@ public class Restaurant {
 	@NotBlank
 	private String name;
 
-	@NotNull
-	@OneToOne(cascade = CascadeType.MERGE)
-	@JoinColumn(name = "RESTAURANT_MANAGER_ID")
-	private RestaurantManager restaurantManager;
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "RESTAURANT_MANAGERS_OF_RESTAURANT", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "RESTAURANT_MANAGER_ID"))
+	private List<RestaurantManager> restaurantManagers;
 
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "RESTAURANT_DISH", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "DISH_ID"))

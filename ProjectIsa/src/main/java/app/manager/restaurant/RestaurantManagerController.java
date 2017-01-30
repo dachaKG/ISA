@@ -63,8 +63,16 @@ public class RestaurantManagerController {
 		List<Restaurant> restaurants = restaurantService.findAll();
 		for (int i = 0; i < restaurants.size(); i++) {
 			Restaurant restaurant = restaurants.get(i);
-			if (restaurant.getRestaurantManager().getId() == userId)
-				return restaurant;
+			for (int j = 0; j < restaurant.getRestaurantManagers().size(); j++) 
+				if (restaurant.getRestaurantManagers().get(j).getId() == userId){
+					//sluzi za inicijalizaciju posto preko data u konsturktoru nzm kako da dam default values
+					if(restaurant.getSummRate() == null) {
+						restaurant.setNumRate(0);
+						restaurant.setSummRate(0);
+						restaurantService.save(restaurant);
+					}
+					return restaurant;
+				}
 		}
 		return null;
 	}
