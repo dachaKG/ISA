@@ -22,6 +22,7 @@ import app.employed.cook.Cook;
 import app.employed.waiter.Waiter;
 import app.manager.restaurant.RestaurantManager;
 import app.order.Orderr;
+import app.restaurant.restaurantOrder.RestaurantOrderr;
 import lombok.Data;
 
 @Data
@@ -76,6 +77,11 @@ public class Restaurant {
 	@OneToMany
 	@JoinTable(name = "RESTAURANT_ORDER", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "ORDER_ID"))
 	private List<Orderr> order;
+	
+	//lista porudzbina restorana
+	@OneToMany
+	@JoinTable(name = "RESTAURANT_RESTAURANT_ORDER", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "RESTAURANT_ORDER_ID"))
+	private List<RestaurantOrderr> restaurantOrders;
 	
 	@Column
 	@NotBlank
