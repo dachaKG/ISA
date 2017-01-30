@@ -76,4 +76,23 @@ public class Restaurant {
 	@OneToMany
 	@JoinTable(name = "RESTAURANT_ORDER", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "ORDER_ID"))
 	private List<Orderr> order;
+	
+	@Column
+	@NotBlank
+	private String country;
+
+	@Column
+	@NotBlank
+	private String city;
+	
+	@Column
+	@NotBlank
+	private String street;
+	
+	@Column
+	@NotBlank
+	private String number;
+
+
+	
 }
