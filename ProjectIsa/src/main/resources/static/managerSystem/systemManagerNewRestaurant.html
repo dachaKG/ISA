@@ -1,7 +1,19 @@
 <div class = "col-sm-2">
 <form  name = "new" ng-model="$parent.systemManager">
     <label>Name</label>
-    <input name = "name" type="text" class="form-control" ng-model = "$parent.restaurant.name" required>  
+    <input type="text" class="form-control" ng-model = "$parent.restaurant.name" required>  
+
+    <label>Country</label>
+    <input type="text" class="form-control" ng-model = "$parent.restaurant.country" required>  
+
+    <label>City</label>
+    <input type="text" class="form-control" ng-model = "$parent.restaurant.city" required>  
+
+    <label>Street</label>
+    <input type="text" class="form-control" ng-model = "$parent.restaurant.street" required>  
+
+    <label>Number</label>
+    <input type="text" class="form-control" ng-model = "$parent.restaurant.number" required>  
 
     <label>Manager</label>
     <select ng-model="$parent.restaurant.restaurantManager.id" class="form-control" required>

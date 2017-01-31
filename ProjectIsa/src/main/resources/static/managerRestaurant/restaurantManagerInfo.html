@@ -96,5 +96,25 @@
 			</tr>
 		</tbody>
 	</table>
+	
+	<h3>Offers</h3>
+	<table class="table table-bordered tableBG" border="1">
+		<tbody>
+			<tr>
+				<th>ID (dish/drink,menja se)</th>
+				<th>Count</th>
+				<th>Start date</th>
+				<th>End date</th>
+				<th>Action</th>
+			</tr>
+			<tr ng-repeat="restaurantOrder in restaurantOrders">
+				<td>{{restaurantOrder.dish.name}}{{restaurantOrder.drink.name}}</td>
+				<td>{{restaurantOrder.count}}</td>
+				<td>{{restaurantOrder.startDate}}</td>
+				<td>{{restaurantOrder.endDate}}</td>
+				<td><button class="btn btn-default" ng-click="offerDetails(restaurantOrder)"><span class="glyphicon glyphicon-add" ></span> Details</button></td>
+			</tr>
+		</tbody>
+	</table>
 </div>
 

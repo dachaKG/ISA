@@ -3,6 +3,7 @@ package app.restaurant.restaurantOrder;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,9 +12,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
 
-import org.hibernate.validator.constraints.NotBlank;
-
+import app.dish.Dish;
+import app.drink.Drink;
 import app.offer.Offer;
 import lombok.Data;
 
@@ -26,35 +29,30 @@ public class RestaurantOrderr {
 	@Column(name = "RESTAURANT_ORDER_ID")
 	private Long id;
 
-
-	@NotBlank
 	@Column
 	private String orderActive;
 	
-	@NotBlank
 	@Column
 	private Date startDate;
 
-	@NotBlank
+	@NotNull
 	@Column
 	private Date endDate;
 	
-	@Column
-	private Integer drinkId;
+	@OneToOne(cascade = CascadeType.ALL)
+	private Drink drink;
 	
-	@Column
-	private Integer dishId;
+	@OneToOne(cascade = CascadeType.ALL)
+	private Dish dish;
 	
-	@NotBlank
+	@NotNull
 	@Column
 	private Integer count;
 	
 	@OneToMany
-	@JoinTable(name = "OFFER", joinColumns = @JoinColumn(name = "RESTAURANT_ORDER_ID"), inverseJoinColumns = @JoinColumn(name = "OFFER_ID"))
+	@JoinTable(name = "RESTAURANT_OFFER", joinColumns = @JoinColumn(name = "RESTAURANT_ORDER_ID"), inverseJoinColumns = @JoinColumn(name = "OFFER_ID"))
 	private List<Offer> offers;
 	
 	@Column
-	private Integer idFromChoosenBidder;
-	
-
+	private Long idFromChoosenBidder;
 }

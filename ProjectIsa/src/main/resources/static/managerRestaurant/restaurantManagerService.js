@@ -32,8 +32,24 @@ services.service('restaurantManagerService', ['$http', function($http){
 		return $http.post("/restaurantManager/restaurant/saveBidder",bidder);
 	}
 	
+	this.showFreeBidders = function(){
+		return $http.get("/restaurantManager/showFreeBidders");
+	}
+	
+	this.connectBidder = function(bidder){
+		return $http.post("/restaurantManager/restaurant/connectBidder",bidder);
+	}
+	
 	this.saveBartender = function(bartender){
 		return $http.post("/restaurantManager/restaurant/saveBartender",bartender);
+	}
+	
+	this.createNewOffer = function(offer){
+		return $http.post("/restaurantManager/restaurant/createNewOffer",offer);
+	}
+	
+	this.acceptRestaurantOrder = function(restaurantOrderr){
+		return $http.post("/restaurantManager/restaurant/acceptRestaurantOrder",restaurantOrderr);
 	}
 	
 	this.updateMangerProfile = function(restaurantManager){

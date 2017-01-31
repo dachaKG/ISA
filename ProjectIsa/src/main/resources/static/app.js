@@ -126,6 +126,14 @@ angular.module('routerApp', ['ui.router',
 			url : '/updateManagerProfile',
 			templateUrl : 'managerRestaurant/restaurantManagerProfile.html'
 		})
+		.state('loggedIn.restaurantManager.restaurantManagerOfferDetails', {
+			url : '/offerDetails',
+			templateUrl : 'managerRestaurant/restaurantManagerOfferDetails.html'
+		})
+        .state('loggedIn.restaurantManager.newOffer', {
+			url : '/newOffer',
+			templateUrl : 'managerRestaurant/restaurantManagerNewOffer.html'
+		})
         
         
         .state('loggedIn.bartender', {

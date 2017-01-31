@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import org.hibernate.validator.constraints.NotBlank;
@@ -64,7 +65,7 @@ public class Restaurant {
 	@JoinTable(name = "RESTAURANT_BARTENDERS", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "BARTENDER_ID"))
 	private List<Bartender> bartenders;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "RESTAURANT_BIDDERS", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "BIDDER_ID"))
 	private List<Bidder> bidders;
 
@@ -98,7 +99,4 @@ public class Restaurant {
 	@Column
 	@NotBlank
 	private String number;
-
-
-	
 }

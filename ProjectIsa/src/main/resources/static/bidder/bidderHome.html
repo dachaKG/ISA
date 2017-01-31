@@ -3,15 +3,26 @@
 <h1>Manager: {{bidder.firstname}}</h1>
 
 <h3>Last orders</h3>
-<table class="table table-bordered tableBG" border="1">
-	<tbody>
-		<tr ng-repeat="order in bidder.lastOrders">
-			<td>Drinks</td>
-			<td ng-repeat="drinkOrder in order.drinks">
-				{{drinkOrder.drink.name}} count:{{drinkOrder.drink.count}}</td>
-			<td>Food</td>
-			<td ng-repeat="dishOrder in order.food">{{dishOrder.dish.name}}
-				count:{{dishOrder.dish.count}}</td>
-		</tr>
-	</tbody>
-</table>
+	<table class="table table-bordered tableBG" border="1">
+		<tbody>
+			<tr>
+				<th>Artical</th>
+				<th>Price</th>
+				<th>State</th>
+				<th>Start</th>
+				<th>End</th>
+				<th>Active</th>
+				<th>Action</th>
+			</tr>
+			<tr ng-repeat="restaurantOrder in restaurantOrders">
+				<td>{{restaurantOrder.drink.name}}{{restaurantOrder.dish.name}} </td>
+				<td>{{restaurantOrder.offers.price}}</td>
+				<td>{{restaurantOrder.offers.accepted}}</td>
+				<td>{{restaurantOrder.startDate}}</td>
+				<td>{{restaurantOrder.endDate}}</td>
+				<td>{{restaurantOrder.orderActive}}</td>
+				<td><button class="btn btn-default" ng-click="change(restaurantOrder)"><span class="glyphicon glyphicon-change" ></span>Change</button></td>
+			</tr>
+		</tbody>
+	</table>
+	

@@ -1,5 +1,8 @@
 package app.manager.restaurant;
 
+import java.time.DateTimeException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,13 +22,18 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import app.bidder.Bidder;
+import app.bidder.BidderService;
 import app.dish.Dish;
 import app.drink.Drink;
 import app.employed.bartender.Bartender;
 import app.employed.cook.Cook;
 import app.employed.waiter.Waiter;
+import app.offer.Offer;
+import app.offer.OfferService;
 import app.restaurant.Restaurant;
 import app.restaurant.RestaurantService;
+import app.restaurant.restaurantOrder.RestaurantOrderService;
+import app.restaurant.restaurantOrder.RestaurantOrderr;
 
 @RestController
 @RequestMapping("/restaurantManager")
@@ -33,14 +41,20 @@ public class RestaurantManagerController {
 
 	private HttpSession httpSession;
 	private RestaurantService restaurantService;
+	private BidderService bidderService;
+	private RestaurantOrderService restaurantOrderService;
 	private RestaurantManagerService restaurantManagerService;
+	private OfferService offerService;
 
 	@Autowired
 	public RestaurantManagerController(final HttpSession httpSession, final RestaurantService restaurantService,
-			final RestaurantManagerService restaurantManagerService) {
+			final RestaurantManagerService restaurantManagerService,final BidderService bidderService,final RestaurantOrderService restaurantOrderService,final OfferService offerService) {
 		this.httpSession = httpSession;
 		this.restaurantService = restaurantService;
+		this.bidderService = bidderService;
+		this.restaurantOrderService = restaurantOrderService;
 		this.restaurantManagerService = restaurantManagerService;
+		this.offerService = offerService;
 	}
 
 	@SuppressWarnings("unused")
@@ -64,7 +78,7 @@ public class RestaurantManagerController {
 		for (int i = 0; i < restaurants.size(); i++) {
 			Restaurant restaurant = restaurants.get(i);
 			for (int j = 0; j < restaurant.getRestaurantManagers().size(); j++) 
-				if (restaurant.getRestaurantManagers().get(j).getId() == userId){
+				if (restaurant.getRestaurantManagers().get(j).getId() == userId) {
 					//sluzi za inicijalizaciju posto preko data u konsturktoru nzm kako da dam default values
 					if(restaurant.getSummRate() == null) {
 						restaurant.setNumRate(0);
@@ -127,8 +141,87 @@ public class RestaurantManagerController {
 		Restaurant restaurant = findRestaurantForRestaurantManager();
 		restaurant.getBidders().add(bidder);
 		restaurantService.save(restaurant);
+ 	}
+	
+	@GetMapping("/showFreeBidders")
+	public ArrayList<Bidder> showFreeBidders() {
+		ArrayList<Bidder> bidders = new ArrayList<Bidder>();
+		List<Bidder> allBidders = bidderService.findAll();
+		Restaurant restaurant = findRestaurantForRestaurantManager();
+		for(int i=0;i<allBidders.size();i++) {
+			if(!contains(restaurant, allBidders.get(i)))
+				bidders.add(allBidders.get(i));
+		}
+		return bidders;
+	}
+	
+	private boolean contains(Restaurant restaurant,Bidder bidder) {
+		for(int j=0;j<restaurant.getBidders().size();j++) {
+			if(bidder.getId() == restaurant.getBidders().get(j).getId())
+				return true;
+		}
+		return false;
+	}
+	
+	@PostMapping(path = "/restaurant/connectBidder")
+	@ResponseStatus(HttpStatus.CREATED)
+	public void connectBidder(@Valid @RequestBody Bidder bidder) {
+		Bidder bidderOld = bidderService.findOne(bidder.getId());
+		Restaurant restaurant = findRestaurantForRestaurantManager();
+		restaurant.getBidders().add(bidderOld);
+		restaurantService.save(restaurant);
 	}
 
+ 
+	@PostMapping(path = "/restaurant/createNewOffer")
+	@ResponseStatus(HttpStatus.CREATED)
+	public void createNewOffer(@Valid @RequestBody RestaurantOrderr restaurantOrderr) {
+		Dish dish = restaurantOrderr.getDish();
+		Drink drink =restaurantOrderr.getDrink();
+		Restaurant restaurant = findRestaurantForRestaurantManager();
+		setObject(dish,drink,restaurant,restaurantOrderr);
+		restaurant.getRestaurantOrders().add(restaurantOrderr);
+		restaurantOrderService.save(restaurantOrderr);
+		restaurantService.save(restaurant);
+ 	}
+	
+	@PostMapping(path = "/restaurant/acceptRestaurantOrder")
+	@ResponseStatus(HttpStatus.ACCEPTED)
+	public void acceptRestaurantOreder(@Valid @RequestBody RestaurantOrderr restaurantOrderr) {
+		restaurantOrderr.setOrderActive("closed");
+		for(int i=0;i<restaurantOrderr.getOffers().size();i++) {
+			if(restaurantOrderr.getOffers().get(i).getBidder().getId() == restaurantOrderr.getIdFromChoosenBidder()) {
+				restaurantOrderr.getOffers().get(i).setAccepted("accepted");
+			}
+			else
+				restaurantOrderr.getOffers().get(i).setAccepted("rejected");
+			offerService.save(restaurantOrderr.getOffers().get(i));
+		}
+		Restaurant restaurant = findRestaurantForRestaurantManager();
+		restaurantOrderService.save(restaurantOrderr);
+		restaurantService.save(restaurant);
+ 	}
+	
+	private void setObject(Dish dish,Drink drink,Restaurant restaurant, RestaurantOrderr restaurantOrderr) {
+		restaurantOrderr.setStartDate(new Date());
+		restaurantOrderr.setOrderActive("0");
+		if(restaurantOrderr.getStartDate().after(restaurantOrderr.getEndDate())) {
+			if(dish != null) {
+				for(int i=0;i<restaurant.getFood().size();i++)
+					if(restaurant.getFood().get(i).getId() == dish.getId())
+						restaurantOrderr.setDish(restaurant.getFood().get(i));
+			}
+			if(drink != null) {
+				for(int i=0;i<restaurant.getDrinks().size();i++)
+					if(restaurant.getDrinks().get(i).getId() == drink.getId())
+						restaurantOrderr.setDrink(restaurant.getDrinks().get(i));
+			}
+			restaurantOrderr.setOffers(new ArrayList<Offer>());
+		}
+		else
+			throw new DateTimeException("Wrong date.");
+	}
+	
 	@PutMapping(path = "/{id}")
 	public RestaurantManager updateRestaurantManager(@PathVariable Long id,
 			@Valid @RequestBody RestaurantManager restaurantManager) {

@@ -11,4 +11,8 @@ services.service('bidderService', ['$http', function($http){
 	this.findBidder = function(){
 		return $http.get("/bidder");
 	}	
+	
+	this.getOffers = function(){
+		return $http.get("/bidder/getOffers");
+	}	
 }]);
