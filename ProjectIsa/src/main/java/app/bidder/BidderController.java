@@ -1,12 +1,17 @@
 package app.bidder;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,19 +19,22 @@ import org.springframework.web.bind.annotation.RestController;
 import app.offer.Offer;
 import app.restaurant.Restaurant;
 import app.restaurant.RestaurantService;
+import app.restaurant.restaurantOrder.RestaurantOrderService;
 import app.restaurant.restaurantOrder.RestaurantOrderr;
 
 @RestController
 @RequestMapping("/bidder")
 public class BidderController {
 	private final BidderService bidderService;
+	private final RestaurantOrderService restaurantOrderrService;
 	private final RestaurantService restaurantService;
 	private HttpSession httpSession;
 
 	@Autowired
-	public BidderController(final HttpSession httpSession, final BidderService bidderService,final RestaurantService restaurantService) {
+	public BidderController(final HttpSession httpSession, final BidderService bidderService,final RestaurantService restaurantService,final RestaurantOrderService restaurantOrderrService) {
 		this.bidderService = bidderService;
 		this.restaurantService = restaurantService;
+		this.restaurantOrderrService = restaurantOrderrService;
 		this.httpSession = httpSession;
 	}
 
@@ -67,5 +75,24 @@ public class BidderController {
 			}	
 		}
 		return restaurantOrderrs;
-	}	
+	}
+	
+	@PostMapping("/changeValueOfPrice")
+	@ResponseStatus(HttpStatus.OK)
+	public int changeValueOfPrice(@Valid @RequestBody Offer restaurantOrderr) {
+		List<RestaurantOrderr> restaurantOrderrs = restaurantOrderrService.findAll();
+		for(int i=0;i<restaurantOrderrs.size();i++) {
+			for(int j =0;j<restaurantOrderrs.get(i).getOffers().size();j++) {
+				if(restaurantOrderrs.get(i).getOffers().get(j).getId() == restaurantOrderr.getId()) {
+					Date currentDate = new Date();
+					if(restaurantOrderrs.get(i).getEndDate().getTime() >currentDate.getTime() && restaurantOrderrs.get(i).getOrderActive().equals("open")) {
+						restaurantOrderrs.get(i).getOffers().get(j).setPrice(Integer.parseInt(restaurantOrderr.getBidder().getRegistrated()));
+						restaurantOrderrService.save(restaurantOrderrs.get(i));
+						return 1;
+					}
+				}
+			}
+		}
+		return 0;
+	}
 }

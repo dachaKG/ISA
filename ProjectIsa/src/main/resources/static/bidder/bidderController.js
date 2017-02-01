@@ -51,5 +51,30 @@ app.controller('bidderController', ['$scope','bidderService', '$location',
 				}
 	        );
 		}
+		
+		$scope.change = function(restaurantOrder){
+			x = document.getElementById("artical");
+			x.setAttribute("value", restaurantOrder.dish.name);
+			y = document.getElementById("price");
+			price = restaurantOrder.offers.price;
+			y.setAttribute("value", price);
+			$scope.restaurantOrderForChange = restaurantOrder;
+		}
+		
+		$scope.changeValueOfPrice = function(){
+			price = document.getElementById("price").value;
+			offers = $scope.restaurantOrderForChange.offers;
+			//glupost :D al ne znam kako da posalje 2 parametra :D 
+			offers.bidder.registrated = price;
+			bidderService.changeValueOfPrice(offers).then(
+				function (response) {
+					if(response.data ===  "1") {
+	                	location.reload(true);
+					}
+					else
+						alert('Erorr.Maybe is offer closed.');
+				}
+		    );
+		}
 	}
 ]);

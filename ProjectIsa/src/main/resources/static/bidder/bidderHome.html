@@ -26,3 +26,14 @@
 		</tbody>
 	</table>
 	
+	
+<form  name = "new">
+    <label>Artical</label>
+    <input id = "artical" type="text" class="form-control" disabled>  
+
+    <label>Price</label>
+    <input id = "price" type="number" class="form-control" required>  
+
+<button class="btn btn-default" ng-click="new.$valid &&  changeValueOfPrice()"><span class="glyphicon glyphicon-ok" ></span> Change</button>
+<button class="btn btn-default" ng-click="cancel()"><span class="glyphicon glyphicon-remove" ></span> Cancel</button>
+</form>

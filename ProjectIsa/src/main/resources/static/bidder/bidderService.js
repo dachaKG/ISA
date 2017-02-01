@@ -14,5 +14,9 @@ services.service('bidderService', ['$http', function($http){
 	
 	this.getOffers = function(){
 		return $http.get("/bidder/getOffers");
-	}	
+	}
+	
+	this.changeValueOfPrice = function(restaurantOrderForChange){
+		return $http.post("/bidder/changeValueOfPrice",restaurantOrderForChange);
+	}
 }]);
