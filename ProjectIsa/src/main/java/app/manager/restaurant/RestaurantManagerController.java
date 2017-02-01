@@ -32,6 +32,7 @@ import app.offer.Offer;
 import app.offer.OfferService;
 import app.restaurant.Restaurant;
 import app.restaurant.RestaurantService;
+import app.restaurant.Segment;
 import app.restaurant.restaurantOrder.RestaurantOrderService;
 import app.restaurant.restaurantOrder.RestaurantOrderr;
 
@@ -229,5 +230,16 @@ public class RestaurantManagerController {
 				.orElseThrow(() -> new ResourceNotFoundException("resourceNotFound!"));
 		restaurantManager.setId(id);
 		return restaurantManagerService.save(restaurantManager);
+	}
+	
+	@PutMapping(path = "/restaurant/makeConfig/{xaxis}/{yaxis}")
+	public void makeConfig(@PathVariable("xaxis") Long xaxis, @PathVariable("yaxis") Long yaxis){
+		System.out.println("Success: "+xaxis+" "+yaxis);
+		Restaurant restaurant = findRestaurantForRestaurantManager();
+		if(restaurant.getSegments().size()<1){
+			Segment seg = new Segment("defaultSegment", restaurant);
+			restaurant.getSegments().add(seg);
+		}
+		
 	}
 }

@@ -28,10 +28,6 @@ public class Segment {
 	@Column
 	private String name;
 
-	@Enumerated(EnumType.STRING)
-	@NotNull
-	private Configuration cardinality;
-
 	@ManyToOne
 	@JoinColumn(name = "RESTAURANT_ID")
 	private Restaurant restaurant;
@@ -39,4 +35,9 @@ public class Segment {
 	@OneToMany
 	@JoinTable(name = "SEGMENT_TABLE", joinColumns = @JoinColumn(name = "SEGMENT_ID"), inverseJoinColumns = @JoinColumn(name = "TABLE_ID"))
 	private List<Table> tables;
+	
+	public Segment(String name, Restaurant restaurant){
+		this.name = name;
+		this.restaurant = restaurant;
+	}
 }

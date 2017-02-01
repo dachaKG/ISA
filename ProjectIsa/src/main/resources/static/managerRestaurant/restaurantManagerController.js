@@ -184,6 +184,12 @@ app.controller('restaurantManagerController', ['$scope','restaurantManagerServic
 			);
 		}
 		
+		$scope.makeConfig = function(){
+			var xaxis = $("input[name='xaxis']").val();
+			var yaxis = $("input[name='yaxis']").val();
+			restaurantManagerService.makeConfig(xaxis, yaxis);
+		}
+		
 		$scope.createNewOffer = function() {
 			drink = $scope.newRestaurantOrder.drink
 			dish = $scope.newRestaurantOrder.dish

@@ -54,5 +54,9 @@ services.service('restaurantManagerService', ['$http', function($http){
 	
 	this.updateMangerProfile = function(restaurantManager){
 		return $http.put("/restaurantManager/"+restaurantManager.id,restaurantManager);
-	}	
+	}
+	
+	this.makeConfig = function(xaxis,yaxis){
+		return $http.put("/restaurantManager/restaurant/makeConfig/"+xaxis+"/"+yaxis);
+	}
 }]);
