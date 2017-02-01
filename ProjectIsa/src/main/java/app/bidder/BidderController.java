@@ -57,6 +57,7 @@ public class BidderController {
 		return bidder;
 	}
 	
+	//izlistavanje svih ponuda za logovanog ponudjaca
 	@GetMapping("/getOffers")
 	@ResponseStatus(HttpStatus.OK)
 	public ArrayList<RestaurantOrderr> getOffers() {
@@ -77,6 +78,7 @@ public class BidderController {
 		return restaurantOrderrs;
 	}
 	
+	//izmena vrednosti aktivne ponude
 	@PostMapping("/changeValueOfPrice")
 	@ResponseStatus(HttpStatus.OK)
 	public int changeValueOfPrice(@Valid @RequestBody Offer restaurantOrderr) {

@@ -31,6 +31,8 @@ app.controller('restaurantManagerController', ['$scope','restaurantManagerServic
 					$scope.cooks = response.data.cooks;
 					$scope.bartenders = response.data.bartenders;
 					$scope.bidders = response.data.bidders;
+					myMap();
+					
 				}
 	        );
 		}
@@ -200,6 +202,36 @@ app.controller('restaurantManagerController', ['$scope','restaurantManagerServic
 			}
 			else
 				alert("Only one select field can be choose.");
+		}
+		
+		function myMap() {
+			var london = new google.maps.LatLng(51.508742,-0.120850);
+			var mapProp= {
+			    zoom:13,
+			    mapTypeId: google.maps.MapTypeId.ROADMAP
+			};
+			var map=new google.maps.Map(document.getElementById("googleMap1"),mapProp);
+			geocoder = new google.maps.Geocoder();
+			address = $scope.restaurant.street + " " + $scope.restaurant.number + " , " + $scope.restaurant.city + " , " + $scope.restaurant.country; 
+			geocoder.geocode( { 'address': address}, function(results, status) {
+			      if (status == 'OK') {
+			        map.setCenter(results[0].geometry.location);
+			        var marker = new google.maps.Marker({
+			            map: map,
+			            position: results[0].geometry.location
+			        });
+			        
+			        var flightPath = new google.maps.Polyline({
+					    path: [results[0].geometry.location, london],
+					    strokeColor: "#0000FF",
+					    strokeOpacity: 0.8,
+					    strokeWeight: 2
+					  });
+			        flightPath.setMap(map);
+			      } else {
+			        alert('Geocode was not successful for the following reason: ' + status);
+			      }
+			    });
 		}
 		
 }]);

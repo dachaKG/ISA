@@ -250,8 +250,5 @@ angular.module('routerApp', ['ui.router',
         .state('loggedIn.bidder.home', {
         	url: '/home',
         	templateUrl : 'bidder/bidderHome.html'
-        })
-        
-        
-        
+        })  
 });

@@ -3,6 +3,7 @@ var app = angular.module('bidder.controllers', []);
 app.controller('bidderController', ['$scope','bidderService', '$location',
   	function ($scope, bidderService, $location) {
 	
+		//provera da li je logovan ponudjac
 		function checkRights() {
 			bidderService.checkRights().then(
 				function (response) {
@@ -19,6 +20,7 @@ app.controller('bidderController', ['$scope','bidderService', '$location',
 		}
 		checkRights();
 		
+		//trazenje na serveru ponudjaca koji je logovan
 		function findBidder() {
 			bidderService.findBidder().then(
 				function (response) {
@@ -27,6 +29,7 @@ app.controller('bidderController', ['$scope','bidderService', '$location',
 	        );
 		}
 		
+		//izlistavanje svih ponuda za tog ponudjaca
 		function getOffers() {
 			bidderService.getOffers().then(
 				function (response) {
@@ -52,6 +55,7 @@ app.controller('bidderController', ['$scope','bidderService', '$location',
 	        );
 		}
 		
+		//odabrana ponuda za promenu
 		$scope.change = function(restaurantOrder){
 			x = document.getElementById("artical");
 			x.setAttribute("value", restaurantOrder.dish.name);
@@ -61,6 +65,7 @@ app.controller('bidderController', ['$scope','bidderService', '$location',
 			$scope.restaurantOrderForChange = restaurantOrder;
 		}
 		
+		//probati da se promeni vrednost ponude koja je prethodno odabrana
 		$scope.changeValueOfPrice = function(){
 			price = document.getElementById("price").value;
 			offers = $scope.restaurantOrderForChange.offers;
