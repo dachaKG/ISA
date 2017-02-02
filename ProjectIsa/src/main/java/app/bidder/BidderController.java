@@ -1,9 +1,9 @@
 package app.bidder;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -34,7 +34,8 @@ public class BidderController {
 
 	@Autowired
 	public BidderController(final HttpSession httpSession, final BidderService bidderService,
-			final RestaurantService restaurantService, final RestaurantOrderService restaurantOrderrService,final OfferService offerService) {
+			final RestaurantService restaurantService, final RestaurantOrderService restaurantOrderrService,
+			final OfferService offerService) {
 		this.bidderService = bidderService;
 		this.restaurantService = restaurantService;
 		this.restaurantOrderrService = restaurantOrderrService;
@@ -42,39 +43,31 @@ public class BidderController {
 		this.httpSession = httpSession;
 	}
 
-	@SuppressWarnings("unused")
 	@GetMapping("/checkRights")
-	public boolean checkRights() {
+	@ResponseStatus(HttpStatus.OK)
+	public Bidder checkRights() throws AuthenticationException {
 		try {
-			Bidder bidder = ((Bidder) httpSession.getAttribute("user"));
-			return true;
+			return ((Bidder) httpSession.getAttribute("user"));
 		} catch (Exception e) {
-			return false;
+			throw new AuthenticationException("Forbidden.");
 		}
 	}
 
-	@GetMapping
-	@ResponseStatus(HttpStatus.OK)
-	public Bidder findAllLastOrders() {
-		Long bidderId = ((Bidder) httpSession.getAttribute("user")).getId();
-		Bidder bidder = bidderService.findOne(bidderId);
-		return bidder;
-	}
-
-	// izlistavanje svih ponuda za logovanog ponudjaca
+	// izlistavanje svih ponuda na koje je do sada konkurisao logovani ponudjac
 	@GetMapping("/getOffers")
 	@ResponseStatus(HttpStatus.OK)
 	public ArrayList<RestaurantOrderr> getOffers() {
 		Bidder bidder = ((Bidder) httpSession.getAttribute("user"));
 		ArrayList<RestaurantOrderr> restaurantOrderrs = new ArrayList<>();
-		for (long i = 1; i < restaurantService.findAll().size() + 1; i++) {
-			Restaurant restaurant = restaurantService.findOne(i);
+		List<Restaurant> restaurants = restaurantService.findAll();
+		for (int i = 0; i < restaurants.size(); i++) {
+			Restaurant restaurant = restaurants.get(i);
 			for (int j = 0; j < restaurant.getRestaurantOrders().size(); j++) {
 				RestaurantOrderr restaurantOrderr = restaurant.getRestaurantOrders().get(j);
 				for (int q = 0; q < restaurantOrderr.getOffers().size(); q++) {
 					Offer offer = restaurantOrderr.getOffers().get(q);
 					if (offer.getBidder().getId() == bidder.getId()) {
-						restaurantOrderrs.add((restaurantService.findOne(i).getRestaurantOrders().get(j)));
+						restaurantOrderrs.add((restaurants.get(i).getRestaurantOrders().get(j)));
 					}
 				}
 			}
@@ -88,69 +81,54 @@ public class BidderController {
 	@ResponseStatus(HttpStatus.OK)
 	public List<RestaurantOrderr> getActiveOffers() {
 		Bidder bidder = ((Bidder) httpSession.getAttribute("user"));
-		ArrayList<RestaurantOrderr> restaurantOrderrs = new ArrayList<>();
-		for (long i = 1; i < restaurantService.findAll().size() + 1; i++) {
-			Restaurant restaurant = restaurantService.findOne(i);
-			for (int j = 0; j < restaurant.getBidders().size(); j++) {
-				if (restaurant.getBidders().get(j).getId() == bidder.getId()) {
-					restaurantOrderrs.addAll(restaurant.getRestaurantOrders());
-				}
-			}
-		}
+		ArrayList<RestaurantOrderr> restaurantOrderrs = bidderService.selectAllOffersWhereBidderCompeted(bidder);
 		return restaurantOrderrs;
 	}
 
 	// izmena vrednosti aktivne ponude
 	@PostMapping("/changeValueOfPrice")
 	@ResponseStatus(HttpStatus.OK)
-	public int changeValueOfPrice(@Valid @RequestBody Offer offer) {
+	public void changeValueOfPrice(@Valid @RequestBody Offer offer) {
 		List<RestaurantOrderr> restaurantOrderrs = restaurantOrderrService.findAll();
 		for (int i = 0; i < restaurantOrderrs.size(); i++) {
-			for (int j = 0; j < restaurantOrderrs.get(i).getOffers().size(); j++) {
-				if (restaurantOrderrs.get(i).getOffers().get(j).getId() == offer.getId()) {
-					Date currentDate = new Date();
-					if (restaurantOrderrs.get(i).getEndDate().getTime() > currentDate.getTime()
-							&& restaurantOrderrs.get(i).getOrderActive().equals("open")) {
-						restaurantOrderrs.get(i).getOffers().get(j)
-								.setPrice(Long.parseLong(offer.getBidder().getRegistrated()));
-						restaurantOrderrService.save(restaurantOrderrs.get(i));
-						return 1;
+			RestaurantOrderr restaurantOrder = restaurantOrderrs.get(i);
+			List<Offer> listOfOffers = restaurantOrder.getOffers();
+			for (int j = 0; j < listOfOffers.size(); j++) {
+				if (listOfOffers.get(j).getId() == offer.getId()) {
+					if (restaurantOrder.getEndDate().getTime() > restaurantOrder.getStartDate().getTime()
+							&& restaurantOrder.getOrderActive().equals("open")) {
+						listOfOffers.get(j).setPrice(Long.parseLong(offer.getBidder().getRegistrated()));
+						restaurantOrderrService.save(restaurantOrder);
+						return;
 					}
 				}
 			}
 		}
-		return 0;
+		throw new IllegalArgumentException();
 	}
 
 	// izmena vrednosti aktivne ponude
 	@PostMapping("/competeWithInsertedValue")
 	@ResponseStatus(HttpStatus.OK)
-	public int competeWithInsertedValue(/*@Valid*/ @RequestBody RestaurantOrderr restaurantOrderr) {
+	public void competeWithInsertedValue(/* @Valid */ @RequestBody RestaurantOrderr restaurantOrderr) {
 		Long bidderId = ((Bidder) httpSession.getAttribute("user")).getId();
 		Bidder bidder = bidderService.findOne(bidderId);
-		List<RestaurantOrderr> restaurantOrderrs = restaurantOrderrService.findAll();
-		for (int i = 0; i < restaurantOrderrs.size(); i++) {
-			if (restaurantOrderrs.get(i).getId() == restaurantOrderr.getId()) {
-				for(int q = 0;q<restaurantOrderrs.get(i).getOffers().size();q++) {
-					if(restaurantOrderrs.get(i).getOffers().get(q).getBidder().getId() == bidderId)
-						return 0;
-				}
-				Date currentDate = new Date();
-				if (restaurantOrderrs.get(i).getEndDate().getTime() > currentDate.getTime()
-						&& restaurantOrderrs.get(i).getOrderActive().equals("open")) {
-					Offer offer = new Offer();
-					offer.setPrice((long) restaurantOrderr.getIdFromChoosenBidder());
-					restaurantOrderr.setIdFromChoosenBidder(null);
-					offer.setAccepted("in progress");
-					offer.setBidder(bidder);
-					offerService.save(offer);
-					restaurantOrderr.getOffers().add(offer);
-					restaurantOrderrService.save(restaurantOrderr);
-					return 1;
-				}
-			}
+		if (bidderService.tryToChangeValueOfOffer(restaurantOrderr, bidderId, bidder)) {
+			Offer offer = setOffer(restaurantOrderr.getIdFromChoosenBidder(), bidder);
+			restaurantOrderr.setIdFromChoosenBidder(null);
+			offerService.save(offer);
+			restaurantOrderr.getOffers().add(offer);
+			restaurantOrderrService.save(restaurantOrderr);
+			return;
 		}
-		return 0;
+		throw new RuntimeException("Can't make changes.");
 	}
 
+	private Offer setOffer(Long price, Bidder bidder) {
+		Offer offer = new Offer();
+		offer.setPrice(price);
+		offer.setAccepted("in progress");
+		offer.setBidder(bidder);
+		return offer;
+	}
 }

@@ -7,8 +7,8 @@ app.controller('bidderController', ['$scope','bidderService', '$location',
 		function checkRights() {
 			bidderService.checkRights().then(
 				function (response) {
-					if(response.data === 'true') {
-						findBidder();
+					if(response.status == 200) {
+						$scope.bidder = response.data;
 						getOffers();
 						getActiveOffers();
 					}
@@ -20,25 +20,15 @@ app.controller('bidderController', ['$scope','bidderService', '$location',
 			);
 		}
 		checkRights();
-		
-		//trazenje na serveru ponudjaca koji je logovan
-		function findBidder() {
-			bidderService.findBidder().then(
-				function (response) {
-					$scope.bidder = response.data;
-				}
-	        );
-		}
-		
-		
-		
-		//izlistavanje svih ponuda za tog ponudjaca
+
+		// izlistavanje svih ponuda na koje je do sada konkurisao logovani ponudjac
 		function getOffers() {
 			bidderService.getOffers().then(
 				function (response) {
 					data = response.data;
 					result = []
 					correctOrder = null
+					//izlistavanje ponuda samo za tog ponudjaca od svih mogucih, iz restorana gde je taj ponudjac dao ponudu
 					for(i = 0;i<data.length;i++) {
 						for(j = 0;j<data[i].offers.length;j++) {
 							if(data[i].offers[j].bidder.id === $scope.bidder.id) {
@@ -49,6 +39,8 @@ app.controller('bidderController', ['$scope','bidderService', '$location',
 							}
 						}
 					}
+					
+					//konverzija vremena za lep prikaz, jer daje u ms
 					$scope.restaurantOrders = result
 					for(w = 0;w<$scope.restaurantOrders.length;w++) {
 						$scope.restaurantOrders[w].startDate = new Date($scope.restaurantOrders[w].startDate).toISOString();
@@ -58,11 +50,14 @@ app.controller('bidderController', ['$scope','bidderService', '$location',
 	        );
 		}
 		
-		//izlistavanje svih ponuda za tog ponudjaca za restorane gde moze da konkurise
+
+		// izlistavanje svih ponuda za logovanog ponudjaca od svih restorana gde
+		// moze da konkurise
 		function getActiveOffers() {
 			bidderService.getActiveOffers().then(
 				function (response) {
 					$scope.restaurantOrdersFromAllRestaurants = response.data;
+					//konverzija vremena za lep prikaz, jer daje u ms
 					for(w = 0;w<$scope.restaurantOrdersFromAllRestaurants.length;w++) {
 						$scope.restaurantOrdersFromAllRestaurants[w].startDate = new Date($scope.restaurantOrdersFromAllRestaurants[w].startDate).toISOString();
 						$scope.restaurantOrdersFromAllRestaurants[w].endDate = new Date($scope.restaurantOrdersFromAllRestaurants[w].endDate).toISOString();
@@ -71,9 +66,7 @@ app.controller('bidderController', ['$scope','bidderService', '$location',
 	        );
 		}
 		
-		
-		
-		//odabrana ponuda za promenu
+		//kliknuto je na neku startu ponudu ponudjaca za promenu, prikazati je u formi
 		$scope.change = function(restaurantOrder){
 			x = document.getElementById("artical");
 			if(restaurantOrder.dish != null)
@@ -86,6 +79,7 @@ app.controller('bidderController', ['$scope','bidderService', '$location',
 			$scope.restaurantOrderForChange = restaurantOrder;
 		}
 		
+		//kliknuto je na neku ponudu restorana za takmicenje, prikazati je u formi
 		$scope.compete = function(restaurantOrder){
 			x = document.getElementById("articalForCompete");
 			if(restaurantOrder.dish != null)
@@ -103,7 +97,7 @@ app.controller('bidderController', ['$scope','bidderService', '$location',
 			offers.bidder.registrated = price;
 			bidderService.changeValueOfPrice(offers).then(
 				function (response) {
-					if(response.data ===  "1") {
+					if(response.status == 200) {
 	                	location.reload(true);
 					}
 					else
@@ -112,7 +106,7 @@ app.controller('bidderController', ['$scope','bidderService', '$location',
 		    );
 		}
 		
-		//dodavanje nove ponude 
+		//dodavanje nove ponude u neki restoran
 		$scope.competeWithInsertedValue = function(){
 			price = document.getElementById("priceForCompete").value;
 			restaurantOrderForCompete = $scope.restaurantOrderForCompete;
@@ -120,7 +114,7 @@ app.controller('bidderController', ['$scope','bidderService', '$location',
 			restaurantOrderForCompete.idFromChoosenBidder = price;
 			bidderService.competeWithInsertedValue(restaurantOrderForCompete).then(
 				function (response) {
-					if(response.data ===  "1") {
+					if(response.status ==  200) {
 	                	location.reload(true);
 					}
 					else
