@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import app.drink.Drink;
@@ -27,6 +28,7 @@ public class DrinkOrder {
 	private Drink drink;
 
 	@Column
+	@Min(0)
 	private Integer count;
 
 }

@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
@@ -25,7 +26,8 @@ public class Offer {
 	
 	@NotNull
 	@Column
-	private Integer price;
+	@Min(0)
+	private Long price;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	private Bidder bidder;
