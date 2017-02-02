@@ -4,6 +4,17 @@
 <h3>Make new configuration: </h3><br/>	
 Max on x-axis: <input name= "xaxis"input type="number" value="1"><br/>
 Max on y-axis: <input name="yaxis" type="number" value="1"><br/>
-<button class="btn btn-default navbar-btn" ng-click="makeConfig()" >Make</button>
+<button class="btn btn-default navbar-btn" ng-click="makeConfig()" >Make</button><hr/><br/>
+
+<table ng-init="loadTables()" class="table table-bordered tableBG" border="1">
+	<tr ng-repeat="table in tables">
+		<td> 
+			<button>1</button>
+		</td>
+				
+	</tr>
+
+</table>
+
 
 </div>
