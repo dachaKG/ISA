@@ -57,14 +57,13 @@ public class RestaurantManagerController {
 		this.offerService = offerService;
 	}
 
-	@SuppressWarnings("unused")
 	@GetMapping("/checkRights")
-	public boolean checkRights() {
+	public RestaurantManager checkRights() {
 		try {
 			RestaurantManager restaurantManager = ((RestaurantManager) httpSession.getAttribute("user"));
-			return true;
+			return restaurantManager;
 		} catch (Exception e) {
-			return false;
+			return null;
 		}
 	}
 

@@ -112,7 +112,7 @@ public class BidderController {
 					if (restaurantOrderrs.get(i).getEndDate().getTime() > currentDate.getTime()
 							&& restaurantOrderrs.get(i).getOrderActive().equals("open")) {
 						restaurantOrderrs.get(i).getOffers().get(j)
-								.setPrice(Integer.parseInt(offer.getBidder().getRegistrated()));
+								.setPrice(Long.parseLong(offer.getBidder().getRegistrated()));
 						restaurantOrderrService.save(restaurantOrderrs.get(i));
 						return 1;
 					}
@@ -139,7 +139,7 @@ public class BidderController {
 				if (restaurantOrderrs.get(i).getEndDate().getTime() > currentDate.getTime()
 						&& restaurantOrderrs.get(i).getOrderActive().equals("open")) {
 					Offer offer = new Offer();
-					offer.setPrice((int) (long) restaurantOrderr.getIdFromChoosenBidder());
+					offer.setPrice((long) restaurantOrderr.getIdFromChoosenBidder());
 					restaurantOrderr.setIdFromChoosenBidder(null);
 					offer.setAccepted("in progress");
 					offer.setBidder(bidder);

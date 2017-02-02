@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import app.dish.Dish;
@@ -27,6 +28,7 @@ public class DishOrder {
 	private Dish dish;
 
 	@Column
+	@Min(0)
 	private Integer count;
 
 }

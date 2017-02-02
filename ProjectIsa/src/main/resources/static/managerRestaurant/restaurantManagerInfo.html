@@ -1,7 +1,7 @@
 
 <div>
-	<h1>Manager: {{restaurant.restaurantManager.firstname}}
-		{{restaurant.restaurantManager.lastname}}</h1>
+	<h1>Manager: {{restaurantManager.firstname}}
+		{{restaurantManager.lastname}}</h1>
 	<h1>Restaurant: {{restaurant.name}}</h1>
 
 	<h3>Food</h3>
@@ -11,12 +11,14 @@
 				<th>Name</th>
 				<th>Count</th>
 				<th>Price</th>
+				<th>Type</th>
 				<th>Mark</th>
 			</tr>
 			<tr ng-repeat="dish in restaurant.food">
 				<td>{{dish.name}}</td>
 				<td>{{dish.count}}</td>
 				<td>{{dish.price}}</td>
+				<td>{{dish.typeOfDish}}</td>
 				<td>{{dish.summRate/dish.numRate}}</td>
 			</tr>
 		</tbody>

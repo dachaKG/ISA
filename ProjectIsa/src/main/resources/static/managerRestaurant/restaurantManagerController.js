@@ -5,7 +5,8 @@ app.controller('restaurantManagerController', ['$scope','restaurantManagerServic
 		function checkRights() {
 			restaurantManagerService.checkRights().then(
 				function (response) {
-					if(response.data === 'true') {
+					if(response.status == 200) {
+						$scope.restaurantManager = response.data;
 						findAll();
 						showFreeBidders();
 					}
