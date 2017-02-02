@@ -37,3 +37,37 @@
 <button class="btn btn-default" ng-click="new.$valid &&  changeValueOfPrice()"><span class="glyphicon glyphicon-ok" ></span> Change</button>
 <button class="btn btn-default" ng-click="cancel()"><span class="glyphicon glyphicon-remove" ></span> Cancel</button>
 </form>
+
+
+<table class="table table-bordered tableBG" border="1">
+		<tbody>
+			<tr>
+				<th>Artical</th>
+				<th>Count</th>
+				<th>Start</th>
+				<th>End</th>
+				<th>Active</th>
+				<th>Action</th>
+			</tr>
+			<tr ng-repeat="restaurantOrder in restaurantOrdersFromAllRestaurants">
+				<td>{{restaurantOrder.drink.name}}{{restaurantOrder.dish.name}} </td>
+				<td>{{restaurantOrder.count}}</td>
+				<td>{{restaurantOrder.startDate}}</td>
+				<td>{{restaurantOrder.endDate}}</td>
+				<td>{{restaurantOrder.orderActive}}</td>
+				<td><button class="btn btn-default" ng-click="compete(restaurantOrder)"><span class="glyphicon glyphicon-change" ></span>Compete</button></td>
+			</tr>
+		</tbody>
+	</table>
+	
+	
+<form  name = "new2">
+    <label>Artical</label>
+    <input id = "articalForCompete" type="text" class="form-control" disabled>  
+
+    <label>Price</label>
+    <input id = "priceForCompete" type="number" class="form-control" required>  
+
+<button class="btn btn-default" ng-click="new2.$valid &&  competeWithInsertedValue()"><span class="glyphicon glyphicon-ok" ></span> Change</button>
+<button class="btn btn-default" ng-click="cancel()"><span class="glyphicon glyphicon-remove" ></span> Cancel</button>
+</form>

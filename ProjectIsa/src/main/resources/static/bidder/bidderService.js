@@ -19,4 +19,12 @@ services.service('bidderService', ['$http', function($http){
 	this.changeValueOfPrice = function(restaurantOrderForChange){
 		return $http.post("/bidder/changeValueOfPrice",restaurantOrderForChange);
 	}
+	
+	this.getActiveOffers = function(){
+		return $http.get("/bidder/getActiveOffers");
+	}
+	
+	this.competeWithInsertedValue = function(restaurantOrderForChange){
+		return $http.post("/bidder/competeWithInsertedValue",restaurantOrderForChange);
+	}
 }]);
