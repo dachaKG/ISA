@@ -195,6 +195,13 @@ app.controller('restaurantManagerController', ['$scope','restaurantManagerServic
 			restaurantManagerService.makeConfig(xaxis, yaxis);
 		}
 		
+		$scope.loadTables = function(){
+			restaurantManagerService.getTables().then(
+					function(response){
+						$scope.tables = response.data;
+					});
+		}
+		
 		$scope.createNewOffer = function() {
 			drink = $scope.newRestaurantOrder.drink
 			dish = $scope.newRestaurantOrder.dish

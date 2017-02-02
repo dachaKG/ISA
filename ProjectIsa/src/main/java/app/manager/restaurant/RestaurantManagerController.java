@@ -8,6 +8,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.hibernate.mapping.Table;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -34,7 +35,6 @@ import app.restaurant.RestaurantService;
 import app.restaurant.Segment;
 import app.restaurant.restaurantOrder.RestaurantOrderService;
 import app.restaurant.restaurantOrder.RestaurantOrderr;
-
 @RestController
 @RequestMapping("/restaurantManager")
 public class RestaurantManagerController {
@@ -247,10 +247,33 @@ public class RestaurantManagerController {
 	public void makeConfig(@PathVariable("xaxis") Long xaxis, @PathVariable("yaxis") Long yaxis){
 		System.out.println("Success: "+xaxis+" "+yaxis);
 		Restaurant restaurant = findRestaurantForRestaurantManager();
-		if(restaurant.getSegments().size()<1){
-			Segment seg = new Segment("defaultSegment", restaurant);
-			restaurant.getSegments().add(seg);
-		}
+		if(restaurant.getSegments().size()>0)
+			restaurant.getSegments().clear();
 		
+		Segment seg = new Segment("defaultSegment", restaurant);
+		restaurant.getSegments().add(seg);
+		for(int x = 0; x<xaxis; x++){
+			for(int y=0; y<yaxis; y++){
+				app.restaurant.Table t = new app.restaurant.Table("", seg, x, y, app.restaurant.Table.NOT_EXISTS);
+				seg.getTables().add(t);
+			}
+		}
 	}
+	
+	
+	@GetMapping(path="/restaurant/getTables")
+	public List<app.restaurant.Table> getTables(){
+		
+		Restaurant restaurant = findRestaurantForRestaurantManager();
+		System.out.println("br segmenata: "+restaurant.getSegments().size() );
+		ArrayList<app.restaurant.Table> outTables = new ArrayList<app.restaurant.Table>();
+		for(int i=0; i<restaurant.getSegments().size(); i++){
+			outTables.addAll(restaurant.getSegments().get(i).getTables());
+		}
+		System.out.println("RETURNING "+outTables.size() +" TABLES");
+		return outTables;
+	}
+	
+	
+	
 }

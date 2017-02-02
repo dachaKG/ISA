@@ -59,4 +59,9 @@ services.service('restaurantManagerService', ['$http', function($http){
 	this.makeConfig = function(xaxis,yaxis){
 		return $http.put("/restaurantManager/restaurant/makeConfig/"+xaxis+"/"+yaxis);
 	}
+	
+	this.getTables = function(){
+		return $http.get("/restaurantManager/restaurant/getTables");
+	}
+	
 }]);
