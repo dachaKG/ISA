@@ -44,7 +44,7 @@ public class BidderServiceImpl implements BidderService {
 	public Bidder findOne(String mail, String password) {
 		List<Bidder> bidders = (List<Bidder>) repository.findAll();
 		for (int i = 0; i < bidders.size(); i++) {
-			if (bidders.get(i).getMail().equals(mail) && bidders.get(i).getMail().equals(password))
+			if (bidders.get(i).getMail().equals(mail) && bidders.get(i).getPassword().equals(password))
 				return bidders.get(i);
 		}
 		return null;

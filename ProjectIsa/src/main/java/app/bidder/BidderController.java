@@ -125,7 +125,7 @@ public class BidderController {
 	// izmena vrednosti aktivne ponude
 	@PostMapping("/competeWithInsertedValue")
 	@ResponseStatus(HttpStatus.OK)
-	public int competeWithInsertedValue(@Valid @RequestBody RestaurantOrderr restaurantOrderr) {
+	public int competeWithInsertedValue(/*@Valid*/ @RequestBody RestaurantOrderr restaurantOrderr) {
 		Long bidderId = ((Bidder) httpSession.getAttribute("user")).getId();
 		Bidder bidder = bidderService.findOne(bidderId);
 		List<RestaurantOrderr> restaurantOrderrs = restaurantOrderrService.findAll();

@@ -168,20 +168,24 @@ app.controller('restaurantManagerController', ['$scope','restaurantManagerServic
 		
 		$scope.acceptRestaurantOrder = function(offer) {
 			restaurantOrderr = $scope.restaurantOrderDetails;
-			restaurantOrderr.idFromChoosenBidder = offer.bidder.id;
-			restaurantOrderr.startDate = new Date(restaurantOrderr.startDate).getTime();
-			restaurantOrderr.endDate = new Date(restaurantOrderr.endDate).getTime();
-			restaurantManagerService.acceptRestaurantOrder(restaurantOrderr).then(
-				function (response) {
-                    alert("Successfully added.");
-                    $scope.state = undefined;
-                    findAll();
-                    $location.path('loggedIn/restaurantManager/info');
-                },
-                function (response) {
-                    alert("Error in adding.");
-                }
-			);
+			if(restaurantOrderr.orderActive == "open") {
+				restaurantOrderr.idFromChoosenBidder = offer.bidder.id;
+				restaurantOrderr.startDate = new Date(restaurantOrderr.startDate).getTime();
+				restaurantOrderr.endDate = new Date(restaurantOrderr.endDate).getTime();
+				restaurantManagerService.acceptRestaurantOrder(restaurantOrderr).then(
+					function (response) {
+	                    alert("Successfully added.");
+	                    $scope.state = undefined;
+	                    findAll();
+	                    $location.path('loggedIn/restaurantManager/info');
+	                },
+	                function (response) {
+	                    alert("Error in adding.");
+	                }
+				);
+			}else
+				alert('Offer is closed.')
+			
 		}
 		
 		$scope.makeConfig = function(){
@@ -193,6 +197,9 @@ app.controller('restaurantManagerController', ['$scope','restaurantManagerServic
 		$scope.createNewOffer = function() {
 			drink = $scope.newRestaurantOrder.drink
 			dish = $scope.newRestaurantOrder.dish
+			$scope.newRestaurantOrder.startDate = new Date($scope.newRestaurantOrder.startDate).toISOString();
+			$scope.newRestaurantOrder.endDate = new Date($scope.newRestaurantOrder.endDate).toISOString();
+		
 			if(((dish === undefined || dish.id === "") && drink.id !== "") || (dish.id !== "" && (drink == null || drink.id === ""))) {
 				restaurantManagerService.createNewOffer($scope.newRestaurantOrder).then(
 					function (response) {

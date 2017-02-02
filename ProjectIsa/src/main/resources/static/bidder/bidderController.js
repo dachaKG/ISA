@@ -76,7 +76,10 @@ app.controller('bidderController', ['$scope','bidderService', '$location',
 		//odabrana ponuda za promenu
 		$scope.change = function(restaurantOrder){
 			x = document.getElementById("artical");
-			x.setAttribute("value", restaurantOrder.dish.name);
+			if(restaurantOrder.dish != null)
+				x.setAttribute("value", restaurantOrder.dish.name);
+			else if(restaurantOrder.drink != null)
+				x.setAttribute("value", restaurantOrder.drink.name);
 			y = document.getElementById("price");
 			price = restaurantOrder.offers.price;
 			y.setAttribute("value", price);
@@ -85,7 +88,10 @@ app.controller('bidderController', ['$scope','bidderService', '$location',
 		
 		$scope.compete = function(restaurantOrder){
 			x = document.getElementById("articalForCompete");
-			x.setAttribute("value", restaurantOrder.dish.name);
+			if(restaurantOrder.dish != null)
+				x.setAttribute("value", restaurantOrder.dish.name);
+			else if(restaurantOrder.drink != null)
+				x.setAttribute("value", restaurantOrder.drink.name);
 			$scope.restaurantOrderForCompete = restaurantOrder;
 		}
 		
@@ -106,7 +112,7 @@ app.controller('bidderController', ['$scope','bidderService', '$location',
 		    );
 		}
 		
-		//odabrana ponuda za promenu
+		//dodavanje nove ponude 
 		$scope.competeWithInsertedValue = function(){
 			price = document.getElementById("priceForCompete").value;
 			restaurantOrderForCompete = $scope.restaurantOrderForCompete;

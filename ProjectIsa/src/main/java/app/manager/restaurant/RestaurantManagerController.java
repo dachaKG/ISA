@@ -2,7 +2,6 @@ package app.manager.restaurant;
 
 import java.time.DateTimeException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -178,7 +177,7 @@ public class RestaurantManagerController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public void createNewOffer(@Valid @RequestBody RestaurantOrderr restaurantOrderr) {
 		Dish dish = restaurantOrderr.getDish();
-		Drink drink =restaurantOrderr.getDrink();
+		Drink drink = restaurantOrderr.getDrink();
 		Restaurant restaurant = findRestaurantForRestaurantManager();
 		setObject(dish,drink,restaurant,restaurantOrderr);
 		restaurant.getRestaurantOrders().add(restaurantOrderr);
@@ -188,36 +187,49 @@ public class RestaurantManagerController {
 	
 	@PostMapping(path = "/restaurant/acceptRestaurantOrder")
 	@ResponseStatus(HttpStatus.ACCEPTED)
-	public void acceptRestaurantOreder(@Valid @RequestBody RestaurantOrderr restaurantOrderr) {
-		restaurantOrderr.setOrderActive("closed");
-		for(int i=0;i<restaurantOrderr.getOffers().size();i++) {
-			if(restaurantOrderr.getOffers().get(i).getBidder().getId() == restaurantOrderr.getIdFromChoosenBidder()) {
-				restaurantOrderr.getOffers().get(i).setAccepted("accepted");
+	public void acceptRestaurantOrder(@Valid @RequestBody RestaurantOrderr restaurantOrderr) {
+		if(restaurantOrderr.getOrderActive().equals("open")) {
+			restaurantOrderr.setOrderActive("closed");
+			for(int i=0;i<restaurantOrderr.getOffers().size();i++) {
+				if(restaurantOrderr.getOffers().get(i).getBidder().getId() == restaurantOrderr.getIdFromChoosenBidder()) {
+					restaurantOrderr.getOffers().get(i).setAccepted("accepted");
+				}
+				else
+					restaurantOrderr.getOffers().get(i).setAccepted("rejected");
+				offerService.save(restaurantOrderr.getOffers().get(i));
 			}
-			else
-				restaurantOrderr.getOffers().get(i).setAccepted("rejected");
-			offerService.save(restaurantOrderr.getOffers().get(i));
+			Restaurant restaurant = findRestaurantForRestaurantManager();
+			restaurantOrderService.save(restaurantOrderr);
+			restaurantService.save(restaurant);
 		}
-		Restaurant restaurant = findRestaurantForRestaurantManager();
-		restaurantOrderService.save(restaurantOrderr);
-		restaurantService.save(restaurant);
+		else {
+			try {
+				throw new Exception("Not legal offer.");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
  	}
 	
 	private void setObject(Dish dish,Drink drink,Restaurant restaurant, RestaurantOrderr restaurantOrderr) {
-		restaurantOrderr.setStartDate(new Date());
 		restaurantOrderr.setOrderActive("0");
-		if(restaurantOrderr.getStartDate().after(restaurantOrderr.getEndDate())) {
+		if(restaurantOrderr.getStartDate().before(restaurantOrderr.getEndDate())) {
 			if(dish != null) {
 				for(int i=0;i<restaurant.getFood().size();i++)
-					if(restaurant.getFood().get(i).getId() == dish.getId())
+					if(restaurant.getFood().get(i).getId() == dish.getId()) {
 						restaurantOrderr.setDish(restaurant.getFood().get(i));
+						break;
+					}
 			}
-			if(drink != null) {
+			else if(drink != null) {
 				for(int i=0;i<restaurant.getDrinks().size();i++)
-					if(restaurant.getDrinks().get(i).getId() == drink.getId())
+					if(restaurant.getDrinks().get(i).getId() == drink.getId()) {
 						restaurantOrderr.setDrink(restaurant.getDrinks().get(i));
+						break;
+					}
 			}
 			restaurantOrderr.setOffers(new ArrayList<Offer>());
+			restaurantOrderr.setOrderActive("open");
 		}
 		else
 			throw new DateTimeException("Wrong date.");
