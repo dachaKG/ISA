@@ -1,0 +1,24 @@
+<table  class="table table-bordered tableBG" border="1">
+		<tbody>
+	        <tr>
+				<th>Id</th>
+				<th>Name</th>
+                <!-- <th>Lastname</th>
+                <th>Mail</th> -->
+            </tr>
+			<tr ng-repeat="restaurant in restaurants">
+				<td> 
+					{{restaurant.id}}
+				</td>
+				<td>
+		    		{{restaurant.name}}	
+				</td>
+            	<!-- <td>
+		    		{{systemManager.lastname}}	
+				</td>
+            	<td>
+		    		{{systemManager.mail}}	
+				</td> -->
+			</tr>
+		</tbody>
+    </table> 

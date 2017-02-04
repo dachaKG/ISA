@@ -6,7 +6,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			guestService.checkRights().then(
 				function (response) {
 					if(response.data === 'true'){
-						
+						findAll();
 					}
 					else {
 						$location.path('login');
@@ -15,6 +15,14 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			);
 		}
 		checkRights();	
+		
+		function findAll(){
+			guestService.restaurants().then(
+				function(response){
+					$scope.restaurants = response.data;
+				}
+			);
+		}
 	
 		$scope.getLoggedUser = function() {
 			guestService.getLoggedUser().then(
@@ -33,6 +41,8 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 				)
 			}
 		}
+		
+		
 		
 		$scope.update = function() {
 			guestService.updateGuestProfile($scope.loggedUser).then(

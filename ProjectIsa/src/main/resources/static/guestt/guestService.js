@@ -44,5 +44,9 @@ services.service('guestService', ['$http', function($http){
 		return $http.get("/friends/unfriend/"+id);
 	}
 	
+	this.restaurants = function(){
+		return $http.get("/guest/restaurants");
+	}
+	
 	
 }]);

@@ -18,17 +18,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import app.restaurant.Restaurant;
+import app.restaurant.RestaurantService;
+
 @RestController
 @RequestMapping("/guest")
 public class GuestController {
 
 	private final GuestService service;
+	private final RestaurantService restaurantService;
 	private HttpSession httpSession;
 
 	@Autowired
-	public GuestController(final HttpSession httpSession, final GuestService service) {
+	public GuestController(final HttpSession httpSession, final GuestService service, final RestaurantService restaurantService) {
 		this.service = service;
 		this.httpSession = httpSession;
+		this.restaurantService = restaurantService;
 	}
 
 	@SuppressWarnings("unused")
@@ -47,6 +52,14 @@ public class GuestController {
 	public ResponseEntity<List<Guest>> findAll() {
 		return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
 	}
+	
+	@GetMapping(path = "/restaurants")
+	public ResponseEntity<List<Restaurant>> findAllRestaurants() {
+		List<Restaurant> list = restaurantService.findAll();
+		System.out.println(list.size());
+		return new ResponseEntity<>(restaurantService.findAll(), HttpStatus.OK);
+	}
+	
 
 	// 2.2
 	// izmena informacija o gostu

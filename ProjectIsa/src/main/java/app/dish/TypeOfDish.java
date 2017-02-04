@@ -1,5 +1,5 @@
 package app.dish;
 
 public enum TypeOfDish {
-	 salat, cookedM, baked;
+	 salad, cooked, baked;
 }

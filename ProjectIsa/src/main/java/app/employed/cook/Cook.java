@@ -27,6 +27,11 @@ public class Cook extends Employed {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "COOK_ID")
 	private Long id;
+	
+	/*@Enumerated(EnumType.STRING)
+	@NotNull
+	@Column
+	private TypeOfCooker typeOfCooker;*/
 
 	@OneToMany
 	@JoinTable(name = "COOK_ORDERS", joinColumns = @JoinColumn(name = "COOK_ID"), inverseJoinColumns = @JoinColumn(name = "ORDER_ID"))
