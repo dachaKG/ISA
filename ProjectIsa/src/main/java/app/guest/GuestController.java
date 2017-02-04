@@ -55,11 +55,17 @@ public class GuestController {
 	
 	@GetMapping(path = "/restaurants")
 	public ResponseEntity<List<Restaurant>> findAllRestaurants() {
-		List<Restaurant> list = restaurantService.findAll();
-		System.out.println(list.size());
 		return new ResponseEntity<>(restaurantService.findAll(), HttpStatus.OK);
 	}
 	
+	@GetMapping(path = "/restaurant/{id}")
+	public Restaurant findRestaurant(@PathVariable Long id){
+		Optional.ofNullable(restaurantService.findOne(id))
+					.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
+		Restaurant r = restaurantService.findOne(id);
+		return r;
+		
+	}
 
 	// 2.2
 	// izmena informacija o gostu
@@ -88,4 +94,6 @@ public class GuestController {
 		
 		return result;
 	}
+	
+	
 }

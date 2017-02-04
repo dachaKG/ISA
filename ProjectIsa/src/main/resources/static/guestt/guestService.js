@@ -48,5 +48,9 @@ services.service('guestService', ['$http', function($http){
 		return $http.get("/guest/restaurants");
 	}
 	
+	this.find = function(id){
+		return $http.get("/guest/restaurant/"+id);
+	}
+	
 	
 }]);

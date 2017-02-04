@@ -20,8 +20,11 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			guestService.restaurants().then(
 				function(response){
 					$scope.restaurants = response.data;
+					
 				}
 			);
+			
+			
 		}
 	
 		$scope.getLoggedUser = function() {
@@ -116,6 +119,61 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			})
 		}
 		
+		$scope.menu = function(restaurant){
+			guestService.find(restaurant.id).then(
+					function(response){
+					//	$window.location.path = "guestRestaurantMenu.html" 
+					//	$scope.restaurant = response.data;
+					},
+					function(response){
+						alert("Error while signal");
+					}
+			)
+		}
 		
+		$scope.find = function(restaurant){
+			guestService.find(restaurant.id).then(
+				function(response){
+					myMap(restaurant);
+					
+				},
+				function(response){
+					alert("Error while signal");
+				}
+			);
+		}
+		
+		
+		function myMap(restaurant) {
+			var mapProp= {
+			    zoom:15,
+			    mapTypeId: google.maps.MapTypeId.ROADMAP
+			};
+			
+			var map=new google.maps.Map(document.getElementById("googleMap1"),mapProp);
+			pos = [];
+						
+			geocoder = new google.maps.Geocoder();
+			address = restaurant.street + " " + restaurant.number + " , " + restaurant.city + " , " + restaurant.country; 
+			geocoder.geocode( { 'address': address}, function(results, status) {
+			      if (status == 'OK') {
+			        map.setCenter(results[0].geometry.location);
+			        var marker = new google.maps.Marker({
+			            map: map,
+			            position: results[0].geometry.location
+			        });
+			        
+			        var flightPath = new google.maps.Polyline({
+					    path: [results[0].geometry.location, pos],
+					    strokeColor: "#0000FF",
+					    strokeOpacity: 0.8,
+					    strokeWeight: 2
+					  });
+			        flightPath.setMap(map);
+			      } else {
+			        alert('Geocode was not successful for the following reason: ' + status);
+			      }
+			    });
+		}	
 		
 }]);
