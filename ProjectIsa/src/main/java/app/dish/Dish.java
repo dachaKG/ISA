@@ -37,12 +37,11 @@ public class Dish {
 	@Min(0)
 	private Integer count;
 
-
 	@Enumerated(EnumType.STRING)
 	@NotNull
 	@Column
 	private TypeOfDish typeOfDish;
-	
+
 	@Column
 	private Integer summRate;
 

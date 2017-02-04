@@ -70,8 +70,7 @@ public class RestaurantManagerController {
 	@ResponseStatus(HttpStatus.OK)
 	public RestaurantManager checkRights() {
 		try {
-			RestaurantManager restaurantManager = ((RestaurantManager) httpSession.getAttribute("user"));
-			return restaurantManager;
+			return ((RestaurantManager) httpSession.getAttribute("user"));
 		} catch (Exception e) {
 			return null;
 		}

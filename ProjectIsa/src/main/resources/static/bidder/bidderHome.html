@@ -1,31 +1,28 @@
 <h1>Home page</h1>
-
 <h1>Manager: {{bidder.firstname}}</h1>
-
 <h3>Last orders</h3>
-	<table class="table table-bordered tableBG" border="1">
-		<tbody>
-			<tr>
-				<th>Artical</th>
-				<th>Price</th>
-				<th>State</th>
-				<th>Start</th>
-				<th>End</th>
-				<th>Active</th>
-				<th>Action</th>
-			</tr>
-			<tr ng-repeat="restaurantOrder in restaurantOrders">
-				<td>{{restaurantOrder.drink.name}}{{restaurantOrder.dish.name}} </td>
-				<td>{{restaurantOrder.offers.price}}</td>
-				<td>{{restaurantOrder.offers.accepted}}</td>
-				<td>{{restaurantOrder.startDate}}</td>
-				<td>{{restaurantOrder.endDate}}</td>
-				<td>{{restaurantOrder.orderActive}}</td>
-				<td><button class="btn btn-default" ng-click="change(restaurantOrder)"><span class="glyphicon glyphicon-change" ></span>Change</button></td>
-			</tr>
-		</tbody>
-	</table>
-	
+<table class="table table-bordered tableBG" border="1">
+	<tbody>
+		<tr>
+			<th>Artical</th>
+			<th>Price</th>
+			<th>State</th>
+			<th>Start</th>
+			<th>End</th>
+			<th>Active</th>
+			<th>Action</th>
+		</tr>
+		<tr ng-repeat="restaurantOrder in restaurantOrders">
+			<td>{{restaurantOrder.drink.name}}{{restaurantOrder.dish.name}} </td>
+			<td>{{restaurantOrder.offers.price}}</td>
+			<td>{{restaurantOrder.offers.accepted}}</td>
+			<td>{{restaurantOrder.startDate}}</td>
+			<td>{{restaurantOrder.endDate}}</td>
+			<td>{{restaurantOrder.orderActive}}</td>
+			<td><button class="btn btn-default" ng-click="change(restaurantOrder)"><span class="glyphicon glyphicon-change" ></span>Change</button></td>
+		</tr>
+	</tbody>
+</table>
 	
 <form  name = "new">
     <label>Artical</label>
@@ -34,33 +31,30 @@
     <label>Price</label>
     <input id = "price" type="number" class="form-control" required>  
 
-<button class="btn btn-default" ng-click="new.$valid &&  changeValueOfPrice()"><span class="glyphicon glyphicon-ok" ></span> Change</button>
-<button class="btn btn-default" ng-click="cancel()"><span class="glyphicon glyphicon-remove" ></span> Cancel</button>
+	<button class="btn btn-default" ng-click="new.$valid &&  changeValueOfPrice()"><span class="glyphicon glyphicon-ok" ></span> Change</button>
 </form>
 
-
 <table class="table table-bordered tableBG" border="1">
-		<tbody>
-			<tr>
-				<th>Artical</th>
-				<th>Count</th>
-				<th>Start</th>
-				<th>End</th>
-				<th>Active</th>
-				<th>Action</th>
-			</tr>
-			<tr ng-repeat="restaurantOrder in restaurantOrdersFromAllRestaurants">
-				<td>{{restaurantOrder.drink.name}}{{restaurantOrder.dish.name}} </td>
-				<td>{{restaurantOrder.count}}</td>
-				<td>{{restaurantOrder.startDate}}</td>
-				<td>{{restaurantOrder.endDate}}</td>
-				<td>{{restaurantOrder.orderActive}}</td>
-				<td><button class="btn btn-default" ng-click="compete(restaurantOrder)"><span class="glyphicon glyphicon-change" ></span>Compete</button></td>
-			</tr>
-		</tbody>
-	</table>
-	
-	
+	<tbody>
+		<tr>
+			<th>Artical</th>
+			<th>Count</th>
+			<th>Start</th>
+			<th>End</th>
+			<th>Active</th>
+			<th>Action</th>
+		</tr>
+		<tr ng-repeat="restaurantOrder in restaurantOrdersFromAllRestaurants">
+			<td>{{restaurantOrder.drink.name}}{{restaurantOrder.dish.name}} </td>
+			<td>{{restaurantOrder.count}}</td>
+			<td>{{restaurantOrder.startDate}}</td>
+			<td>{{restaurantOrder.endDate}}</td>
+			<td>{{restaurantOrder.orderActive}}</td>
+			<td><button class="btn btn-default" ng-click="compete(restaurantOrder)"><span class="glyphicon glyphicon-change" ></span>Compete</button></td>
+		</tr>
+	</tbody>
+</table>
+		
 <form  name = "new2">
     <label>Artical</label>
     <input id = "articalForCompete" type="text" class="form-control" disabled>  
@@ -68,6 +62,5 @@
     <label>Price</label>
     <input id = "priceForCompete" type="number" class="form-control" required>  
 
-<button class="btn btn-default" ng-click="new2.$valid &&  competeWithInsertedValue()"><span class="glyphicon glyphicon-ok" ></span> Change</button>
-<button class="btn btn-default" ng-click="cancel()"><span class="glyphicon glyphicon-remove" ></span> Cancel</button>
+	<button class="btn btn-default" ng-click="new2.$valid &&  competeWithInsertedValue()"><span class="glyphicon glyphicon-ok" ></span> Start compete</button>
 </form>
