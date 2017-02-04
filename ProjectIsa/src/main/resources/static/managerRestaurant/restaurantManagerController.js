@@ -223,6 +223,20 @@ app.controller('restaurantManagerController', ['$scope','$window','restaurantMan
 					});
 		}
 		
+		
+		$scope.openModal = function(){
+			var modal = document.getElementById('myModal');
+			modal.style.display = "block";
+		}
+		$scope.closeModal = function(){
+			var modal = document.getElementById('myModal');
+			modal.style.display = "none";
+		}
+		
+		
+		
+		
+		
 		$scope.createNewOffer = function() {
 			drink = $scope.newRestaurantOrder.drink
 			dish = $scope.newRestaurantOrder.dish

@@ -9,12 +9,23 @@ Max on y-axis: <input name="yaxis" type="number" value="1"><br/>
 <table ng-init="loadTables()" class = "tablesTable">
 	<tr ng-repeat="row in tables">
 		<td ng-repeat="table in row"> 
-			<button class="tableBtns"> </button>
+			<button class="tableBtns" ng-click="openModal()"> </button>
 		</td>
 				
 	</tr>
 
 </table>
 
+</div>
 
+
+
+
+<div id="myModal" class="modal">
+  <div class="modal-content">
+    <h3>Table Setings</h3><hr/><br/>
+    Segment: default <br/>
+    Status: nonexistent<br/>
+    </center><button ng-click="closeModal()" class="btn btn-default navbar-btn">Ok</button>
+  </div>
 </div>
