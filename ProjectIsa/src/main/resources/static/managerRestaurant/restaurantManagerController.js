@@ -1,7 +1,7 @@
 var app = angular.module('restaurantManager.controllers', []);
 
-app.controller('restaurantManagerController', ['$scope','restaurantManagerService', '$location',
-	function ($scope, restaurantManagerService, $location) {
+app.controller('restaurantManagerController', ['$scope','$window','restaurantManagerService', '$location',
+	function ($scope,$window, restaurantManagerService, $location) {
 		function checkRights() {
 			restaurantManagerService.checkRights().then(
 				function (response) {
@@ -192,13 +192,34 @@ app.controller('restaurantManagerController', ['$scope','restaurantManagerServic
 		$scope.makeConfig = function(){
 			var xaxis = $("input[name='xaxis']").val();
 			var yaxis = $("input[name='yaxis']").val();
-			restaurantManagerService.makeConfig(xaxis, yaxis);
+			restaurantManagerService.makeConfig(xaxis, yaxis).then(
+				function(response){
+					$window.location.reload();
+				});
 		}
 		
 		$scope.loadTables = function(){
 			restaurantManagerService.getTables().then(
 					function(response){
-						$scope.tables = response.data;
+						//tables = response.data;
+						
+						var stolovi = [];
+						var red = [];
+						var lastXPos = 0;
+						var counter = 0;
+						angular.forEach(response.data, function(value, key){	// punjenje matrice stolova
+							counter++;
+							if(value.xpos == lastXPos){	
+								red.push(value);
+							}
+							if((value.xpos != lastXPos) || counter==response.data.length ) {
+								stolovi.push(red);
+								red =[];
+								red.push(value);
+							}
+							lastXPos = value.xpos;
+						});
+						$scope.tables = stolovi;
 					});
 		}
 		

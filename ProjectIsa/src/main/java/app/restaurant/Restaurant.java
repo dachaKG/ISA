@@ -50,7 +50,8 @@ public class Restaurant {
 	@JoinTable(name = "RESTAURANT_DRINK", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "DRINK_ID"))
 	private List<Drink> drinks;
 
-	@OneToMany(mappedBy = "restaurant")
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "RESTAURANT_SEGMENT", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "SEGMENT_ID"))
 	private List<Segment> segments;
 
 	@OneToMany(cascade = CascadeType.ALL)

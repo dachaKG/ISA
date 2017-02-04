@@ -33,6 +33,8 @@ import app.offer.OfferService;
 import app.restaurant.Restaurant;
 import app.restaurant.RestaurantService;
 import app.restaurant.Segment;
+import app.restaurant.SegmentService;
+import app.restaurant.TableService;
 import app.restaurant.restaurantOrder.RestaurantOrderService;
 import app.restaurant.restaurantOrder.RestaurantOrderr;
 @RestController
@@ -45,19 +47,27 @@ public class RestaurantManagerController {
 	private RestaurantOrderService restaurantOrderService;
 	private RestaurantManagerService restaurantManagerService;
 	private OfferService offerService;
+	private SegmentService segmentService;
+	private TableService tableService;
 
 	@Autowired
 	public RestaurantManagerController(final HttpSession httpSession, final RestaurantService restaurantService,
-			final RestaurantManagerService restaurantManagerService,final BidderService bidderService,final RestaurantOrderService restaurantOrderService,final OfferService offerService) {
+			final RestaurantManagerService restaurantManagerService,final BidderService bidderService,
+			final RestaurantOrderService restaurantOrderService,final OfferService offerService,
+			final SegmentService segmentService, final TableService tableService) {
 		this.httpSession = httpSession;
 		this.restaurantService = restaurantService;
 		this.bidderService = bidderService;
 		this.restaurantOrderService = restaurantOrderService;
 		this.restaurantManagerService = restaurantManagerService;
 		this.offerService = offerService;
+		this.segmentService = segmentService;
+		this.tableService = tableService;
+		
 	}
 
 	@GetMapping("/checkRights")
+	@ResponseStatus(HttpStatus.OK)
 	public RestaurantManager checkRights() {
 		try {
 			RestaurantManager restaurantManager = ((RestaurantManager) httpSession.getAttribute("user"));
@@ -245,17 +255,16 @@ public class RestaurantManagerController {
 	
 	@PutMapping(path = "/restaurant/makeConfig/{xaxis}/{yaxis}")
 	public void makeConfig(@PathVariable("xaxis") Long xaxis, @PathVariable("yaxis") Long yaxis){
-		System.out.println("Success: "+xaxis+" "+yaxis);
-		Restaurant restaurant = findRestaurantForRestaurantManager();
-		if(restaurant.getSegments().size()>0)
-			restaurant.getSegments().clear();
 		
-		Segment seg = new Segment("defaultSegment", restaurant);
-		restaurant.getSegments().add(seg);
+		Restaurant restaurant = findRestaurantForRestaurantManager();
+		//RESITI OVO KAKO TREBA
+		restaurant.getSegments().get(0).getTables().clear();
+		
 		for(int x = 0; x<xaxis; x++){
-			for(int y=0; y<yaxis; y++){
-				app.restaurant.Table t = new app.restaurant.Table("", seg, x, y, app.restaurant.Table.NOT_EXISTS);
-				seg.getTables().add(t);
+			for(int y  =0; y<yaxis; y++){
+				app.restaurant.Table t = new app.restaurant.Table("Table", x, y, app.restaurant.Table.NOT_EXISTS);
+				segmentService.findAll().get(0).getTables().add(t);
+				tableService.save(t);
 			}
 		}
 	}
@@ -265,12 +274,16 @@ public class RestaurantManagerController {
 	public List<app.restaurant.Table> getTables(){
 		
 		Restaurant restaurant = findRestaurantForRestaurantManager();
-		System.out.println("br segmenata: "+restaurant.getSegments().size() );
+		// prvi put napravi default segment
+		if(restaurant.getSegments().size()<1){
+			Segment seg = new Segment("default");
+			restaurant.getSegments().add(seg);
+			segmentService.save(seg);
+		}
 		ArrayList<app.restaurant.Table> outTables = new ArrayList<app.restaurant.Table>();
 		for(int i=0; i<restaurant.getSegments().size(); i++){
 			outTables.addAll(restaurant.getSegments().get(i).getTables());
 		}
-		System.out.println("RETURNING "+outTables.size() +" TABLES");
 		return outTables;
 	}
 	
