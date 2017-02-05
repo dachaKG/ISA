@@ -223,14 +223,33 @@ app.controller('restaurantManagerController', ['$scope','$window','restaurantMan
 					});
 		}
 		
-		
-		$scope.openModal = function(){
-			var modal = document.getElementById('myModal');
-			modal.style.display = "block";
+		$scope.addSegment = function(){
+			restaurantManagerService.addSegment($scope.segment).then(
+				function(response){
+					$("input[name='segName']").val("");
+				});
 		}
+		
+		
+		$scope.openModal = function(id){
+			restaurantManagerService.getSegments().then(
+				function(response){
+					$scope.segments = response.data;
+					$scope.tableId = id;
+					var modal = document.getElementById('myModal');
+					modal.style.display = "block";
+				});
+		}
+		
+		
+		
 		$scope.closeModal = function(){
-			var modal = document.getElementById('myModal');
-			modal.style.display = "none";
+			restaurantManagerService.updateTable($scope.tableId, $scope.table).then(
+				function(response){
+					var modal = document.getElementById('myModal');
+					modal.style.display = "none";
+					$window.location.reload();
+				});
 		}
 		
 		

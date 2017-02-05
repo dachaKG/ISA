@@ -1,15 +1,22 @@
-<h1>Tables configuration</h1><hr/><br/>
+<h1>Tables configuration</h1><hr/>
 
 <div style = "background: #333333;">
 <h3>Make new configuration: </h3><br/>	
 Max on x-axis: <input name= "xaxis"input type="number" value="1"><br/>
 Max on y-axis: <input name="yaxis" type="number" value="1"><br/>
-<button class="btn btn-default navbar-btn" ng-click="makeConfig()" >Make</button><hr/><br/>
+<button class="btn btn-default navbar-btn" ng-click="makeConfig()" >Make Configuration</button><hr/>
+
+<form name="segmentForm">
+	Add new segment: <input name="segName" type="text" ng-model = "$parent.segment.name"><br/>
+	<button class="btn btn-default navbar-btn" ng-click= "addSegment()">Add</button><hr/>
+</form>
+
+
 
 <table ng-init="loadTables()" class = "tablesTable">
 	<tr ng-repeat="row in tables">
 		<td ng-repeat="table in row"> 
-			<button class="tableBtns" ng-click="openModal()"> </button>
+			<button class="tableBtns" ng-click="openModal(table.id)"><label ng-if="table.status == 'Exists'">E</label></button>
 		</td>
 				
 	</tr>
@@ -24,8 +31,20 @@ Max on y-axis: <input name="yaxis" type="number" value="1"><br/>
 <div id="myModal" class="modal">
   <div class="modal-content">
     <h3>Table Setings</h3><hr/><br/>
-    Segment: default <br/>
-    Status: nonexistent<br/>
-    </center><button ng-click="closeModal()" class="btn btn-default navbar-btn">Ok</button>
+    
+    <form name="tableForm">
+    Status : 
+    	<select style="background: gray;" ng-model = "$parent.table.status">
+    		<option>Not Exists</option>
+    		<option>Exists</option>
+   		 </select><br/><br/>
+    
+    	Segment: 
+    	<select style="background: gray;" ng-model = "$parent.table.segmentName">
+    		<option ng-repeat = "segment in segments">{{segment.name}}</option>
+    	</select><br/>
+    
+    	</center><button ng-click="closeModal()" class="btn btn-default navbar-btn">Ok</button>
+    </form>
   </div>
 </div>
