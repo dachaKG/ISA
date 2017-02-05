@@ -1,5 +1,6 @@
 package app.guest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import app.restaurant.Restaurant;
 import app.restaurant.RestaurantService;
+import app.restaurant.Segment;
 
 @RestController
 @RequestMapping("/guest")
@@ -95,5 +97,15 @@ public class GuestController {
 		return result;
 	}
 	
+	@GetMapping(path="/restaurant/getTables/{id}")
+	public List<app.restaurant.Table> getTables(@PathVariable Long id){
+		
+		Restaurant restaurant = restaurantService.findOne(id);
+		ArrayList<app.restaurant.Table> outTables = new ArrayList<app.restaurant.Table>();
+		for(int i=0; i<restaurant.getSegments().size(); i++){
+			outTables.addAll(restaurant.getSegments().get(i).getTables());
+		}
+		return outTables;
+	}
 	
 }

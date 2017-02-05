@@ -149,6 +149,45 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			);
 		}
 		
+		$scope.reservation1 = function(id){
+			guestService.find(id).then(
+				function(response){
+					$scope.restaurant = response.data;
+					$location.path('loggedIn/guest/reservation1');
+			});
+		}
+		
+		$scope.reservation2 = function(){
+			$location.path('loggedIn/guest/reservation2');
+		}
+		
+		$scope.reservation3 = function(){
+			$location.path('loggedIn/guest/reservation3');
+		}
+		
+		$scope.loadTables = function(id){
+			guestService.getTables(id).then(
+					function(response){
+						var stolovi = [];
+						var red = [];
+						var lastXPos = 0;
+						var counter = 0;
+						angular.forEach(response.data, function(value, key){	// punjenje matrice stolova
+							counter++;
+							if(value.xpos == lastXPos){	
+								red.push(value);
+							}
+							if((value.xpos != lastXPos) || counter==response.data.length ) {
+								stolovi.push(red);
+								red =[];
+								red.push(value);
+							}
+							lastXPos = value.xpos;
+						});
+						$scope.tables = stolovi;
+					});
+		}
+		
 		
 		function myMap(restaurant) {
 			var mapProp= {

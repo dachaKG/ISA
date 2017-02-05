@@ -247,6 +247,18 @@ angular.module('routerApp', ['ui.router',
 			url : '/restaurants',
 			templateUrl : 'guestt/guestRestaurants.html'
 		})
+		.state('loggedIn.guest.reservation1', {
+			url : '/reservation1',
+			templateUrl : 'guestt/guestReservation1.html'
+		})
+		.state('loggedIn.guest.reservation2', {
+			url : '/reservation2',
+			templateUrl : 'guestt/guestReservation2.html'
+		})
+		.state('loggedIn.guest.reservation3', {
+			url : 'reservation3',
+			templateUrl : 'guestt/guestReservation3.html'
+		})
         
         
         

@@ -1,0 +1,47 @@
+<div class="reservation">
+<table>
+	<tr>
+		<td><h3>Restaurant:</h3></td>
+		<td><h3>{{restaurant.name}}</h3></td>
+	</tr>
+	
+	<tr>
+		<td>Datum:</td>
+		<td>11</td>
+	</tr>
+	
+	<tr>
+		<td>Vreme:</td>
+		<td>11</td>
+	</tr>
+	
+	<tr>
+		<td>Trajanje:</td>
+		<td>11</td>
+	</tr>
+</table>
+
+
+
+
+
+
+
+
+<!-- Bezveze primer stolova -->
+<table ng-init="loadTables(restaurant.id)" class = "tablesTable">
+	<tr ng-repeat="row in tables">
+		<td ng-repeat="table in row"> 
+			<button class="tableBtns" ng-if="table.status == 'Exists'">E</button>
+			<button class="tableBtns" ng-if="table.status == 'Not Exists'" style="background: gray;"></button>
+		</td>
+				
+	</tr>
+
+</table>
+
+<hr/><button class="btn btn-default navbar-btn" ng-click="reservation2()">Dalje</button>
+
+
+
+</div>
