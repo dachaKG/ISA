@@ -13,9 +13,9 @@ import lombok.Data;
 @Entity
 public class Table {
 	
-	public static final int NOT_EXISTS = 0;
-	public static final int EXISTS = 1;
-	public static final int RESERVED = 2;
+	public static final String NOT_EXISTS = "Not Exists";
+	public static final String EXISTS = "Exists";
+	public static final String RESERVED = "Reserved";
 	
 
 	@Id
@@ -37,9 +37,12 @@ public class Table {
 	private int yPos;
 	
 	@Column
-	private int status;
+	private String status;
 	
-	public Table(String name, int xPos, int yPos, int status){
+	@Column
+	private String segmentName;
+	
+	public Table(String name, int xPos, int yPos, String status){
 		super();
 		this.name = name;
 		this.xPos = xPos;

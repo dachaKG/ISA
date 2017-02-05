@@ -286,6 +286,32 @@ public class RestaurantManagerController {
 		return outTables;
 	}
 	
+	@PostMapping(path ="/restaurant/addSegment")
+	public void addSegment(@RequestBody Segment segment){
+		Restaurant restaurant = findRestaurantForRestaurantManager();
+		restaurant.getSegments().add(segment);
+		segmentService.save(segment);
+	}
+	
+	
+	@GetMapping(path = "/restaurant/getSegments")
+	public List<Segment> getSegments(){
+		Restaurant rest = findRestaurantForRestaurantManager();
+		return rest.getSegments();
+	}
+	
+	@PutMapping(path = "/restaurant/table/{id}")
+	public app.restaurant.Table updateTable(@PathVariable Long id,
+			@RequestBody app.restaurant.Table table) {
+		System.out.println("idemo cuvati tabelu: "+table.getName() + " "+table.getSegmentName() + " "+table.getStatus());
+		app.restaurant.Table pomtab = tableService.findOne(id);
+		table.setXPos(pomtab.getXPos());
+		table.setYPos(pomtab.getYPos());
+		table.setId(id);
+		
+		return tableService.save(table);
+	}
+	
 	
 	
 }

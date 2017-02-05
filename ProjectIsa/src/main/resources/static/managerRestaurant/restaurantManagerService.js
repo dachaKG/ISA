@@ -64,4 +64,16 @@ services.service('restaurantManagerService', ['$http', function($http){
 		return $http.get("/restaurantManager/restaurant/getTables");
 	}
 	
+	this.addSegment = function(segment){
+		return $http.post("/restaurantManager/restaurant/addSegment", segment);
+	}
+	
+	this.getSegments = function(){
+		return $http.get("/restaurantManager/restaurant/getSegments");
+	}
+	
+	this.updateTable = function(id, table){
+		return $http.put("/restaurantManager/restaurant/table/"+id, table);
+	}
+	
 }]);
