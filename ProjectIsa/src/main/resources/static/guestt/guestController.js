@@ -6,6 +6,8 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			guestService.checkRights().then(
 				function (response) {
 					if(response.data === 'true'){
+						//myValue = false;
+						//document.getElementById("restaurantMenu").hide;
 						findAll();
 					}
 					else {
@@ -122,8 +124,9 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		$scope.menu = function(restaurant){
 			guestService.find(restaurant.id).then(
 					function(response){
-					//	$window.location.path = "guestRestaurantMenu.html" 
-					//	$scope.restaurant = response.data;
+						$scope.restaurantt = response.data;
+						//document.getElementById("restaurantMenu").show;
+						myMap(restaurant);
 					},
 					function(response){
 						alert("Error while signal");
@@ -135,6 +138,9 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			guestService.find(restaurant.id).then(
 				function(response){
 					myMap(restaurant);
+					if(restaurant.id != $scope.restaurantt.id){
+						$scope.restaurantt = [];
+					}
 					
 				},
 				function(response){
@@ -175,5 +181,11 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			      }
 			    });
 		}	
+		
+		$scope.customOrder = function(dish) {
+			   return dish.typeOfDish === 'Salad' ? 3
+			          : dish.typeOfDish === 'Cooked' ? 2 
+			          : 1
+			};
 		
 }]);
