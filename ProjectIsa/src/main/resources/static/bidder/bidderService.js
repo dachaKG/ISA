@@ -12,15 +12,15 @@ services.service('bidderService', ['$http', function($http){
 		return $http.get("/bidder/getOffers");
 	}
 	
-	this.changeValueOfPrice = function(restaurantOrderForChange){
-		return $http.post("/bidder/changeValueOfPrice",restaurantOrderForChange);
+	this.changeOffer = function(restaurantOrderForChange,offer){
+		return $http.post("/bidder/changeOffer/"+restaurantOrderForChange.id,offer);
 	}
 	
 	this.getActiveOffers = function(){
 		return $http.get("/bidder/getActiveOffers");
 	}
 	
-	this.competeWithInsertedValue = function(restaurantOrderForChange){
-		return $http.post("/bidder/competeWithInsertedValue",restaurantOrderForChange);
+	this.competeWithInsertedValue = function(restaurantOrderr,offer){
+		return $http.post("/bidder/competeWithInsertedValue/"+restaurantOrderr.id,offer);
 	}
 }]);

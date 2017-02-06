@@ -353,7 +353,7 @@ public class RestaurantManagerController {
 	@PostMapping(path = "/restaurant/changeShiftCookAction")
 	public void changeShiftCookAction(@Valid @RequestBody ChangedShiftCook changedShiftCook) {
 		// onemoguceno da sam sa sobom menja smenu
-		if (changedShiftCook.getCook1().getId() == changedShiftCook.getCook2().getId()) {
+		if (changedShiftCook.getCook1().getId() != changedShiftCook.getCook2().getId()) {
 			Restaurant restaurant = findRestaurantForRestaurantManager();
 			changedShiftCookService.save(changedShiftCook);
 			restaurant.getChangedShiftsForCooks().add(changedShiftCook);
@@ -366,7 +366,7 @@ public class RestaurantManagerController {
 	@PostMapping(path = "/restaurant/changeShiftBartenderAction")
 	public void changeShiftBartenderAction(@Valid @RequestBody ChangedShiftBartender changedShiftBartender) {
 		// onemoguceno da sam sa sobom menja smenu
-		if (changedShiftBartender.getBartender1().getId() == changedShiftBartender.getBartender2().getId()) {
+		if (changedShiftBartender.getBartender1().getId() != changedShiftBartender.getBartender2().getId()) {
 			Restaurant restaurant = findRestaurantForRestaurantManager();
 			changedShiftBartenderService.save(changedShiftBartender);
 			restaurant.getChangedShiftsForBartenders().add(changedShiftBartender);
@@ -379,7 +379,7 @@ public class RestaurantManagerController {
 	@PostMapping(path = "/restaurant/changeShiftWaiterAction")
 	public void changeShiftWaiterAction(@Valid @RequestBody ChangedShiftWaiter changedShiftWaiter) {
 		// onemoguceno da sam sa sobom menja smenu
-		if (changedShiftWaiter.getWaiter1().getId() == changedShiftWaiter.getWaiter2().getId()) {
+		if (changedShiftWaiter.getWaiter1().getId() != changedShiftWaiter.getWaiter2().getId()) {
 			Restaurant restaurant = findRestaurantForRestaurantManager();
 			changedShiftWaiterService.save(changedShiftWaiter);
 			restaurant.getChangedShiftsForWaiters().add(changedShiftWaiter);

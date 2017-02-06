@@ -19,13 +19,13 @@
 	   		
 	</form>
 	
-	<form name="new" ng-model="$parent.changeShiftBartender">
-		<label>Bartender1</label> 
+	<form name="new2" ng-model="$parent.changeShiftBartender">
+		<label>Waiter1</label> 
 		<select class="form-control" ng-model="$parent.changeShiftBartender.bartender1.id">
 			<option value="" selected />
 			<option ng-repeat="option in restaurant.bartenders" value="{{option.id}}">{{option.firstname}}</option>
 		</select> 
-		<label>Bartender2</label> 
+		<label>Waiter2</label> 
 		<select class="form-control" ng-model="$parent.changeShiftBartender.bartender2.id">
 			<option value="" selected />
 			<option ng-repeat="option in restaurant.bartenders" value="{{option.id}}">{{option.firstname}}</option>
@@ -34,12 +34,12 @@
 		<label>Date</label>
    		<input type="date" class="form-control" ng-model = "$parent.changeShiftBartender.date" required max="2020-12-31">  
    		<br>
-   		<button class="btn btn-default" ng-click="new.$valid &&  changeShiftBartenderAction()"><span class="glyphicon glyphicon-ok" ></span>Change</button>
+   		<button class="btn btn-default" ng-click="new2.$valid &&  changeShiftBartenderAction()"><span class="glyphicon glyphicon-ok" ></span>Change</button>
 		<button class="btn btn-default" ng-click="cancel()"><span class="glyphicon glyphicon-remove" ></span> Cancel</button>
 	   		
 	</form>
 	
-	<form name="new" ng-model="$parent.changeShiftWaiter">
+	<form name="new3" ng-model="$parent.changeShiftWaiter">
 		<label>Waiter1</label> 
 		<select class="form-control" ng-model="$parent.changeShiftWaiter.waiter1.id">
 			<option value="" selected />
@@ -54,7 +54,7 @@
 		<label>Date</label>
    		<input type="date" class="form-control" ng-model = "$parent.changeShiftWaiter.date" required max="2020-12-31">  
    		<br>
-   		<button class="btn btn-default" ng-click="new.$valid &&  changeShiftWaiterAction()"><span class="glyphicon glyphicon-ok" ></span>Change</button>
+   		<button class="btn btn-default" ng-click="new3.$valid &&  changeShiftWaiterAction()"><span class="glyphicon glyphicon-ok" ></span>Change</button>
 		<button class="btn btn-default" ng-click="cancel()"><span class="glyphicon glyphicon-remove" ></span> Cancel</button>
 	   		
 	</form>

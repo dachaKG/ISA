@@ -294,10 +294,6 @@ app.controller('restaurantManagerController', ['$scope','$window','restaurantMan
 				});
 		}
 		
-		
-		
-		
-		
 		$scope.createNewOffer = function() {
 			drink = $scope.newRestaurantOrder.drink
 			dish = $scope.newRestaurantOrder.dish

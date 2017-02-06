@@ -10,6 +10,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -86,49 +87,50 @@ public class BidderController {
 	}
 
 	// izmena vrednosti aktivne ponude
-	@PostMapping("/changeValueOfPrice")
+	@PostMapping("/changeOffer/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public void changeValueOfPrice(@Valid @RequestBody Offer offer) {
-		List<RestaurantOrderr> restaurantOrderrs = restaurantOrderrService.findAll();
-		for (int i = 0; i < restaurantOrderrs.size(); i++) {
-			RestaurantOrderr restaurantOrder = restaurantOrderrs.get(i);
-			List<Offer> listOfOffers = restaurantOrder.getOffers();
-			for (int j = 0; j < listOfOffers.size(); j++) {
-				if (listOfOffers.get(j).getId() == offer.getId()) {
-					if (restaurantOrder.getEndDate().getTime() > restaurantOrder.getStartDate().getTime()
-							&& restaurantOrder.getOrderActive().equals("open")) {
-						listOfOffers.get(j).setPrice(Long.parseLong(offer.getBidder().getRegistrated()));
-						restaurantOrderrService.save(restaurantOrder);
-						return;
-					}
+	public void changeOffer(@PathVariable Long id,@Valid @RequestBody Offer offer) {
+		RestaurantOrderr restaurantOrder = restaurantOrderrService.findOne(id);
+		List<Offer> listOfOffers = restaurantOrder.getOffers();
+		for (int j = 0; j < listOfOffers.size(); j++) {
+			if (listOfOffers.get(j).getId() == offer.getId()) {
+				if (restaurantOrder.getEndDate().getTime() > offer.getPosibleDelivery().getTime() && offer.getPosibleDelivery().getTime() > restaurantOrder.getStartDate().getTime()
+					&& restaurantOrder.getOrderActive().equals("open")) {
+					//glupost al da ne pravim bzv drugi objekat
+					listOfOffers.get(j).setPrice(offer.getPrice());
+					listOfOffers.get(j).setGaranty(offer.getGaranty());
+					listOfOffers.get(j).setPosibleDelivery(offer.getPosibleDelivery());
+					restaurantOrderrService.save(restaurantOrder);
+					return;
 				}
 			}
 		}
 		throw new IllegalArgumentException();
 	}
 
-	// izmena vrednosti aktivne ponude
-	@PostMapping("/competeWithInsertedValue")
+	@PostMapping("/competeWithInsertedValue/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public void competeWithInsertedValue(/* @Valid */ @RequestBody RestaurantOrderr restaurantOrderr) {
+	public void competeWithInsertedValue(@PathVariable Long id,@Valid  @RequestBody Offer offer) {
+		RestaurantOrderr restaurantOrderr = restaurantOrderrService.findOne(id);
 		Long bidderId = ((Bidder) httpSession.getAttribute("user")).getId();
 		Bidder bidder = bidderService.findOne(bidderId);
-		if (bidderService.tryToChangeValueOfOffer(restaurantOrderr, bidderId, bidder)) {
-			Offer offer = setOffer(restaurantOrderr.getIdFromChoosenBidder(), bidder);
-			restaurantOrderr.setIdFromChoosenBidder(null);
-			offerService.save(offer);
-			restaurantOrderr.getOffers().add(offer);
-			restaurantOrderrService.save(restaurantOrderr);
-			return;
-		}
-		throw new RuntimeException("Can't make changes.");
+		if(!checkIfMakedOfferEarlier(restaurantOrderr,bidder) && offer.getPosibleDelivery().before(restaurantOrderr.getEndDate()) && offer.getPosibleDelivery().after(restaurantOrderr.getStartDate()))
+			if (bidderService.tryToChangeValueOfOffer(restaurantOrderr, bidderId, bidder)) {
+				offer.setAccepted("in progress");
+				offer.setBidder(bidder);
+				offerService.save(offer);
+				restaurantOrderr.getOffers().add(offer);
+				restaurantOrderrService.save(restaurantOrderr);
+				return;
+			}
+			throw new RuntimeException("Can't compete.");
 	}
-
-	private Offer setOffer(Long price, Bidder bidder) {
-		Offer offer = new Offer();
-		offer.setPrice(price);
-		offer.setAccepted("in progress");
-		offer.setBidder(bidder);
-		return offer;
+	
+	private boolean checkIfMakedOfferEarlier(RestaurantOrderr restaurantOrderr,Bidder bidder) {
+		for(int i=0;i<restaurantOrderr.getOffers().size();i++) {
+			if(restaurantOrderr.getOffers().get(i).getBidder().getId() == bidder.getId())
+				return true;
+		}
+		return false;
 	}
 }
