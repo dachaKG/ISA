@@ -1,4 +1,4 @@
-package app.manager.changedShift;
+package app.manager.changedShiftWaiter;
 
 import java.util.List;
 
@@ -11,26 +11,26 @@ import com.google.common.collect.Lists;
 
 @Service
 @Transactional
-public class ChangedShiftServiceImpl implements ChangedShiftService {
-	private final ChangedShiftRepository repository;
+public class ChangedShiftWaiterServiceImpl implements ChangedShiftWaiterService {
+	private final ChangedShiftWaiterRepository repository;
 
 	@Autowired
-	public ChangedShiftServiceImpl(final ChangedShiftRepository repository) {
+	public ChangedShiftWaiterServiceImpl(final ChangedShiftWaiterRepository repository) {
 		this.repository = repository;
 	}
 
 	@Override
-	public List<ChangedShift> findAll() {
+	public List<ChangedShiftWaiter> findAll() {
 		return Lists.newArrayList(repository.findAll());
 	}
 
 	@Override
-	public ChangedShift save(ChangedShift changedShift) {
+	public ChangedShiftWaiter save(ChangedShiftWaiter changedShift) {
 		return repository.save(changedShift);
 	}
 
 	@Override
-	public ChangedShift findOne(Long id) {
+	public ChangedShiftWaiter findOne(Long id) {
 		return repository.findOne(id);
 	}
 }

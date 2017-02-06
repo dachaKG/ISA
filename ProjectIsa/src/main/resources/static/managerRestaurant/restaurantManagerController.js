@@ -374,4 +374,18 @@ app.controller('restaurantManagerController', ['$scope','$window','restaurantMan
 					alert("Successfully added.");
                    });
 		}
+		
+		$scope.changeShiftBartenderAction = function(){
+			restaurantManagerService.changeShiftBartenderAction($scope.changeShiftBartender).then(
+				function(response){
+					alert("Successfully added.");
+                   });
+		}
+		
+		$scope.changeShiftWaiterAction = function(){
+			restaurantManagerService.changeShiftWaiterAction($scope.changeShiftWaiter).then(
+				function(response){
+					alert("Successfully added.");
+                   });
+		}
 }]);

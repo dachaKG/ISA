@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import javax.ws.rs.BadRequestException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
@@ -27,8 +28,12 @@ import app.drink.Drink;
 import app.employed.bartender.Bartender;
 import app.employed.cook.Cook;
 import app.employed.waiter.Waiter;
-import app.manager.changedShift.ChangedShift;
-import app.manager.changedShift.ChangedShiftService;
+import app.manager.changedShiftBartender.ChangedShiftBartender;
+import app.manager.changedShiftBartender.ChangedShiftBartenderService;
+import app.manager.changedShiftCook.ChangedShiftCook;
+import app.manager.changedShiftCook.ChangedShiftCookService;
+import app.manager.changedShiftWaiter.ChangedShiftWaiter;
+import app.manager.changedShiftWaiter.ChangedShiftWaiterService;
 import app.offer.Offer;
 import app.offer.OfferService;
 import app.restaurant.Restaurant;
@@ -50,14 +55,19 @@ public class RestaurantManagerController {
 	private RestaurantManagerService restaurantManagerService;
 	private OfferService offerService;
 	private SegmentService segmentService;
-	private ChangedShiftService changedShiftService;
+	private ChangedShiftCookService changedShiftCookService;
+	private ChangedShiftBartenderService changedShiftBartenderService;
+	private ChangedShiftWaiterService changedShiftWaiterService;
 	private TableService tableService;
 
 	@Autowired
 	public RestaurantManagerController(final HttpSession httpSession, final RestaurantService restaurantService,
 			final RestaurantManagerService restaurantManagerService, final BidderService bidderService,
 			final RestaurantOrderService restaurantOrderService, final OfferService offerService,
-			final SegmentService segmentService, final TableService tableService, final ChangedShiftService changedShiftService) {
+			final SegmentService segmentService, final TableService tableService,
+			final ChangedShiftCookService changedShiftCookService,
+			final ChangedShiftWaiterService changedShiftWaiterService,
+			final ChangedShiftBartenderService changedShiftBartenderService) {
 		this.httpSession = httpSession;
 		this.restaurantService = restaurantService;
 		this.bidderService = bidderService;
@@ -65,8 +75,10 @@ public class RestaurantManagerController {
 		this.restaurantManagerService = restaurantManagerService;
 		this.offerService = offerService;
 		this.segmentService = segmentService;
-		this.changedShiftService = changedShiftService;
-		this.tableService = tableService;
+		this.changedShiftCookService = changedShiftCookService;
+		this.changedShiftBartenderService = changedShiftBartenderService;
+		this.changedShiftWaiterService = changedShiftWaiterService;
+			this.tableService = tableService;
 	}
 
 	@GetMapping("/checkRights")
@@ -336,12 +348,44 @@ public class RestaurantManagerController {
 
 		return tableService.save(table);
 	}
-	//fali da se ubaci provera da se ne poklapaju kuvari
+
+	// fali da se ubaci provera da se ne poklapaju kuvari
 	@PostMapping(path = "/restaurant/changeShiftCookAction")
-	public void changeShiftCookAction(@Valid @RequestBody ChangedShift changedShift) {
-		Restaurant restaurant = findRestaurantForRestaurantManager();
-		changedShiftService.save(changedShift);
-		restaurant.getListOfChangedShifts().add(changedShift);
-		restaurantService.save(restaurant);
+	public void changeShiftCookAction(@Valid @RequestBody ChangedShiftCook changedShiftCook) {
+		// onemoguceno da sam sa sobom menja smenu
+		if (changedShiftCook.getCook1().getId() == changedShiftCook.getCook2().getId()) {
+			Restaurant restaurant = findRestaurantForRestaurantManager();
+			changedShiftCookService.save(changedShiftCook);
+			restaurant.getChangedShiftsForCooks().add(changedShiftCook);
+			restaurantService.save(restaurant);
+		} else
+			throw new BadRequestException();
 	}
+
+	// fali da se ubaci provera da se ne poklapaju kuvari
+	@PostMapping(path = "/restaurant/changeShiftBartenderAction")
+	public void changeShiftBartenderAction(@Valid @RequestBody ChangedShiftBartender changedShiftBartender) {
+		// onemoguceno da sam sa sobom menja smenu
+		if (changedShiftBartender.getBartender1().getId() == changedShiftBartender.getBartender2().getId()) {
+			Restaurant restaurant = findRestaurantForRestaurantManager();
+			changedShiftBartenderService.save(changedShiftBartender);
+			restaurant.getChangedShiftsForBartenders().add(changedShiftBartender);
+			restaurantService.save(restaurant);
+		} else
+			throw new BadRequestException();
+	}
+
+	// fali da se ubaci provera da se ne poklapaju kuvari
+	@PostMapping(path = "/restaurant/changeShiftWaiterAction")
+	public void changeShiftWaiterAction(@Valid @RequestBody ChangedShiftWaiter changedShiftWaiter) {
+		// onemoguceno da sam sa sobom menja smenu
+		if (changedShiftWaiter.getWaiter1().getId() == changedShiftWaiter.getWaiter2().getId()) {
+			Restaurant restaurant = findRestaurantForRestaurantManager();
+			changedShiftWaiterService.save(changedShiftWaiter);
+			restaurant.getChangedShiftsForWaiters().add(changedShiftWaiter);
+			restaurantService.save(restaurant);
+		} else
+			throw new BadRequestException();
+	}
+
 }

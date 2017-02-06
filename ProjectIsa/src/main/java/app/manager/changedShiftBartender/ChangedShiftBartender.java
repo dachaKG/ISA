@@ -1,4 +1,4 @@
-package app.manager.changedShift;
+package app.manager.changedShiftBartender;
 
 import java.sql.Date;
 
@@ -10,12 +10,12 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
-import app.employed.cook.Cook;
+import app.employed.bartender.Bartender;
 import lombok.Data;
 
 @Data
 @Entity
-public class ChangedShift {
+public class ChangedShiftBartender {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,10 +30,10 @@ public class ChangedShift {
 	// kome menjas
 	@OneToOne
 	@NotNull
-	Cook cook1;
+	Bartender bartender1;
 	
 	// sa kim smenu menjas
 	@OneToOne
 	@NotNull
-	Cook cook2;
+	Bartender bartender2;
 }

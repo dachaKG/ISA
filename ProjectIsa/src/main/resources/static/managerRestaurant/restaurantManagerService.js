@@ -92,5 +92,13 @@ services.service('restaurantManagerService', ['$http', function($http){
 	this.changeShiftCookAction = function(changeShiftCook){
 		return $http.post("/restaurantManager/restaurant/changeShiftCookAction", changeShiftCook);
 	}
+
+	this.changeShiftWaiterAction = function(changeShiftWaiter){
+		return $http.post("/restaurantManager/restaurant/changeShiftWaiterAction", changeShiftWaiter);
+	}
+	
+	this.changeShiftBartenderAction = function(changeShiftBartender){
+		return $http.post("/restaurantManager/restaurant/changeShiftBartenderAction", changeShiftBartender);
+	}
 	
 }]);
