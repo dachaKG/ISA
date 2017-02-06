@@ -262,7 +262,7 @@ public class RestaurantManagerController {
 		for(int x = 0; x<xaxis; x++){
 			for(int y  =0; y<yaxis; y++){
 				app.restaurant.Table t = new app.restaurant.Table("Table", x, y, app.restaurant.Table.NOT_EXISTS);
-				segmentService.findAll().get(0).getTables().add(t);
+				restaurant.getSegments().get(0).getTables().add(t);
 				tableService.save(t);
 			}
 		}

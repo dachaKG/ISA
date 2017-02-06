@@ -2,8 +2,8 @@
 
 <div style = "background: #333333;">
 <h3>Make new configuration: </h3><br/>	
-Max on x-axis: <input name= "xaxis"input type="number" value="1"><br/>
-Max on y-axis: <input name="yaxis" type="number" value="1"><br/>
+Max on x-axis: <input name= "yaxis"input type="number" value="1"><br/>
+Max on y-axis: <input name="xaxis" type="number" value="1"><br/>
 <button class="btn btn-default navbar-btn" ng-click="makeConfig()" >Make Configuration</button><hr/>
 
 <form name="segmentForm">
@@ -16,7 +16,7 @@ Max on y-axis: <input name="yaxis" type="number" value="1"><br/>
 <table ng-init="loadTables()" class = "tablesTable">
 	<tr ng-repeat="row in tables">
 		<td ng-repeat="table in row"> 
-			<button class="tableBtns" ng-click="openModal(table.id)"><label ng-if="table.status == 'Exists'">E</label></button>
+			<button class="tableBtns" ng-click="openModal(table.id)"><label ng-if="table.status == 'Exists'">{{table.name}}</label></button>
 		</td>
 				
 	</tr>
@@ -33,6 +33,9 @@ Max on y-axis: <input name="yaxis" type="number" value="1"><br/>
     <h3>Table Setings</h3><hr/><br/>
     
     <form name="tableForm">
+    Name : 
+    	<input trpe="text" style="background: gray;" ng-model ="$parent.table.name"><br/><br/>
+    
     Status : 
     	<select style="background: gray;" ng-model = "$parent.table.status">
     		<option>Not Exists</option>

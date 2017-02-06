@@ -100,6 +100,8 @@ public class GuestController {
 	@GetMapping(path="/restaurant/getTables/{id}")
 	public List<app.restaurant.Table> getTables(@PathVariable Long id){
 		
+		
+		
 		Restaurant restaurant = restaurantService.findOne(id);
 		ArrayList<app.restaurant.Table> outTables = new ArrayList<app.restaurant.Table>();
 		for(int i=0; i<restaurant.getSegments().size(); i++){
