@@ -21,6 +21,7 @@ import app.drink.Drink;
 import app.employed.bartender.Bartender;
 import app.employed.cook.Cook;
 import app.employed.waiter.Waiter;
+import app.manager.changedShift.ChangedShift;
 import app.manager.restaurant.RestaurantManager;
 import app.order.Orderr;
 import app.restaurant.restaurantOrder.RestaurantOrderr;
@@ -100,4 +101,9 @@ public class Restaurant {
 	@Column
 	@NotBlank
 	private String number;
+	
+	@OneToMany
+	@JoinTable(name = "RESTAURANT_CHANGED_SHIFTS", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "SHIFT_ID"))
+	private List<ChangedShift> listOfChangedShifts;
+	
 }

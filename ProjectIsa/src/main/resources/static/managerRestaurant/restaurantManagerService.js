@@ -89,4 +89,8 @@ services.service('restaurantManagerService', ['$http', function($http){
 		return $http.put("/restaurantManager/restaurant/table/"+id, table);
 	}
 	
+	this.changeShiftCookAction = function(changeShiftCook){
+		return $http.post("/restaurantManager/restaurant/changeShiftCookAction", changeShiftCook);
+	}
+	
 }]);

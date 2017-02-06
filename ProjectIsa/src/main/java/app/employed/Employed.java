@@ -22,7 +22,9 @@ public abstract class Employed extends User {
 	@NotNull
 	@Column
 	private ShoesSize shoesSize;
-	/*
-	@Column //enum
-	private int defaultShift;*/
+	
+	@Enumerated(EnumType.STRING)
+	@NotNull
+	@Column
+	private DefaultShift defaultShift;
 }

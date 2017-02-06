@@ -27,6 +27,8 @@ import app.drink.Drink;
 import app.employed.bartender.Bartender;
 import app.employed.cook.Cook;
 import app.employed.waiter.Waiter;
+import app.manager.changedShift.ChangedShift;
+import app.manager.changedShift.ChangedShiftService;
 import app.offer.Offer;
 import app.offer.OfferService;
 import app.restaurant.Restaurant;
@@ -48,13 +50,14 @@ public class RestaurantManagerController {
 	private RestaurantManagerService restaurantManagerService;
 	private OfferService offerService;
 	private SegmentService segmentService;
+	private ChangedShiftService changedShiftService;
 	private TableService tableService;
 
 	@Autowired
 	public RestaurantManagerController(final HttpSession httpSession, final RestaurantService restaurantService,
 			final RestaurantManagerService restaurantManagerService, final BidderService bidderService,
 			final RestaurantOrderService restaurantOrderService, final OfferService offerService,
-			final SegmentService segmentService, final TableService tableService) {
+			final SegmentService segmentService, final TableService tableService, final ChangedShiftService changedShiftService) {
 		this.httpSession = httpSession;
 		this.restaurantService = restaurantService;
 		this.bidderService = bidderService;
@@ -62,8 +65,8 @@ public class RestaurantManagerController {
 		this.restaurantManagerService = restaurantManagerService;
 		this.offerService = offerService;
 		this.segmentService = segmentService;
+		this.changedShiftService = changedShiftService;
 		this.tableService = tableService;
-
 	}
 
 	@GetMapping("/checkRights")
@@ -333,5 +336,12 @@ public class RestaurantManagerController {
 
 		return tableService.save(table);
 	}
-
+	//fali da se ubaci provera da se ne poklapaju kuvari
+	@PostMapping(path = "/restaurant/changeShiftCookAction")
+	public void changeShiftCookAction(@Valid @RequestBody ChangedShift changedShift) {
+		Restaurant restaurant = findRestaurantForRestaurantManager();
+		changedShiftService.save(changedShift);
+		restaurant.getListOfChangedShifts().add(changedShift);
+		restaurantService.save(restaurant);
+	}
 }

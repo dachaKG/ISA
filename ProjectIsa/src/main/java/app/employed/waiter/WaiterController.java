@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 import app.dish.Dish;
 import app.drink.Drink;
 import app.drink.DrinkService;
-import app.employed.bartender.Bartender;
 import app.order.DishStatus;
 import app.order.DrinkStatus;
 import app.order.OrderService;
@@ -151,12 +149,6 @@ public class WaiterController {
 		Waiter waiter = waiterService.findOne(id);
 		Optional.ofNullable(waiter).orElseThrow(() -> new ResourceNotFoundException("resourceNotFound!"));
 		return waiter;
-	}
-
-	@DeleteMapping(path = "/{id}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void delete(@PathVariable Long id) {
-		waiterService.delete(id);
 	}
 
 	@PutMapping(path = "/{id}")

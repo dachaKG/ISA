@@ -367,4 +367,11 @@ app.controller('restaurantManagerController', ['$scope','$window','restaurantMan
 			      }
 			    });
 		}	
+		
+		$scope.changeShiftCookAction = function(){
+			restaurantManagerService.changeShiftCookAction($scope.changeShiftCook).then(
+				function(response){
+					alert("Successfully added.");
+                   });
+		}
 }]);
