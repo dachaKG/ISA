@@ -50,10 +50,12 @@
 			<tr>
 				<th>Name</th>
 				<th>Mail</th>
+				<th>Action</th>
 			</tr>
 			<tr ng-repeat="waiter in waiters">
 				<td>{{waiter.firstname}}</td>
 				<td>{{waiter.mail}}</td>
+				<td><button class="btn btn-default" ng-click="demissionWaiter(waiter)"><span class="glyphicon glyphicon-add" ></span>Demission</button></td>
 			</tr>
 		</tbody>
 	</table>
@@ -64,10 +66,12 @@
 			<tr>
 				<th>Name</th>
 				<th>Mail</th>
+				<th>Action</th>
 			</tr>
 			<tr ng-repeat="cook in cooks">
 				<td>{{cook.firstname}}</td>
 				<td>{{cook.mail}}</td>
+				<td><button class="btn btn-default" ng-click="demissionCook(cook)"><span class="glyphicon glyphicon-add" ></span>Demission</button></td>
 			</tr>
 		</tbody>
 	</table>
@@ -78,10 +82,12 @@
 			<tr>
 				<th>Name</th>
 				<th>Mail</th>
+				<th>Action</th>
 			</tr>
 			<tr ng-repeat="bartender in bartenders">
 				<td>{{bartender.firstname}}</td>
 				<td>{{bartender.mail}}</td>
+				<td><button class="btn btn-default" ng-click="demissionBartender(bartender)"><span class="glyphicon glyphicon-add" ></span>Demission</button></td>
 			</tr>
 		</tbody>
 	</table>

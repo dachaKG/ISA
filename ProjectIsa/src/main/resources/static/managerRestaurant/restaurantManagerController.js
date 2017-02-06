@@ -74,6 +74,48 @@ app.controller('restaurantManagerController', ['$scope','$window','restaurantMan
 			);
 		}
 		
+		$scope.demissionBartender = function(bartender) {
+			restaurantManagerService.deleteBartender(bartender).then(
+				function (response) {
+                    alert("Successfully removed.");
+                    $scope.state = undefined;
+                    findAll();
+                    $location.path('loggedIn/restaurantManager/info');
+                },
+                function (response) {
+                    alert("Error in deleting.");
+                }
+			);
+		}
+		
+		$scope.demissionWaiter = function(waiter) {
+			restaurantManagerService.deleteWaiter(waiter).then(
+				function (response) {
+                    alert("Successfully removed.");
+                    $scope.state = undefined;
+                    findAll();
+                    $location.path('loggedIn/restaurantManager/info');
+                },
+                function (response) {
+                    alert("Error in deleting.");
+                }
+			);
+		}
+		
+		$scope.demissionCook = function(cook) {
+			restaurantManagerService.deleteCook(cook).then(
+				function (response) {
+                    alert("Successfully removed.");
+                    $scope.state = undefined;
+                    findAll();
+                    $location.path('loggedIn/restaurantManager/info');
+                },
+                function (response) {
+                    alert("Error in deleting.");
+                }
+			);
+		}
+		
 		$scope.update = function() {
 			restaurantManagerService.updateMangerProfile($scope.restaurant.restaurantManager).then(
 				function (response) {
