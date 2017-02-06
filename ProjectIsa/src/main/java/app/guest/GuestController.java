@@ -13,15 +13,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import app.reservation.Reservation;
+import app.reservation.ReservationService;
 import app.restaurant.Restaurant;
 import app.restaurant.RestaurantService;
 import app.restaurant.Segment;
+import app.restaurant.Table;
+import app.restaurant.TableService;
 
 @RestController
 @RequestMapping("/guest")
@@ -29,13 +34,19 @@ public class GuestController {
 
 	private final GuestService service;
 	private final RestaurantService restaurantService;
+	private final TableService tableService;
+	private final ReservationService reservationService;
 	private HttpSession httpSession;
+	
 
 	@Autowired
-	public GuestController(final HttpSession httpSession, final GuestService service, final RestaurantService restaurantService) {
+	public GuestController(final HttpSession httpSession, final GuestService service, 
+			final RestaurantService restaurantService, final TableService tableService, final ReservationService reservationService) {
 		this.service = service;
 		this.httpSession = httpSession;
 		this.restaurantService = restaurantService;
+		this.tableService = tableService;
+		this.reservationService = reservationService;
 	}
 
 	@SuppressWarnings("unused")
@@ -109,5 +120,17 @@ public class GuestController {
 		}
 		return outTables;
 	}
+	
+	
+	@PostMapping(path="/makeReservation/{id}")
+	public void makeReservation(@PathVariable Long id, @RequestBody Reservation reservation){
+		System.out.println("SUCCESS, id:"+id);
+		System.out.println("DATE: "+reservation.getDate()+" h:"+reservation.getHours()+" m:"+reservation.getMinuts());
+		Table table = tableService.findOne(id);
+		table.getReservations().add(reservation);
+		reservationService.save(reservation);
+		
+	}
+	
 	
 }

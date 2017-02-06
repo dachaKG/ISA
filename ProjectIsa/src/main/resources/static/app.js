@@ -256,7 +256,7 @@ angular.module('routerApp', ['ui.router',
 			templateUrl : 'guestt/guestReservation2.html'
 		})
 		.state('loggedIn.guest.reservation3', {
-			url : 'reservation3',
+			url : '/reservation3',
 			templateUrl : 'guestt/guestReservation3.html'
 		})
         

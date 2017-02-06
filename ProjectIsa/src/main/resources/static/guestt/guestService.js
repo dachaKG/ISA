@@ -56,4 +56,8 @@ services.service('guestService', ['$http', function($http){
 		return $http.get("guest/restaurant/getTables/"+id);
 	}
 	
+	this.makeReservation = function(id, reservation){
+		return $http.post("guest/makeReservation/"+id, reservation);
+	}
+	
 }]);

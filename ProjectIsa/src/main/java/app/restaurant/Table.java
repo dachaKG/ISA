@@ -1,12 +1,19 @@
 package app.restaurant;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 
 import app.order.Orderr;
+import app.reservation.Reservation;
 import lombok.Data;
 
 @Data
@@ -41,6 +48,10 @@ public class Table {
 	
 	@Column
 	private String segmentName;
+	
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "TABLE_RESERVATION", joinColumns = @JoinColumn(name = "TABLE_ID"), inverseJoinColumns = @JoinColumn(name = "RESERVATION_ID"))
+	private List<Reservation> reservations;
 	
 	public Table(String name, int xPos, int yPos, String status){
 		super();

@@ -174,6 +174,16 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 						var counter = 0;
 						angular.forEach(response.data, function(value, key){	// punjenje matrice stolova
 							counter++;
+							
+							angular.forEach(value.reservations, function(res,key){// for za proveru rezervisanog stola
+								if(res.date===$scope.reservation.date){
+									if(((res.hours + res.minuts/60+res.duration) >= ($scope.reservation.hours+$scope.reservation.minuts/60)) &&
+										(($scope.reservation.hours+$scope.reservation.minuts/60+$scope.reservation.duration)>=(res.hours + res.minuts/60) )	){
+									value.status = "Reserved";
+									}
+								}
+							});
+							
 							if(value.xpos == lastXPos){	
 								red.push(value);
 							}
@@ -187,6 +197,24 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 						$scope.tables = stolovi;
 					});
 		}
+		
+		
+		
+		$scope.selectTable = function(table){
+			$("#odabranSto").html("Chosen table: "+table.name);
+			$scope.chosenTable = table.id;
+		}
+		
+		
+		$scope.makeReservation = function(){
+			guestService.makeReservation($scope.chosenTable, $scope.reservation).then(
+					function(response){
+						$location.path('loggedIn/guest/reservation2');
+					});
+		}
+		
+		
+		
 		
 		
 		function myMap(restaurant) {
