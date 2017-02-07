@@ -12,12 +12,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import app.dish.Dish;
+import app.dish.DishService;
+import app.order.OrderService;
+import app.order.Orderr;
 import app.restaurant.Restaurant;
 import app.restaurant.RestaurantService;
 
@@ -27,13 +32,19 @@ public class GuestController {
 
 	private final GuestService service;
 	private final RestaurantService restaurantService;
+	private final DishService dishService;
+	private final OrderService orderService;
+	private Orderr order = new Orderr();
 	private HttpSession httpSession;
 
 	@Autowired
-	public GuestController(final HttpSession httpSession, final GuestService service, final RestaurantService restaurantService) {
+	public GuestController(final HttpSession httpSession, final GuestService service, final RestaurantService restaurantService,
+			DishService dishService,final OrderService orderService) {
 		this.service = service;
 		this.httpSession = httpSession;
 		this.restaurantService = restaurantService;
+		this.dishService = dishService;
+		this.orderService = orderService;
 	}
 
 	@SuppressWarnings("unused")
@@ -93,6 +104,27 @@ public class GuestController {
 		// treba izbaciti i kad postoji vec prijateljstvo...
 		
 		return result;
+	}
+	
+	@GetMapping(path = "/order")
+	public Orderr guestOrder(){
+		Orderr order = this.order;
+		return order;
+	}
+	
+	@PutMapping(path = "/addDish/{id}")
+	public Orderr guestAddDish(@PathVariable Long id){
+		Dish dish = dishService.findOne(id);
+		this.order.getFood().add(dish);
+		return this.order;
+	}
+	
+	@PostMapping(path = "/makeOrder")
+	@ResponseStatus(HttpStatus.CREATED)
+	public void makeOrder(@Valid @RequestBody Orderr order){
+		order.setId(null);
+		orderService.save(order);
+		this.order = new Orderr();
 	}
 	
 	

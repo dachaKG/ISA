@@ -82,12 +82,14 @@ public class BartenderController {
 	}
 
 	// 2.4. sanker ima mogucnost da azurira podatke
-	@PutMapping(path = "/profile{id}")
+	@PutMapping(path = "/profile")
 	@ResponseStatus(HttpStatus.OK)
-	public Bartender update(@PathVariable Long id, @Valid @RequestBody Bartender bartender) {
-		Optional.ofNullable(bartenderService.findOne(id))
-				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
-		bartender.setId(id);
+	public Bartender update(@Valid @RequestBody Bartender bartender) {
+		Optional.ofNullable(bartenderService.findOne(bartender.getId()))
+					.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
+		//Bartender bar = bartenderService.findOne(bartender.getId());
+		//bartender.setId(id);
+		
 		return bartenderService.save(bartender);
 	}
 

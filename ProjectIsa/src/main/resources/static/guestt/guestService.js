@@ -52,5 +52,17 @@ services.service('guestService', ['$http', function($http){
 		return $http.get("/guest/restaurant/"+id);
 	}
 	
+	this.orders = function(){
+		return $http.get("/guest/order");
+	}
+	
+	this.orderFood = function(id){
+		return $http.put("/guest/addDish/"+id);
+	}
+	
+	this.makeOrder = function(order){
+		return $http.post("/guest/makeOrder", order);
+	}
+	
 	
 }]);

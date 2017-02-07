@@ -36,9 +36,23 @@
 			</tr>
 		</tbody>
     </table> 
+    <div>
+    <div class = "col-sm-2">
+    <h4>Ordered food:</h4>
+    	<div ng-repeat="dish in order.food">
+    		<label>{{dish.name}}</label>
+    		<label>{{dish.price}}</label>
+    		<label>{{dish.typeOfDish}}</label>
+    		<label><a ng-click = removeDish(dish) class = "btn btn-small btn-default"><span class = " glyphicon glyphicon-remove"></span></a></label>
+    	</div>
+    	
+    	<div class = "col-sm-2">
+    		<a ng-click = makeOrder(order) class = "btn btn-small"><span class = "glyphicon glyphicon-ok"></span>Make order</a>
+    	</div>
+    </div>
     
-   <!--  <h1>My First Google Map</h1>
-	 -->
+    </div>
+    <br> <br> <br>
 	 <div ng-model = "restaurantMenu">
 	 <h3>Food</h3>
 	 	<table class="table table-bordered tableBG" border="1">
@@ -53,7 +67,7 @@
 					<td>{{dish.name}}</td>
 					<td>{{dish.price}}</td>
 					<td>{{dish.typeOfDish}}</td>
-					<td><a ng-click = "order(dish)" class="btn btn-small btn-default"><span class = "glyphicon glyphicon-cutlery"></span>Order</a></td>
+					<td><a ng-click = "orderFood(dish)" class="btn btn-small btn-default"><span class = "glyphicon glyphicon-cutlery"></span>Order</a></td>
 				</tr>
 			</tbody>
 		</table>

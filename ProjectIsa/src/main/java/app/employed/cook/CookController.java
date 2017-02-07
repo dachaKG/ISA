@@ -96,9 +96,10 @@ public class CookController {
 		Optional.ofNullable(cookService.findOne(id))
 				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 		Restaurant restaurant = cookService.findOne(id).getRestaurant();
-		cook.setRestaurant(restaurant);
-		cook.setId(id);
-		return cookService.save(cook);
+		Cook cook2 =  cookService.findOne(cook.getId());
+		cook2.setRestaurant(restaurant);
+		cook2.setId(id);
+		return cookService.save(cook2);
 	}
 
 	// 2.4 vidi listu porudzbina jela koje je potrebno pripremiti

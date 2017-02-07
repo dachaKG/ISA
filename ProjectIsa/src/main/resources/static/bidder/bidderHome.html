@@ -19,7 +19,7 @@
 			<td>{{restaurantOrder.startDate}}</td>
 			<td>{{restaurantOrder.endDate}}</td>
 			<td>{{restaurantOrder.orderActive}}</td>
-			<td><button class="btn btn-default" ng-click="change(restaurantOrder)"><span class="glyphicon glyphicon-change" ></span>Change</button></td>
+			<td><button class="btn btn-default" ng-click="change(restaurantOrder)" ng-if="restaurantOrder.orderActive=='open'"><span class="glyphicon glyphicon-change" ></span>Change</button></td>
 		</tr>
 	</tbody>
 </table>

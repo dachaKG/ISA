@@ -1,5 +1,6 @@
 package app.order;
                            
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -25,6 +26,11 @@ import lombok.Data;
 @Data
 @Entity
 public class Orderr {
+	
+	public Orderr(){
+		this.drinks = new ArrayList<Drink>();
+		this.food = new ArrayList<Dish>();
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
