@@ -23,7 +23,7 @@ import lombok.Data;
 @Data
 @Entity
 public class Orderr {
-	
+	//int total = 0;
 	public Orderr(){
 		this.drinks = new ArrayList<Drink>();
 		this.food = new ArrayList<Dish>();
@@ -44,6 +44,26 @@ public class Orderr {
 	@Enumerated(EnumType.STRING)
 	@Column
 	private DrinkStatus drinkStatus;
+	
+	@Column
+	private int total;
+	
+	public int getTotal(){
+		int total = 0;
+		if(getDrinks().size() > 0){
+			for(int i = 0 ; i < getDrinks().size(); i++){
+				total += getDrinks().get(i).getPrice();
+			}
+		}
+		
+		if(getFood().size() > 0){
+			for(int i = 0 ; i < getFood().size(); i++){
+				total += getFood().get(i).getPrice();
+			}
+		}
+		
+		return total;
+	}
 
 	@ManyToMany
 	@JoinTable(name = "ORDER_DRINKS", joinColumns = @JoinColumn(name = "ORDER_ID"), inverseJoinColumns = @JoinColumn(name = "DRINK_ID"))

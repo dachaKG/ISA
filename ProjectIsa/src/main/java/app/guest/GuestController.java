@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import app.dish.Dish;
 import app.dish.DishService;
+import app.drink.Drink;
+import app.drink.DrinkService;
 import app.order.OrderService;
 import app.order.Orderr;
 import app.reservation.Reservation;
@@ -39,8 +41,11 @@ public class GuestController {
 	private final RestaurantService restaurantService;
 
 	private final DishService dishService;
+	private final DrinkService drinkService;
 	private final OrderService orderService;
 	private Orderr order = new Orderr();
+	private ArrayList<Guest> guests = new ArrayList<Guest>();
+	
 	private final TableService tableService;
 	private final ReservationService reservationService;
 	private HttpSession httpSession;
@@ -48,11 +53,13 @@ public class GuestController {
 
 	@Autowired
 	public GuestController(final HttpSession httpSession, final GuestService service, final RestaurantService restaurantService,
-			DishService dishService,final OrderService orderService, final TableService tableService, final ReservationService reservationService) {
+			DishService dishService,final DrinkService drinkService,
+			final OrderService orderService, final TableService tableService, final ReservationService reservationService) {
 		this.service = service;
 		this.httpSession = httpSession;
 		this.restaurantService = restaurantService;
 		this.dishService = dishService;
+		this.drinkService = drinkService;
 		this.orderService = orderService;
 		this.tableService = tableService;
 		this.reservationService = reservationService;
@@ -131,18 +138,30 @@ public class GuestController {
 		return this.order;
 	}
 	
-	@PostMapping(path = "/makeOrder")
-	@ResponseStatus(HttpStatus.CREATED)
-	public void makeOrder(@Valid @RequestBody Orderr order){
-		order.setId(null);
-		orderService.save(order);
-		this.order = new Orderr();
+	@PutMapping(path = "/addDrink/{id}")
+	public Orderr guestAddDrink(@PathVariable Long id){
+		Drink drink = drinkService.findOne(id);
+		this.order.getDrinks().add(drink);
+		return this.order;
 	}
+	
+	@PostMapping(path = "/makeOrder/{id}")
+	@ResponseStatus(HttpStatus.CREATED)
+	public void makeOrder(@PathVariable Long id, @Valid @RequestBody Orderr order){
+		if(order.getDrinks().size() > 0 || order.getFood().size() > 0){
+			Table table = tableService.findOne(id);
+			table.getReservations();
+			order.setId(null);
+			order.setTable(tableService.findOne(id));
+			order.setTotal(order.getTotal());
+			orderService.save(order);
+			//TO DO: dodati goste za rezervaciju
+			this.order = new Orderr();
+		}
+	}
+	
 	@GetMapping(path="/restaurant/getTables/{id}")
 	public List<app.restaurant.Table> getTables(@PathVariable Long id){
-		
-		
-		
 		Restaurant restaurant = restaurantService.findOne(id);
 		ArrayList<app.restaurant.Table> outTables = new ArrayList<app.restaurant.Table>();
 		for(int i=0; i<restaurant.getSegments().size(); i++){
@@ -154,12 +173,17 @@ public class GuestController {
 	
 	@PostMapping(path="/makeReservation/{id}")
 	public void makeReservation(@PathVariable Long id, @RequestBody Reservation reservation){
+		//Guest guest = ((Guest) httpSession.getAttribute("user"));
 		System.out.println("SUCCESS, id:"+id);
-		System.out.println("DATE: "+reservation.getDate()+" h:"+reservation.getHours()+" m:"+reservation.getMinuts());
+		System.out.println("DATE: "+reservation.getDate()+" h:"+reservation.getHours()+" m:"+reservation.getMinutes());
 		Table table = tableService.findOne(id);
 		table.getReservations().add(reservation);
+		//guests.add(guest);
+		//reservation.setGuests(guests);
 		reservationService.save(reservation);
 	}
+	
+	
 	
 	
 }

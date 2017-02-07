@@ -1,19 +1,24 @@
-<h1>Orders</h1>
+<h1>ready orders</h1>
 
 <table class = "table table-bordered tableBG" border="1">
 	<tbody>
-		<tr ng-repeat = "order in orders">
+		<tr ng-repeat = "order in readyOrders">
 			<td>
 				{{order.id}}
 			</td>
 			<td ng-repeat = "dish in order.food">
 				{{dish.name}} 
+				{{dish.price}}
 			</td>
 			<td ng-repeat = "drink in order.drinks">
 				{{drink.name}}
+				{{drink.price}}
 			</td>
 			<td>
-				<a ng-click = "sendToEmployed(order)" class = "btn btn-small btn-default"><span class="glyphicon glyphicon-ok"></span>Send</a>
+				{{order.total}}
+			</td>
+			<td>
+				<a ng-click = "makeBill(order)" class = "btn btn-small btn-default"><span class="glyphicon glyphicon-ok"></span>Make bill</a>
 			</td>  
 		</tr>
 	</tbody>

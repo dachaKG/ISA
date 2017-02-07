@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 import app.dish.Dish;
 import app.drink.Drink;
 import app.drink.DrinkService;
+import app.employed.bartender.Bartender;
+import app.employed.bartender.BartenderService;
 import app.order.DishStatus;
 import app.order.DrinkStatus;
 import app.order.OrderService;
@@ -36,17 +38,14 @@ public class WaiterController {
 
 	private final WaiterService waiterService;
 	private final OrderService orderService;
-	// private final DrinkService drinkService;
-	// private List<Waiter> waiter;
-
+	private final BartenderService bartenderService;
 	@Autowired
 	public WaiterController(final HttpSession httpSession, final WaiterService service, final OrderService orderService,
-			final DrinkService drinkService) {
+			final DrinkService drinkService, final BartenderService bartenderService) {
 		this.httpSession = httpSession;
 		this.waiterService = service;
 		this.orderService = orderService;
-		// this.drinkService = drinkService;
-		// this.waiter = service.findAll();
+		this.bartenderService = bartenderService;
 	}
 
 	@SuppressWarnings("unused")
@@ -133,6 +132,40 @@ public class WaiterController {
 		}
 
 		return new ResponseEntity<>(orderss, HttpStatus.OK);
+	}
+	
+	@GetMapping(path = "/orders")
+	public ResponseEntity<List<Orderr>> orders(){
+		Long id = ((Waiter) httpSession.getAttribute("user")).getId();
+		Waiter waiter = waiterService.findOne(id);
+		List<Orderr> orders = waiter.getOrders();
+		
+		List<Orderr> orderss = new ArrayList<Orderr>();
+
+		for(int i = 0 ; i < orders.size(); i++){
+			if(orders.get(i).getDrinks().size() != 0 && orders.get(i).getDrinkStatus() == null &&
+					orders.get(i).getFood().size() != 0 && orders.get(i).getDishStatus() == null	){
+				orderss.add(orders.get(i));
+			}
+		}
+		
+		return new ResponseEntity<>(orderss, HttpStatus.OK);
+	}
+	
+	@GetMapping(path = "/sendToEmployed/{id}")
+	public void sendToEmployed(@PathVariable Long id){
+		
+		Optional.ofNullable(orderService.findOne(id)).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
+
+		Orderr order = orderService.findOne(id);
+		
+		if(order.getDrinks().size() > 0 && order.getDrinkStatus() == null){
+			Bartender bartender = bartenderService.findOne((long) 1);
+			
+			bartender.getOrders().add(order);
+			bartenderService.save(bartender);
+		}
+		
 	}
 
 	@PostMapping

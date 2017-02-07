@@ -23,6 +23,11 @@ app.controller('employedWaiterController', [ '$scope', 'employedWaiterService','
 				}
 			);
 			
+			employedWaiterService.orders().then(
+				function(response){
+					$scope.orders = response.data;
+				}
+			)
 			
 			employedWaiterService.readyDrinks().then(
 				function(response){
@@ -38,19 +43,30 @@ app.controller('employedWaiterController', [ '$scope', 'employedWaiterService','
 			
 			employedWaiterService.readyOrders().then(
 				function(response){
-					$scope.orders = response.data;
+					$scope.readyOrders = response.data;
 				}
 			);
 		}
 		
 		$scope.makeBill = function(order){
-			employedCookService.makeBill(order.id).then(
+			employedWaiterService.makeBill(order.id).then(
 				function(response){
-					$scope.orders.splice($scope.orders.indexOf(order),1);
+					$scope.readyOrders.splice($scope.readyOrders.indexOf(order),1);
 				},
 				function(response){
 					alert("Error while signal");
 				}
 			);
-		}		
+		}	
+		
+		$scope.sendToEmployed = function(order){
+			employedWaiterService.sendToEmployed(order.id).then(
+					function(response){
+						$scope.orders.splice($scope.orders.indexOf(order),1);
+					},
+					function(response){
+						alert("Error while signal");
+					}
+			);
+		}
 }]);

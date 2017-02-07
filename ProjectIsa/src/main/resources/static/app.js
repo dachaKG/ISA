@@ -208,13 +208,17 @@ angular.module('routerApp', ['ui.router',
         	url : '/home',
         	templateUrl : 'employedWaiter/employedWaiterHome.html'
         })
+        .state('loggedIn.waiter.orders', {
+        	url : '/orders',
+        	templateUrl : 'employedWaiter/employedWaiterOrders.html'
+        })
          .state('loggedIn.waiter.ready', {
         	url : '/ready',
         	templateUrl : 'employedWaiter/employedWaiterReadyOrder.html'
         })
          .state('loggedIn.waiter.readyOrders', {
         	url : '/readyOrders',
-        	templateUrl : 'employedWaiter/employedWaiterOrders.html'
+        	templateUrl : 'employedWaiter/employedWaiterReadyOrders.html'
         })
         
         .state('loggedIn.guest', {
@@ -266,6 +270,10 @@ angular.module('routerApp', ['ui.router',
 		.state('loggedIn.guest.reservation3', {
 			url : '/reservation3',
 			templateUrl : 'guestt/guestReservation3.html'
+		})
+		.state('loggedIn.guest.reservation4', {
+			url : '/reservation4',
+			templateUrl : 'guestt/guestReservation4.html'
 		})
         
         

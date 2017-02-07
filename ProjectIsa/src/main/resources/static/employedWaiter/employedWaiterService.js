@@ -21,4 +21,12 @@ services.service('employedWaiterService',['$http', function($http){
 	this.readyOrders = function(id){
 		return $http.get("/waiter/readyOrders");
 	}
+	
+	this.orders = function(){
+		return $http.get("/waiter/orders");
+	}
+	
+	this.sendToEmployed = function(id){
+		return $http.get("/waiter/sendToEmployed/" + id);
+	}
 }]);

@@ -1,7 +1,7 @@
 package app.reservation;
 
 import java.sql.Date;
-import java.sql.Time;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -22,7 +22,7 @@ import lombok.Data;
 public class Reservation {
 	
 	public Reservation(){
-		
+		this.guests = new ArrayList<Guest>();
 	}
 	
 	@Id
@@ -37,7 +37,7 @@ public class Reservation {
 	private int hours;
 	
 	@Column
-	private int minuts;
+	private int minutes;
 	
 	@Column
 	private Double duration;

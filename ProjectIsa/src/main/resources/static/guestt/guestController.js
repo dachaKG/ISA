@@ -158,7 +158,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		$scope.orderFood = function(dish){
 			guestService.orderFood(dish.id).then(
 				function(response){
-					alert("successfully added");
+					//alert("successfully added");
 					$scope.state = undefined;
 					findAll();
 					//$window.location.reload();
@@ -169,10 +169,22 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			);
 		}
 		
-		$scope.makeOrder = function(order){
-			guestService.makeOrder($scope.order).then(
+		$scope.orderDrink = function(drink){
+			guestService.orderDrink(drink.id).then(
 				function(response){
-					alert("successfully added");
+					$scope.state = undefined;
+					findAll();
+				},
+				function(response){
+					alert("Error in changing");
+				}
+			);
+		}
+		
+		$scope.makeOrder = function(order){
+			guestService.makeOrder($scope.chosenTable, $scope.order).then(
+				function(response){
+					//alert("successfully added");
 					$scope.state = undefined;
 					$scope.order = null;
 					findAll();
@@ -180,7 +192,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 				}
 			);
 		}
-
+		
 		$scope.reservation1 = function(id){
 			guestService.find(id).then(
 				function(response){
@@ -197,6 +209,9 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			$location.path('loggedIn/guest/reservation3');
 		}
 		
+		/*$scope.reservation4 = function(){
+			$location.path('loggedIn/guest/reservation4');
+		}*/
 		$scope.loadTables = function(id){
 			guestService.getTables(id).then(
 					function(response){
@@ -241,7 +256,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		$scope.makeReservation = function(){
 			guestService.makeReservation($scope.chosenTable, $scope.reservation).then(
 					function(response){
-						$location.path('loggedIn/guest/reservation2');
+						$location.path('loggedIn/guest/reservation4');
 					});
 		}
 				
