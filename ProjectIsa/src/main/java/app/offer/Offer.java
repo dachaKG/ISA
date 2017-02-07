@@ -1,5 +1,7 @@
 package app.offer;
 
+import java.sql.Date;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,8 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-
-import org.hibernate.validator.constraints.NotBlank;
 
 import app.bidder.Bidder;
 import lombok.Data;
@@ -29,11 +29,20 @@ public class Offer {
 	@Min(0)
 	private Long price;
 
+	@NotNull
+	@Column
+	@Min(0)
+	private Integer garanty;
+
+	@NotNull
+	@Column
+	private Date posibleDelivery;
+	
 	@OneToOne(cascade = CascadeType.ALL)
 	private Bidder bidder;
 	
 	//0 -active 1--acctepted 2--rejected
-	@NotBlank
+	//@NotBlank
 	@Column
 	private String accepted;
 }

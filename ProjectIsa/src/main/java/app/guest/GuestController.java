@@ -1,5 +1,6 @@
 package app.guest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,8 +24,12 @@ import app.dish.Dish;
 import app.dish.DishService;
 import app.order.OrderService;
 import app.order.Orderr;
+import app.reservation.Reservation;
+import app.reservation.ReservationService;
 import app.restaurant.Restaurant;
 import app.restaurant.RestaurantService;
+import app.restaurant.Table;
+import app.restaurant.TableService;
 
 @RestController
 @RequestMapping("/guest")
@@ -32,19 +37,25 @@ public class GuestController {
 
 	private final GuestService service;
 	private final RestaurantService restaurantService;
+
 	private final DishService dishService;
 	private final OrderService orderService;
 	private Orderr order = new Orderr();
+	private final TableService tableService;
+	private final ReservationService reservationService;
 	private HttpSession httpSession;
+	
 
 	@Autowired
 	public GuestController(final HttpSession httpSession, final GuestService service, final RestaurantService restaurantService,
-			DishService dishService,final OrderService orderService) {
+			DishService dishService,final OrderService orderService, final TableService tableService, final ReservationService reservationService) {
 		this.service = service;
 		this.httpSession = httpSession;
 		this.restaurantService = restaurantService;
 		this.dishService = dishService;
 		this.orderService = orderService;
+		this.tableService = tableService;
+		this.reservationService = reservationService;
 	}
 
 	@SuppressWarnings("unused")
@@ -106,6 +117,7 @@ public class GuestController {
 		return result;
 	}
 	
+
 	@GetMapping(path = "/order")
 	public Orderr guestOrder(){
 		Orderr order = this.order;
@@ -125,6 +137,28 @@ public class GuestController {
 		order.setId(null);
 		orderService.save(order);
 		this.order = new Orderr();
+	}
+	@GetMapping(path="/restaurant/getTables/{id}")
+	public List<app.restaurant.Table> getTables(@PathVariable Long id){
+		
+		
+		
+		Restaurant restaurant = restaurantService.findOne(id);
+		ArrayList<app.restaurant.Table> outTables = new ArrayList<app.restaurant.Table>();
+		for(int i=0; i<restaurant.getSegments().size(); i++){
+			outTables.addAll(restaurant.getSegments().get(i).getTables());
+		}
+		return outTables;
+	}
+	
+	
+	@PostMapping(path="/makeReservation/{id}")
+	public void makeReservation(@PathVariable Long id, @RequestBody Reservation reservation){
+		System.out.println("SUCCESS, id:"+id);
+		System.out.println("DATE: "+reservation.getDate()+" h:"+reservation.getHours()+" m:"+reservation.getMinuts());
+		Table table = tableService.findOne(id);
+		table.getReservations().add(reservation);
+		reservationService.save(reservation);
 	}
 	
 	

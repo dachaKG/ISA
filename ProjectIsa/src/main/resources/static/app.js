@@ -138,6 +138,10 @@ angular.module('routerApp', ['ui.router',
 			url : '/tablesConfig',
 			templateUrl : 'managerRestaurant/restaurantManagerTableConfig.html'
 		})
+		.state('loggedIn.restaurantManager.changeShift', {
+			url : '/changeShift',
+			templateUrl : 'managerRestaurant/restaurantManagerChangeShift.html'
+		})
         
         
         .state('loggedIn.bartender', {
@@ -184,6 +188,10 @@ angular.module('routerApp', ['ui.router',
         .state('loggedIn.cook.readyFood', {
         	url : '/readyFood',
         	templateUrl : 'employedCook/employedCookReadyFood.html'
+        })
+         .state('loggedIn.cook.shift', {
+        	url : '/shift',
+        	templateUrl : 'employedCook/employedCookShift.html'
         })
          .state('loggedIn.cook.profile', {
         	url : '/profile',
@@ -246,6 +254,18 @@ angular.module('routerApp', ['ui.router',
 		.state('loggedIn.guest.restaurants', {
 			url : '/restaurants',
 			templateUrl : 'guestt/guestRestaurants.html'
+		})
+		.state('loggedIn.guest.reservation1', {
+			url : '/reservation1',
+			templateUrl : 'guestt/guestReservation1.html'
+		})
+		.state('loggedIn.guest.reservation2', {
+			url : '/reservation2',
+			templateUrl : 'guestt/guestReservation2.html'
+		})
+		.state('loggedIn.guest.reservation3', {
+			url : '/reservation3',
+			templateUrl : 'guestt/guestReservation3.html'
 		})
         
         

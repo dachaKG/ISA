@@ -154,6 +154,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			);
 		}
 		
+
 		$scope.orderFood = function(dish){
 			guestService.orderFood(dish.id).then(
 				function(response){
@@ -179,7 +180,71 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 				}
 			);
 		}
+
+		$scope.reservation1 = function(id){
+			guestService.find(id).then(
+				function(response){
+					$scope.restaurant = response.data;
+					$location.path('loggedIn/guest/reservation1');
+			});
+		}
 		
+		$scope.reservation2 = function(){
+			$location.path('loggedIn/guest/reservation2');
+		}
+		
+		$scope.reservation3 = function(){
+			$location.path('loggedIn/guest/reservation3');
+		}
+		
+		$scope.loadTables = function(id){
+			guestService.getTables(id).then(
+					function(response){
+						var stolovi = [];
+						var red = [];
+						var lastXPos = 0;
+						var counter = 0;
+						angular.forEach(response.data, function(value, key){	// punjenje matrice stolova
+							counter++;
+							
+							angular.forEach(value.reservations, function(res,key){// for za proveru rezervisanog stola
+								if(res.date===$scope.reservation.date){
+									if(((res.hours + res.minuts/60+res.duration) >= ($scope.reservation.hours+$scope.reservation.minuts/60)) &&
+										(($scope.reservation.hours+$scope.reservation.minuts/60+$scope.reservation.duration)>=(res.hours + res.minuts/60) )	){
+									value.status = "Reserved";
+									}
+								}
+							});
+							
+							if(value.xpos == lastXPos){	
+								red.push(value);
+							}
+							if((value.xpos != lastXPos) || counter==response.data.length ) {
+								stolovi.push(red);
+								red =[];
+								red.push(value);
+							}
+							lastXPos = value.xpos;
+						});
+						$scope.tables = stolovi;
+					});
+		}
+		
+		
+		
+		$scope.selectTable = function(table){
+			$("#odabranSto").html("Chosen table: "+table.name);
+			$scope.chosenTable = table.id;
+		}
+		
+		
+		$scope.makeReservation = function(){
+			guestService.makeReservation($scope.chosenTable, $scope.reservation).then(
+					function(response){
+						$location.path('loggedIn/guest/reservation2');
+					});
+		}
+				
 		function myMap(restaurant) {
 			var mapProp= {
 			    zoom:15,

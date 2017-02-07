@@ -1,7 +1,7 @@
 <div class = "col-sm-2">
 <form  name = "new" ng-model="$parent.employed">
 	<label> Employed type</label>
-	<select class = "form-control" ng-model="$parent.employedType"
+	<select name = "pera" class = "form-control" ng-model="$parent.employedType"
 		ng-options="option as option for option in ['Waiter', 'Cook', 'Bartender']" required>
     	<option value="" selected hidden />
     </select>
@@ -32,6 +32,17 @@
 		ng-options="option as option for option in ['no38', 'no39', 'no40','no41','no42','no43', 'no44', 'no45','no46']" required>
     	<option value="" selected hidden />
     </select>
+    
+    <label> Default shift</label>
+	<select class = "form-control" ng-model="$parent.employed.defaultShift"
+		ng-options="option as option for option in ['First','Second']" required>
+    	<option value="" selected hidden />
+    </select>
+    
+    <div ng-show="$parent.employedType=='Waiter'">
+    	Evo ovde prikazati stolove i odabrati koje sve da se dodele konobaru
+    
+	</div>
 
 <button class="btn btn-default" ng-click="new.$valid &&  saveEmployed()"><span class="glyphicon glyphicon-ok" ></span> Create</button>
 <button class="btn btn-default" ng-click="cancel()"><span class="glyphicon glyphicon-remove" ></span> Cancel</button>

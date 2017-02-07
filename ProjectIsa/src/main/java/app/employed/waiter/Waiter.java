@@ -9,12 +9,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import app.employed.Employed;
 import app.order.Orderr;
-import app.restaurant.Segment;
+import app.restaurant.Table;
 import lombok.Data;
 
 @Data
@@ -29,8 +28,9 @@ public class Waiter extends Employed {
 	@OneToMany
 	@JoinTable(name = "WAITER_ORDERS", joinColumns = @JoinColumn(name = "WAITER_ID"), inverseJoinColumns = @JoinColumn(name = "ORDER_ID"))
 	private List<Orderr> orders;
-
-	@ManyToOne
-	@JoinTable(name = "WAITER_SEGMENT", joinColumns = @JoinColumn(name = "WAITER_ID"), inverseJoinColumns = @JoinColumn(name = "SEGMENT_ID"))
-	private Segment segment;
+	
+	@OneToMany
+	@JoinTable(name = "WAITER_TABLES", joinColumns = @JoinColumn(name = "WAITER_ID"), inverseJoinColumns = @JoinColumn(name = "TABLE_ID"))
+	private List<Table> tablesForHandling;
+	
 }

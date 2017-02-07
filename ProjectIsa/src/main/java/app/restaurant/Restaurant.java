@@ -21,6 +21,9 @@ import app.drink.Drink;
 import app.employed.bartender.Bartender;
 import app.employed.cook.Cook;
 import app.employed.waiter.Waiter;
+import app.manager.changedShiftBartender.ChangedShiftBartender;
+import app.manager.changedShiftCook.ChangedShiftCook;
+import app.manager.changedShiftWaiter.ChangedShiftWaiter;
 import app.manager.restaurant.RestaurantManager;
 import app.order.Orderr;
 import app.restaurant.restaurantOrder.RestaurantOrderr;
@@ -100,4 +103,19 @@ public class Restaurant {
 	@Column
 	@NotBlank
 	private String number;
+	
+	@OneToMany
+	@JoinTable(name = "RESTAURANT_CHANGED_SHIFTS_COOKS", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "SHIFT_ID"))
+	private List<ChangedShiftCook> changedShiftsForCooks;
+	
+	
+	@OneToMany
+	@JoinTable(name = "RESTAURANT_CHANGED_SHIFTS_BARTENDERS", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "SHIFT_ID"))
+	private List<ChangedShiftBartender> changedShiftsForBartenders;
+	
+	
+	@OneToMany
+	@JoinTable(name = "RESTAURANT_CHANGED_SHIFTS_WAITERS", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "SHIFT_ID"))
+	private List<ChangedShiftWaiter> changedShiftsForWaiters;
+	
 }

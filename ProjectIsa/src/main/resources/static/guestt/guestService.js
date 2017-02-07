@@ -52,6 +52,7 @@ services.service('guestService', ['$http', function($http){
 		return $http.get("/guest/restaurant/"+id);
 	}
 	
+
 	this.orders = function(){
 		return $http.get("/guest/order");
 	}
@@ -64,5 +65,14 @@ services.service('guestService', ['$http', function($http){
 		return $http.post("/guest/makeOrder", order);
 	}
 	
+
+	this.getTables = function(id){
+		return $http.get("guest/restaurant/getTables/"+id);
+	}
+	
+	this.makeReservation = function(id, reservation){
+		return $http.post("guest/makeReservation/"+id, reservation);
+	}
+
 	
 }]);

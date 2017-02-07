@@ -74,6 +74,48 @@ app.controller('restaurantManagerController', ['$scope','$window','restaurantMan
 			);
 		}
 		
+		$scope.demissionBartender = function(bartender) {
+			restaurantManagerService.deleteBartender(bartender).then(
+				function (response) {
+                    alert("Successfully removed.");
+                    $scope.state = undefined;
+                    findAll();
+                    $location.path('loggedIn/restaurantManager/info');
+                },
+                function (response) {
+                    alert("Error in deleting.");
+                }
+			);
+		}
+		
+		$scope.demissionWaiter = function(waiter) {
+			restaurantManagerService.deleteWaiter(waiter).then(
+				function (response) {
+                    alert("Successfully removed.");
+                    $scope.state = undefined;
+                    findAll();
+                    $location.path('loggedIn/restaurantManager/info');
+                },
+                function (response) {
+                    alert("Error in deleting.");
+                }
+			);
+		}
+		
+		$scope.demissionCook = function(cook) {
+			restaurantManagerService.deleteCook(cook).then(
+				function (response) {
+                    alert("Successfully removed.");
+                    $scope.state = undefined;
+                    findAll();
+                    $location.path('loggedIn/restaurantManager/info');
+                },
+                function (response) {
+                    alert("Error in deleting.");
+                }
+			);
+		}
+		
 		$scope.update = function() {
 			restaurantManagerService.updateMangerProfile($scope.restaurant.restaurantManager).then(
 				function (response) {
@@ -252,10 +294,6 @@ app.controller('restaurantManagerController', ['$scope','$window','restaurantMan
 				});
 		}
 		
-		
-		
-		
-		
 		$scope.createNewOffer = function() {
 			drink = $scope.newRestaurantOrder.drink
 			dish = $scope.newRestaurantOrder.dish
@@ -325,4 +363,25 @@ app.controller('restaurantManagerController', ['$scope','$window','restaurantMan
 			      }
 			    });
 		}	
+		
+		$scope.changeShiftCookAction = function(){
+			restaurantManagerService.changeShiftCookAction($scope.changeShiftCook).then(
+				function(response){
+					alert("Successfully added.");
+                   });
+		}
+		
+		$scope.changeShiftBartenderAction = function(){
+			restaurantManagerService.changeShiftBartenderAction($scope.changeShiftBartender).then(
+				function(response){
+					alert("Successfully added.");
+                   });
+		}
+		
+		$scope.changeShiftWaiterAction = function(){
+			restaurantManagerService.changeShiftWaiterAction($scope.changeShiftWaiter).then(
+				function(response){
+					alert("Successfully added.");
+                   });
+		}
 }]);

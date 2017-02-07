@@ -90,12 +90,13 @@ app.controller('bidderController', ['$scope','bidderService', '$location',
 		}
 		
 		//probati da se promeni vrednost ponude koja je prethodno odabrana
-		$scope.changeValueOfPrice = function(){
-			price = document.getElementById("price").value;
+		$scope.changeOffer = function(){
 			offers = $scope.restaurantOrderForChange.offers;
-			//glupost :D al ne znam kako da posalje 2 parametra :D 
-			offers.bidder.registrated = price;
-			bidderService.changeValueOfPrice(offers).then(
+			offer1 = $scope.offer1;
+			offer1.id = offers.id;
+			offer1.bidder = offers.bidder;
+			offer1.accepted = offers.accepted;
+			bidderService.changeOffer($scope.restaurantOrderForChange,offer1).then(
 				function (response) {
 					if(response.status == 200) {
 	                	location.reload(true);
@@ -108,11 +109,7 @@ app.controller('bidderController', ['$scope','bidderService', '$location',
 		
 		//dodavanje nove ponude u neki restoran
 		$scope.competeWithInsertedValue = function(){
-			price = document.getElementById("priceForCompete").value;
-			restaurantOrderForCompete = $scope.restaurantOrderForCompete;
-			//glupost :D al ne znam kako da posalje 2 parametra :D 
-			restaurantOrderForCompete.idFromChoosenBidder = price;
-			bidderService.competeWithInsertedValue(restaurantOrderForCompete).then(
+			bidderService.competeWithInsertedValue($scope.restaurantOrderForCompete,$scope.offer).then(
 				function (response) {
 					if(response.status ==  200) {
 	                	location.reload(true);
