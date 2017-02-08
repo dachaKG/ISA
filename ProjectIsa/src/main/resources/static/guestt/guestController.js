@@ -169,6 +169,17 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			);
 		}
 		
+		$scope.removeDish = function(dish){
+			guestService.removeFood(dish.id).then(
+				function(response){
+					$scope.order.food.splice($scope.order.food.indexOf(dish),1);
+					
+					$scope.state = undefined;
+					findAll();
+				}
+			)
+		}
+		
 		$scope.orderDrink = function(drink){
 			guestService.orderDrink(drink.id).then(
 				function(response){
@@ -245,7 +256,17 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 					});
 		}
 		
+		$scope.openModal = function(){
+			var modal = document.getElementById('myModal');
+			modal.style.display = "block";
+		}
 		
+		$scope.closeModal = function(){
+			var modal = document.getElementById('myModal');
+			modal.style.display = "none";
+			//$window.location.reload();
+			
+		}
 		
 		$scope.selectTable = function(table){
 			$("#odabranSto").html("Chosen table: "+table.name);
@@ -259,6 +280,21 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 						$location.path('loggedIn/guest/reservation4');
 					});
 		}
+		
+		$scope.orderForReservation = function(){
+			guestService.makeReservation($scope.chosenTable, $scope.reservation).then(
+					function(response){
+						$location.path('loggedIn/guest/reservation4');
+					});
+		}
+		
+		$scope.dontOrderForReservation = function(){
+			guestService.makeReservation($scope.chosenTable, $scope.reservation).then(
+					function(response){
+						$location.path('loggedIn/guest/home');
+					});
+		}
+		
 				
 		function myMap(restaurant) {
 			var mapProp= {

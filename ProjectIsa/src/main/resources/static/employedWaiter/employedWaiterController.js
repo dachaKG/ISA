@@ -2,6 +2,11 @@ var app = angular.module('employedWaiter.controllers', []);
 
 app.controller('employedWaiterController', [ '$scope', 'employedWaiterService','$location',
 	function($scope, employedWaiterService, $location) {
+	
+	  	$scope.today = function() {
+		    $scope.dt = new Date();
+		  };
+		$scope.today();
 		function checkRights(){
 			employedWaiterService.checkRights().then(
 				function(response){
@@ -49,7 +54,7 @@ app.controller('employedWaiterController', [ '$scope', 'employedWaiterService','
 		}
 		
 		$scope.makeBill = function(order){
-			employedWaiterService.makeBill(order.id).then(
+			employedWaiterService.makeBill(order).then(
 				function(response){
 					$scope.readyOrders.splice($scope.readyOrders.indexOf(order),1);
 				},
@@ -58,6 +63,10 @@ app.controller('employedWaiterController', [ '$scope', 'employedWaiterService','
 				}
 			);
 		}	
+		
+		$scope.showShift = function(){
+			$scope.shift = datePicker();
+		}
 		
 		$scope.sendToEmployed = function(order){
 			employedWaiterService.sendToEmployed(order.id).then(

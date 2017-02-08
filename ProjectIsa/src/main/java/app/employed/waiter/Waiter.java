@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 
+import app.bill.Bill;
 import app.employed.Employed;
 import app.order.Orderr;
 import app.restaurant.Table;
@@ -32,5 +33,11 @@ public class Waiter extends Employed {
 	@OneToMany
 	@JoinTable(name = "WAITER_TABLES", joinColumns = @JoinColumn(name = "WAITER_ID"), inverseJoinColumns = @JoinColumn(name = "TABLE_ID"))
 	private List<Table> tablesForHandling;
+	
+	@OneToMany
+	@JoinTable(name = "WAITER_BILLS", joinColumns = @JoinColumn(name = "WAITER_ID"), inverseJoinColumns = @JoinColumn(name = "BILL_ID"))
+	private List<Bill> bills;
+	
+	
 	
 }

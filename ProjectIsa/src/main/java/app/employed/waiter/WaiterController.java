@@ -20,15 +20,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import app.bill.Bill;
+import app.bill.BillService;
 import app.dish.Dish;
 import app.drink.Drink;
 import app.drink.DrinkService;
 import app.employed.bartender.Bartender;
 import app.employed.bartender.BartenderService;
+import app.employed.cook.Cook;
+import app.employed.cook.CookService;
 import app.order.DishStatus;
 import app.order.DrinkStatus;
 import app.order.OrderService;
 import app.order.Orderr;
+import app.reservation.Reservation;
+import app.reservation.ReservationService;
+import app.restaurant.Table;
+import app.restaurant.TableService;
 
 @RestController
 @RequestMapping("/waiter")
@@ -39,13 +47,23 @@ public class WaiterController {
 	private final WaiterService waiterService;
 	private final OrderService orderService;
 	private final BartenderService bartenderService;
+	private final CookService cookService;
+	private final TableService tableService;
+	private final ReservationService reservationService;
+	private final BillService billService;
+	
 	@Autowired
 	public WaiterController(final HttpSession httpSession, final WaiterService service, final OrderService orderService,
-			final DrinkService drinkService, final BartenderService bartenderService) {
+			final DrinkService drinkService, final BartenderService bartenderService,final CookService cookService,
+			final TableService tableService, final ReservationService reservationService, final BillService billService) {
 		this.httpSession = httpSession;
 		this.waiterService = service;
 		this.orderService = orderService;
 		this.bartenderService = bartenderService;
+		this.cookService = cookService;
+		this.tableService = tableService;
+		this.reservationService = reservationService;
+		this.billService = billService;
 	}
 
 	@SuppressWarnings("unused")
@@ -166,6 +184,13 @@ public class WaiterController {
 			bartenderService.save(bartender);
 		}
 		
+		if(order.getFood().size() > 0 && order.getDishStatus() == null){
+			Cook cook = cookService.findOne((long) 1);
+			
+			cook.getOrders().add(order);
+			cookService.save(cook);
+		}
+		
 	}
 
 	@PostMapping
@@ -179,8 +204,9 @@ public class WaiterController {
 	@GetMapping(path = "/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public Waiter findOne(@PathVariable Long id) {
+		Optional.ofNullable(waiterService.findOne(id)).orElseThrow(() -> new ResourceNotFoundException("resourceNotFound!"));
+		
 		Waiter waiter = waiterService.findOne(id);
-		Optional.ofNullable(waiter).orElseThrow(() -> new ResourceNotFoundException("resourceNotFound!"));
 		return waiter;
 	}
 
@@ -200,6 +226,33 @@ public class WaiterController {
 				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 		return new ResponseEntity<>(waiterService.findOne(id).getOrders(), HttpStatus.OK);
 
+	}
+	
+	@PostMapping(path = "/makeBill")
+	@ResponseStatus(HttpStatus.CREATED)
+	public void makeBill(@Valid @RequestBody Orderr order){
+		Long id = ((Waiter) httpSession.getAttribute("user")).getId();
+		Waiter waiter = waiterService.findOne(id);
+		Table table = order.getTable();
+		//List<Reservation> reservations = reservationService.findAll();
+		//order.getTable();
+		List<Reservation> reservations = table.getReservations();
+		/*for(int i = 0; i < reservations.size(); i++){
+			if(reservations.get(i).get)
+		}*/
+		
+		
+		
+		Reservation reservation = reservations.get(0);
+		Bill bill = new Bill();
+		bill.setDate(reservation.getDate());
+		bill.setTotal(order.getTotal());
+		bill.setId(null);
+		bill.setReservation(reservation);
+		billService.save(bill);
+		waiter.getBills().add(bill);
+		waiterService.save(waiter);
+		
 	}
 
 	// 2.4. Konobar izmeni porudzbinu za odredjeni sto

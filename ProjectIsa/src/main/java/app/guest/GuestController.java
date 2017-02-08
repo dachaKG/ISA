@@ -24,6 +24,8 @@ import app.dish.Dish;
 import app.dish.DishService;
 import app.drink.Drink;
 import app.drink.DrinkService;
+import app.employed.waiter.Waiter;
+import app.employed.waiter.WaiterService;
 import app.order.OrderService;
 import app.order.Orderr;
 import app.reservation.Reservation;
@@ -37,13 +39,15 @@ import app.restaurant.TableService;
 @RequestMapping("/guest")
 public class GuestController {
 
-	private final GuestService service;
+	private final GuestService guestService;
 	private final RestaurantService restaurantService;
+	private final WaiterService waiterService;
 
 	private final DishService dishService;
 	private final DrinkService drinkService;
 	private final OrderService orderService;
 	private Orderr order = new Orderr();
+	
 	private ArrayList<Guest> guests = new ArrayList<Guest>();
 	
 	private final TableService tableService;
@@ -54,8 +58,9 @@ public class GuestController {
 	@Autowired
 	public GuestController(final HttpSession httpSession, final GuestService service, final RestaurantService restaurantService,
 			DishService dishService,final DrinkService drinkService,
-			final OrderService orderService, final TableService tableService, final ReservationService reservationService) {
-		this.service = service;
+			final OrderService orderService, final TableService tableService, final ReservationService reservationService,
+			final WaiterService waiterService) {
+		this.guestService = service;
 		this.httpSession = httpSession;
 		this.restaurantService = restaurantService;
 		this.dishService = dishService;
@@ -63,6 +68,7 @@ public class GuestController {
 		this.orderService = orderService;
 		this.tableService = tableService;
 		this.reservationService = reservationService;
+		this.waiterService = waiterService;
 	}
 
 	@SuppressWarnings("unused")
@@ -79,7 +85,7 @@ public class GuestController {
 	// izlistavanje svih gostiju
 	@GetMapping
 	public ResponseEntity<List<Guest>> findAll() {
-		return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
+		return new ResponseEntity<>(guestService.findAll(), HttpStatus.OK);
 	}
 	
 	@GetMapping(path = "/restaurants")
@@ -101,22 +107,22 @@ public class GuestController {
 	@PutMapping(path = "/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public Guest update(@PathVariable Long id, @Valid @RequestBody Guest guest) {
-		Optional.ofNullable(service.findOne(id))
+		Optional.ofNullable(guestService.findOne(id))
 				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 		guest.setId(id);
-		return service.save(guest);
+		return guestService.save(guest);
 	}
 
 	// kada se klikne na link iz maila
 	@PutMapping(path = "/activate/{acNum}")
 	@ResponseStatus(HttpStatus.OK)
 	public void activateGuest(@PathVariable String acNum) {
-		service.activate(acNum);
+		guestService.activate(acNum);
 	}
 
 	@GetMapping(path = "/findByFirstAndLastName/{inputStr}")
 	public List<Guest> findByFirstAndLastName(@PathVariable String inputStr) {
-		List<Guest> result = service.findByFirstAndLastName(inputStr);
+		List<Guest> result = guestService.findByFirstAndLastName(inputStr);
 		//izbacivanje njega samog iz liste
 		result.remove((Guest) httpSession.getAttribute("user"));
 		// treba izbaciti i kad postoji vec prijateljstvo...
@@ -138,6 +144,19 @@ public class GuestController {
 		return this.order;
 	}
 	
+	@GetMapping(path = "/removeDish/{id}")
+	public Orderr removeDish(@PathVariable Long id){
+		//da li treba zastita ovde sa ifom za size hrane?
+		for(int i = 0 ; i < this.order.getFood().size(); i++){
+			if(this.order.getFood().get(i).getId() == id){
+				this.order.getFood().remove(i);
+				break;
+			}
+		}
+		
+		return this.order;
+	}
+	
 	@PutMapping(path = "/addDrink/{id}")
 	public Orderr guestAddDrink(@PathVariable Long id){
 		Drink drink = drinkService.findOne(id);
@@ -155,6 +174,28 @@ public class GuestController {
 			order.setTable(tableService.findOne(id));
 			order.setTotal(order.getTotal());
 			orderService.save(order);
+			Restaurant restaurant = new Restaurant();
+			//----------------------------
+			//obrisati ovaj deo samo meni da olaksa
+			List<Restaurant> rest = restaurantService.findAll();
+			for(int i = 0 ; i < rest.size(); i++){
+				for(int j = 0 ; j < rest.get(i).getSegments().size(); j++){
+					for(int k = 0 ; k < rest.get(i).getSegments().get(j).getTables().size(); k++){
+						if(rest.get(i).getSegments().get(j).getTables().get(k).getId() == id){
+							restaurant = rest.get(i);
+						}
+					}
+				}
+			}
+			
+			restaurant.getOrder().add(order);
+			Waiter waiter = waiterService.findOne((long) 1);
+			waiter.getOrders().add(order);
+			waiterService.save(waiter);
+			restaurantService.save(restaurant);
+			
+			
+			//-----------------------------
 			//TO DO: dodati goste za rezervaciju
 			this.order = new Orderr();
 		}
@@ -178,8 +219,7 @@ public class GuestController {
 		System.out.println("DATE: "+reservation.getDate()+" h:"+reservation.getHours()+" m:"+reservation.getMinutes());
 		Table table = tableService.findOne(id);
 		table.getReservations().add(reservation);
-		//guests.add(guest);
-		//reservation.setGuests(guests);
+		//reservation.getGuests().add(guestService.findOne(guest.getId()));
 		reservationService.save(reservation);
 	}
 	

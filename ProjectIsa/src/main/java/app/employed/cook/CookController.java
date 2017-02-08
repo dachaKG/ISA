@@ -104,23 +104,23 @@ public class CookController {
 
 	// 2.4 vidi listu porudzbina jela koje je potrebno pripremiti
 	@GetMapping(path = "/orders")
-	public ResponseEntity<List<Dish>> findAllOrdrers() {
+	public ResponseEntity<List<Orderr>> findAllOrdrers() {
 		Long id = ((Cook) httpSession.getAttribute("user")).getId();
 		// Bartender bartender = ((Bartender) httpSession.getAttribute("user"));
 		List<Orderr> orders = cookService.findOne(id).getOrders();
 		Optional.ofNullable(orders).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 
-		List<Dish> food = new ArrayList<Dish>();
+		List<Orderr> order = new ArrayList<Orderr>();
 
 		for (int i = 0; i < orders.size(); i++) {
 			if (orders.get(i).getFood().size() != 0 && orders.get(i).getDishStatus() == null) {
 				for (int j = 0; j < orders.get(i).getFood().size(); j++) {
-					food.add(orders.get(i).getFood().get(j));
+					order.add(orders.get(i));
 				}
 			}
 		}
 
-		return new ResponseEntity<>(food, HttpStatus.OK);
+		return new ResponseEntity<>(order, HttpStatus.OK);
 	}
 
 	@GetMapping(path = "/foodReceived/{orderId}")
@@ -137,33 +137,40 @@ public class CookController {
 
 		order.setDishStatus(DishStatus.received);
 		order.setId(orderId);
+		for(int i = 0 ; i < cook.getOrders().size(); i++){
+			if(cook.getOrders().get(i).getId() == orderId){
+				cook.getOrders().get(i).setDishStatus(DishStatus.received);
+				cookService.save(cook);
+				break;
+			}
+		}
 		return orderService.save(order);
 	}
 
 	
 	@GetMapping(path = "/receivedFood")
-	public ResponseEntity<List<Dish>> receivedFood() {
+	public ResponseEntity<List<Orderr>> receivedFood() {
 		Long id = ((Cook) httpSession.getAttribute("user")).getId();
 		Cook cook = cookService.findOne(id);
 		List<Orderr> orders = cook.getOrders();
 
 		Optional.ofNullable(orders).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 
-		List<Dish> food = new ArrayList<Dish>();
+		List<Orderr> order = new ArrayList<Orderr>();
 
 		for (int i = 0; i < orders.size(); i++) {
 			if (orders.get(i).getFood().size() != 0 && orders.get(i).getDishStatus() != null
 					&& orders.get(i).getDishStatus().compareTo(DishStatus.received) == 0) {
 				for(int j = 0 ; j < orders.get(i).getFood().size(); j++){
-					food.add(orders.get(i).getFood().get(j));
+					order.add(orders.get(i));
 				}
 			}
 		}
-		return new ResponseEntity<>(food, HttpStatus.OK);
+		return new ResponseEntity<>(order, HttpStatus.OK);
 		
 	}
 
-	// 2.4 signazilira da je odgovarajuce jelo gotovo
+	// 2.4 signazilira da je odgovarajuca narudzbina jela gotova
 	@GetMapping(path = "/foodReady/{orderId}")
 	@ResponseStatus(HttpStatus.OK)
 	public Orderr foodReady(@PathVariable Long orderId) {
@@ -175,31 +182,41 @@ public class CookController {
 				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 
 		Orderr order = orderService.findOne(orderId);
+		
+		
 
 		orderService.findOne(orderId).setDishStatus(DishStatus.finished);
+		
+		for(int i = 0 ; i < cook.getOrders().size(); i++){
+			if(cook.getOrders().get(i).getId() == orderId){
+				cook.getOrders().get(i).setDishStatus(DishStatus.finished);
+				cookService.save(cook);
+				break;
+			}
+		}
 		order.setId(orderId);
 		return orderService.save(order);
 	}
 	
 	@GetMapping(path = "/readyFood")
-	public ResponseEntity<List<Dish>> readyFood() {
+	public ResponseEntity<List<Orderr>> readyFood() {
 		Long id = ((Cook) httpSession.getAttribute("user")).getId();
 		Cook cook = cookService.findOne(id);
 		List<Orderr> orders = cook.getOrders();
 
 		Optional.ofNullable(orders).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 
-		List<Dish> food = new ArrayList<Dish>();
+		List<Orderr> order = new ArrayList<Orderr>();
 
 		for (int i = 0; i < orders.size(); i++) {
 			if (orders.get(i).getFood().size() != 0 && orders.get(i).getDishStatus() != null
 					&& orders.get(i).getDishStatus().compareTo(DishStatus.finished) == 0) {
 				for(int j = 0 ; j < orders.get(i).getFood().size(); j++){
-					food.add(orders.get(i).getFood().get(j));
+					order.add(orders.get(i));
 				}
 			}
 		}
-		return new ResponseEntity<>(food, HttpStatus.OK);
+		return new ResponseEntity<>(order, HttpStatus.OK);
 		
 	}
 

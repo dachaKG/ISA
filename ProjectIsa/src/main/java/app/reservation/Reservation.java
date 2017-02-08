@@ -12,7 +12,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import app.guest.Guest;
 import lombok.Data;
@@ -45,5 +48,11 @@ public class Reservation {
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "RESERVATION_GUEST", joinColumns = @JoinColumn(name = "RESERVATION_ID"), inverseJoinColumns = @JoinColumn(name = "GUEST_ID"))
 	private List<Guest> guests;
+	
+	@JsonIgnore
+	@ManyToOne
+	private Reservation reservation;
+	
+	
 
 }

@@ -29,4 +29,10 @@ services.service('employedWaiterService',['$http', function($http){
 	this.sendToEmployed = function(id){
 		return $http.get("/waiter/sendToEmployed/" + id);
 	}
+	
+	this.makeBill = function(order){
+		return $http.post("/waiter/makeBill", order);
+	}
+	
+	
 }]);

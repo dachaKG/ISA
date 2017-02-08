@@ -220,6 +220,10 @@ angular.module('routerApp', ['ui.router',
         	url : '/readyOrders',
         	templateUrl : 'employedWaiter/employedWaiterReadyOrders.html'
         })
+        .state('loggedIn.waiter.shifts', {
+        	url : '/shifts',
+        	templateUrl : 'employedWaiter/employedWaiterShifts.html'
+        })
         
         .state('loggedIn.guest', {
         	url: '/guest',

@@ -25,7 +25,7 @@ app.controller('employedCookController',['$scope','employedCookService','$locati
 			
 			employedCookService.findAllOrders().then(
 				function(response){
-					$scope.foodOrders = response.data;
+					$scope.orders = response.data;
 				}
 			);
 			
@@ -45,7 +45,7 @@ app.controller('employedCookController',['$scope','employedCookService','$locati
 		$scope.received = function(foodOrder){
 			employedCookService.received(foodOrder.id).then(
 				function(response){
-					$scope.foodOrders.splice($scope.foodOrders.indexOf(foodOrder),1);
+					$scope.orders.splice($scope.orders.indexOf(foodOrder),1);
 				},
 				function(response){
 					alert("Error while signal");

@@ -16,7 +16,9 @@ public class Guest extends User {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "GUEST_ID")
 	private Long id;
-
+	
+	
+	
 	// zakomentarisano zbog bug-a kod metode getLoggedUser u commonController
 /*
 	//lista restorana gde je sve bio 

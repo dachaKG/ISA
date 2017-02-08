@@ -61,6 +61,10 @@ services.service('guestService', ['$http', function($http){
 		return $http.put("/guest/addDish/"+id);
 	}
 	
+	this.removeFood = function(id){
+		return $http.get("/guest/removeDish/"+id);
+	}
+	
 	this.orderDrink = function(id){
 		return $http.put("/guest/addDrink/"+id);
 	}

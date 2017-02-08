@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import app.drink.Drink;
+import app.employed.cook.Cook;
 import app.order.DrinkStatus;
 import app.order.OrderService;
 import app.order.Orderr;
@@ -95,28 +96,28 @@ public class BartenderController {
 
 	// 2.4 prikaz porudzbina za sankera
 	@GetMapping(path = "/orders")
-	public ResponseEntity<List<Drink>> findAllOrdrers() {
+	public ResponseEntity<List<Orderr>> findAllOrdrers() {
 		Long id = ((Bartender) httpSession.getAttribute("user")).getId();
 		// Bartender bartender = ((Bartender) httpSession.getAttribute("user"));
 		List<Orderr> orders = bartenderService.findOne(id).getOrders();
 		Optional.ofNullable(orders).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 
-		List<Drink> drinks = new ArrayList<Drink>();
+		List<Orderr> order = new ArrayList<Orderr>();
 
 		for (int i = 0; i < orders.size(); i++) {
 			if (orders.get(i).getDrinks().size() != 0 && orders.get(i).getDrinkStatus() == null) {
 				for (int j = 0; j < orders.get(i).getDrinks().size(); j++) {
-					drinks.add(orders.get(i).getDrinks().get(j));
+					order.add(orders.get(i));
 				}
 			}
 		}
 
-		return new ResponseEntity<>(drinks, HttpStatus.OK);
+		return new ResponseEntity<>(order, HttpStatus.OK);
 	}
 
 	// spisak pica koja su spremna
 	@GetMapping(path = "/readyDrinks")
-	public ResponseEntity<List<Drink>> readyDrinks() {
+	public ResponseEntity<List<Orderr>> readyDrinks() {
 		Long id = ((Bartender) httpSession.getAttribute("user")).getId();
 		// Bartender bartender = ((Bartender) httpSession.getAttribute("user"));
 		Bartender bartender = bartenderService.findOne(id);
@@ -124,18 +125,18 @@ public class BartenderController {
 
 		Optional.ofNullable(orders).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 
-		List<Drink> drinks = new ArrayList<Drink>();
+		List<Orderr> order = new ArrayList<Orderr>();
 
 		for (int i = 0; i < orders.size(); i++) {
 			if (orders.get(i).getDrinks().size() != 0 && orders.get(i).getDrinkStatus() != null
 					&& orders.get(i).getDrinkStatus().compareTo(DrinkStatus.finished) == 0) {
 				for (int j = 0; j < orders.get(i).getDrinks().size(); j++) {
-					drinks.add(orders.get(i).getDrinks().get(j));
+					order.add(orders.get(i));
 				}
 			}
 		}
 
-		return new ResponseEntity<>(drinks, HttpStatus.OK);
+		return new ResponseEntity<>(order, HttpStatus.OK);
 	}
 
 	// 2.4 sanker signalizir da je odgovarajuce pice spremno
@@ -144,8 +145,18 @@ public class BartenderController {
 	public Orderr drinkReady(@PathVariable Long orderId) {
 		Optional.ofNullable(orderService.findOne(orderId))
 				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
+		Long id = ((Bartender) httpSession.getAttribute("user")).getId();
+		Bartender bartender = bartenderService.findOne(id);
 		Orderr order = orderService.findOne(orderId);
 		order.setDrinkStatus(DrinkStatus.finished);
+		for(int i = 0 ; i < bartender.getOrders().size(); i++){
+			if(bartender.getOrders().get(i).getId() == orderId){
+				bartender.getOrders().get(i).setDrinkStatus(DrinkStatus.finished);
+				bartenderService.save(bartender);
+				break;
+			}
+		}
+		
 		order.setId(orderId);
 		return orderService.save(order);
 	}

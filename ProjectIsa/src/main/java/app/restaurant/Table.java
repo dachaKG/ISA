@@ -12,7 +12,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 
-import app.order.Orderr;
 import app.reservation.Reservation;
 import lombok.Data;
 

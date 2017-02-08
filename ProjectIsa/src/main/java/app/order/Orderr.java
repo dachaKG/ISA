@@ -23,7 +23,6 @@ import lombok.Data;
 @Data
 @Entity
 public class Orderr {
-	//int total = 0;
 	public Orderr(){
 		this.drinks = new ArrayList<Drink>();
 		this.food = new ArrayList<Dish>();
@@ -34,8 +33,6 @@ public class Orderr {
 	@Column(name = "ORDER_ID")
 	private Long id;
 	
-	/*@Column
-	private boolean status;*/
 	
 	@Enumerated(EnumType.STRING)
 	@Column
