@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import app.bill.Bill;
+import app.bill.BillService;
 import app.dish.Dish;
 import app.dish.DishService;
 import app.drink.Drink;
@@ -64,6 +66,7 @@ public class GuestController {
 	private final RateRestaurantService rateRestaurantService;
 	private final RateOrderService rateOrderService;
 	private final RateServiceService rateServiceService;
+	private final BillService billService;
 	private HttpSession httpSession;
 	
 
@@ -72,7 +75,8 @@ public class GuestController {
 			DishService dishService,final DrinkService drinkService,
 			final OrderService orderService, final TableService tableService, final ReservationService reservationService,
 			final WaiterService waiterService,final SegmentService segmentService,
-			final RateRestaurantService rateRestaurantService, final RateOrderService rateOrderService, final RateServiceService rateServiceService) {
+			final RateRestaurantService rateRestaurantService, final RateOrderService rateOrderService, 
+			final RateServiceService rateServiceService, final BillService billService) {
 		this.guestService = service;
 		this.httpSession = httpSession;
 		this.restaurantService = restaurantService;
@@ -85,6 +89,7 @@ public class GuestController {
 		this.rateRestaurantService = rateRestaurantService;
 		this.rateOrderService = rateOrderService;
 		this.rateServiceService = rateServiceService;
+		this.billService = billService;
 	}
 
 	@SuppressWarnings("unused")
@@ -283,11 +288,22 @@ public class GuestController {
 		Guest guest = guestService.findOne(guestId);
 		
 		List<Reservation> allReservations = reservationService.findAll();
-		List<Reservation> guestReservations = new ArrayList<Reservation>();
+		List<Reservation> resertavationsTemp = new ArrayList<Reservation>();
 		for(int i = 0 ; i < allReservations.size(); i++){
 			for(int j = 0 ; j < allReservations.get(i).getGuests().size(); j++){
 				if(allReservations.get(i).getGuests().get(j).getId() == guest.getId()){
-					guestReservations.add(allReservations.get(i));
+					resertavationsTemp.add(allReservations.get(i));
+				}
+			}
+		}
+		
+		List<Bill> bills = billService.findAll();
+		List<Reservation> guestReservations = new ArrayList<Reservation>();
+		
+		for(int i = 0 ; i < resertavationsTemp.size(); i++){
+			for(int j = 0 ; j < bills.size(); j++){
+				if(bills.get(j).getReservation().getId() == resertavationsTemp.get(i).getId()){
+					guestReservations.add(resertavationsTemp.get(i));
 				}
 			}
 		}
@@ -300,7 +316,7 @@ public class GuestController {
 	public Set<Restaurant> getVisitedRestaurants(){
 		List<Reservation> reservations = getReservationsRestaurant();
 		Set<Restaurant> restaurants = new HashSet<Restaurant>();
-		List<Restaurant> rest = new ArrayList<Restaurant>();
+		//List<Restaurant> rest = new ArrayList<Restaurant>();
 		//rest.addAll(restaurants);
 		for(int i = 0 ; i < reservations.size(); i++){
 			//restaurants.add(reservations.get(i).getRestaurant());

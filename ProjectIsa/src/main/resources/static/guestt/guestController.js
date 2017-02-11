@@ -267,7 +267,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			guestService.rateService(serviceRate, order.id).then(
 				function(response){
 					if(response.data == ""){
-						alert("Vec ste ocenili narudzbinu");
+						alert("Vec ste ocenili uslugu");
 					}else{
 						$scope.state = undefined;
 						findAll();

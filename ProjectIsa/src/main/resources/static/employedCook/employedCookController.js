@@ -46,6 +46,7 @@ app.controller('employedCookController',['$scope','employedCookService','$locati
 			employedCookService.received(foodOrder.id).then(
 				function(response){
 					$scope.orders.splice($scope.orders.indexOf(foodOrder),1);
+					findAll();
 				},
 				function(response){
 					alert("Error while signal");
@@ -57,6 +58,7 @@ app.controller('employedCookController',['$scope','employedCookService','$locati
 			employedCookService.ready(receivedDish.id).then(
 				function(response){
 					$scope.receivedFood.splice($scope.receivedFood.indexOf(receivedDish),1);
+					findAll();
 				},
 				function(response){
 					alert("Error while signal");

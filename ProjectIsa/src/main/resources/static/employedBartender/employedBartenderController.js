@@ -40,6 +40,7 @@ app.controller('employedBartenderController', [ '$scope', 'employedBartenderServ
 			employedBartenderService.ready(drinkOrder.id).then(
 				function(response) {
 					$scope.drinkOrders.splice($scope.drinkOrders.indexOf(drinkOrder),1);
+					findAll();
 				},
 				function(response){
 					alert("Error while signal")
