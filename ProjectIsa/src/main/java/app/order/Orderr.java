@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import app.dish.Dish;
 import app.drink.Drink;
@@ -61,6 +62,14 @@ public class Orderr {
 		
 		return total;
 	}
+	
+	@OneToMany
+	@JoinTable(name = "ORDER_RATES", joinColumns = @JoinColumn(name = "ORDER_ID"), inverseJoinColumns = @JoinColumn(name = "RATE_ORDER_ID"))
+	private List<RateOrder> rateOrders;
+	
+	@OneToMany
+	@JoinTable(name = "ORDER_RATE_SERVICE", joinColumns = @JoinColumn(name = "ORDER_ID"), inverseJoinColumns = @JoinColumn(name = "RATE_SERVICE_ID"))
+	private List<RateService> rateServices;
 
 	@ManyToMany
 	@JoinTable(name = "ORDER_DRINKS", joinColumns = @JoinColumn(name = "ORDER_ID"), inverseJoinColumns = @JoinColumn(name = "DRINK_ID"))

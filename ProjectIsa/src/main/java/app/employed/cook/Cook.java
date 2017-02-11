@@ -4,13 +4,16 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -28,12 +31,12 @@ public class Cook extends Employed {
 	@Column(name = "COOK_ID")
 	private Long id;
 	
-	/*@Enumerated(EnumType.STRING)
+	@Enumerated(EnumType.STRING)
 	@NotNull
 	@Column
-	private TypeOfCooker typeOfCooker;*/
+	private TypeOfCooker typeOfCooker;
 
-	@OneToMany
+	@ManyToMany
 	@JoinTable(name = "COOK_ORDERS", joinColumns = @JoinColumn(name = "COOK_ID"), inverseJoinColumns = @JoinColumn(name = "ORDER_ID"))
 	private List<Orderr> orders;
 

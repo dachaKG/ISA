@@ -74,10 +74,12 @@ public class Restaurant {
 	private List<Bidder> bidders;
 
 	@Column
-	private Integer summRate;
+	private Double summRate;
 
-	@Column
-	private Integer numRate;
+
+	@OneToMany
+	@JoinTable(name = "RESTAURANT_RATES", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "RATE_RESTAURANT_ID"))
+	private List<RateRestaurant> rateRestaurant;
 
 	@OneToMany
 	@JoinTable(name = "RESTAURANT_ORDER", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "ORDER_ID"))
@@ -117,5 +119,18 @@ public class Restaurant {
 	@OneToMany
 	@JoinTable(name = "RESTAURANT_CHANGED_SHIFTS_WAITERS", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "SHIFT_ID"))
 	private List<ChangedShiftWaiter> changedShiftsForWaiters;
+	
+	public double getSummRate(){
+		double sum = 0;
+		double average = 0;
+		for(int i = 0 ; i < this.rateRestaurant.size(); i++){
+			sum += rateRestaurant.get(i).getRate();
+			
+		}
+		average = sum/this.rateRestaurant.size();
+		
+		return average;
+		
+	}
 	
 }

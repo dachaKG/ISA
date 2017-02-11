@@ -107,18 +107,33 @@ public class CookController {
 	public ResponseEntity<List<Orderr>> findAllOrdrers() {
 		Long id = ((Cook) httpSession.getAttribute("user")).getId();
 		// Bartender bartender = ((Bartender) httpSession.getAttribute("user"));
+		Cook cook = cookService.findOne(id);
 		List<Orderr> orders = cookService.findOne(id).getOrders();
 		Optional.ofNullable(orders).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 
 		List<Orderr> order = new ArrayList<Orderr>();
+		//List<Orderr> orderTemp = new ArrayList<Orderr>();
+		//List<Dish> food = new ArrayList<Dish>();
 
 		for (int i = 0; i < orders.size(); i++) {
 			if (orders.get(i).getFood().size() != 0 && orders.get(i).getDishStatus() == null) {
-				for (int j = 0; j < orders.get(i).getFood().size(); j++) {
-					order.add(orders.get(i));
-				}
+				order.add(orders.get(i));
+				//orderTemp.add(orders.get(i));
 			}
 		}
+		//List<Orderr> orderTemp = order;
+		
+		for(int i = 0 ; i < order.size(); i++){
+			List<Dish> food = new ArrayList<Dish>();
+			for(int j = 0 ; j < order.get(i).getFood().size(); j++){
+				if(order.get(i).getFood().get(j).getTypeOfDish().toString().equals(cook.getTypeOfCooker().toString())){
+					food.add(order.get(i).getFood().get(j));
+				}
+			}
+			order.get(i).setFood(food);
+		}
+		
+		
 
 		return new ResponseEntity<>(order, HttpStatus.OK);
 	}
@@ -161,9 +176,9 @@ public class CookController {
 		for (int i = 0; i < orders.size(); i++) {
 			if (orders.get(i).getFood().size() != 0 && orders.get(i).getDishStatus() != null
 					&& orders.get(i).getDishStatus().compareTo(DishStatus.received) == 0) {
-				for(int j = 0 ; j < orders.get(i).getFood().size(); j++){
+				//for(int j = 0 ; j < orders.get(i).getFood().size(); j++){
 					order.add(orders.get(i));
-				}
+				//}
 			}
 		}
 		return new ResponseEntity<>(order, HttpStatus.OK);

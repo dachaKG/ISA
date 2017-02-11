@@ -3,6 +3,7 @@ package app.employed.waiter;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -37,6 +38,12 @@ public class Waiter extends Employed {
 	@OneToMany
 	@JoinTable(name = "WAITER_BILLS", joinColumns = @JoinColumn(name = "WAITER_ID"), inverseJoinColumns = @JoinColumn(name = "BILL_ID"))
 	private List<Bill> bills;
+	
+	@Column
+	private double rate;
+	
+	@ElementCollection
+	private List<Integer> numRate;
 	
 	
 	

@@ -104,9 +104,9 @@ public class RestaurantManagerController {
 				if (restaurant.getRestaurantManagers().get(j).getId() == userId) {
 					// sluzi za inicijalizaciju posto preko data u konsturktoru
 					// nzm kako da dam default values
-					if (restaurant.getSummRate() == null) {
-						restaurant.setNumRate(0);
-						restaurant.setSummRate(0);
+					if (restaurant.getSummRate() == 0) {
+						//restaurant.setNumRate(0);
+						restaurant.setSummRate(0.0);
 						restaurantService.save(restaurant);
 					}
 					return restaurant;

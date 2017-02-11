@@ -1,8 +1,10 @@
 package app.guest;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -28,10 +30,18 @@ import app.employed.waiter.Waiter;
 import app.employed.waiter.WaiterService;
 import app.order.OrderService;
 import app.order.Orderr;
+import app.order.RateOrder;
+import app.order.RateOrderService;
+import app.order.RateService;
+import app.order.RateServiceService;
 import app.reservation.Reservation;
 import app.reservation.ReservationService;
+import app.restaurant.RateRestaurant;
+import app.restaurant.RateRestaurantService;
 import app.restaurant.Restaurant;
 import app.restaurant.RestaurantService;
+import app.restaurant.Segment;
+import app.restaurant.SegmentService;
 import app.restaurant.Table;
 import app.restaurant.TableService;
 
@@ -48,10 +58,12 @@ public class GuestController {
 	private final OrderService orderService;
 	private Orderr order = new Orderr();
 	
-	private ArrayList<Guest> guests = new ArrayList<Guest>();
 	
 	private final TableService tableService;
 	private final ReservationService reservationService;
+	private final RateRestaurantService rateRestaurantService;
+	private final RateOrderService rateOrderService;
+	private final RateServiceService rateServiceService;
 	private HttpSession httpSession;
 	
 
@@ -59,7 +71,8 @@ public class GuestController {
 	public GuestController(final HttpSession httpSession, final GuestService service, final RestaurantService restaurantService,
 			DishService dishService,final DrinkService drinkService,
 			final OrderService orderService, final TableService tableService, final ReservationService reservationService,
-			final WaiterService waiterService) {
+			final WaiterService waiterService,final SegmentService segmentService,
+			final RateRestaurantService rateRestaurantService, final RateOrderService rateOrderService, final RateServiceService rateServiceService) {
 		this.guestService = service;
 		this.httpSession = httpSession;
 		this.restaurantService = restaurantService;
@@ -69,6 +82,9 @@ public class GuestController {
 		this.tableService = tableService;
 		this.reservationService = reservationService;
 		this.waiterService = waiterService;
+		this.rateRestaurantService = rateRestaurantService;
+		this.rateOrderService = rateOrderService;
+		this.rateServiceService = rateServiceService;
 	}
 
 	@SuppressWarnings("unused")
@@ -164,11 +180,12 @@ public class GuestController {
 		return this.order;
 	}
 	
-	@PostMapping(path = "/makeOrder/{id}")
+	@PostMapping(path = "/makeOrder/{id}/{resId}")
 	@ResponseStatus(HttpStatus.CREATED)
-	public void makeOrder(@PathVariable Long id, @Valid @RequestBody Orderr order){
+	public void makeOrder(@PathVariable Long id, @PathVariable Long resId,@Valid @RequestBody Orderr order){
 		if(order.getDrinks().size() > 0 || order.getFood().size() > 0){
 			Table table = tableService.findOne(id);
+			Reservation reservation = reservationService.findOne(resId);
 			table.getReservations();
 			order.setId(null);
 			order.setTable(tableService.findOne(id));
@@ -191,6 +208,8 @@ public class GuestController {
 			restaurant.getOrder().add(order);
 			Waiter waiter = waiterService.findOne((long) 1);
 			waiter.getOrders().add(order);
+			reservation.getOrders().add(order);
+			reservationService.save(reservation);
 			waiterService.save(waiter);
 			restaurantService.save(restaurant);
 			
@@ -214,13 +233,245 @@ public class GuestController {
 	
 	@PostMapping(path="/makeReservation/{id}")
 	public void makeReservation(@PathVariable Long id, @RequestBody Reservation reservation){
-		//Guest guest = ((Guest) httpSession.getAttribute("user"));
+		Long guestId = ((Guest) httpSession.getAttribute("user")).getId();
+		Guest guest = guestService.findOne(guestId);
 		System.out.println("SUCCESS, id:"+id);
 		System.out.println("DATE: "+reservation.getDate()+" h:"+reservation.getHours()+" m:"+reservation.getMinutes());
 		Table table = tableService.findOne(id);
+		reservation.getGuests().add(guest);
 		table.getReservations().add(reservation);
-		//reservation.getGuests().add(guestService.findOne(guest.getId()));
+		
+		//--------------------------------
+		/*List<Segment> segments = segmentService.findAll();
+		Segment segment = new Segment();
+		for(int i = 0 ; i < segments.size(); i++){
+			if(table.getSegmentName().equals(segments.get(i).getName())){
+				segment = segments.get(i);
+				break;
+			}
+		}*/
+		
+		List<Restaurant> restaurants = restaurantService.findAll();
+		Restaurant restaurant = new Restaurant();
+		label :
+		for(int i = 0 ; i < restaurants.size(); i++){
+			for(int j = 0 ; j < restaurants.get(i).getSegments().size(); j++){
+				if(restaurants.get(i).getSegments().get(j).getName().equals(table.getSegmentName())){
+					restaurant = restaurants.get(i);
+					break label;
+				}
+			}
+		}
+		
+		reservation.setRestaurant(restaurant);
 		reservationService.save(reservation);
+		//---------------------------------
+		//tableService.save(table);
+		
+	}
+	
+	
+	@GetMapping(path="/reservations")
+	@ResponseStatus(HttpStatus.OK)
+	public List<Reservation> getReservations(){
+		return reservationService.findAll();		
+	}
+	
+	
+	public List<Reservation> getReservationsRestaurant(){
+		Long guestId = ((Guest) httpSession.getAttribute("user")).getId();
+		Guest guest = guestService.findOne(guestId);
+		
+		List<Reservation> allReservations = reservationService.findAll();
+		List<Reservation> guestReservations = new ArrayList<Reservation>();
+		for(int i = 0 ; i < allReservations.size(); i++){
+			for(int j = 0 ; j < allReservations.get(i).getGuests().size(); j++){
+				if(allReservations.get(i).getGuests().get(j).getId() == guest.getId()){
+					guestReservations.add(allReservations.get(i));
+				}
+			}
+		}
+		
+		return guestReservations;
+		
+	}
+	@GetMapping(path="/visitedRestaurants")
+	@ResponseStatus(HttpStatus.OK)
+	public Set<Restaurant> getVisitedRestaurants(){
+		List<Reservation> reservations = getReservationsRestaurant();
+		Set<Restaurant> restaurants = new HashSet<Restaurant>();
+		List<Restaurant> rest = new ArrayList<Restaurant>();
+		//rest.addAll(restaurants);
+		for(int i = 0 ; i < reservations.size(); i++){
+			//restaurants.add(reservations.get(i).getRestaurant());
+			restaurants.add(reservations.get(i).getRestaurant());
+		}
+		
+		return restaurants;
+		
+	}
+	
+	@GetMapping(path = "/restaurantOrders/{id}")
+	public List<Orderr> getRestaurantOrders(@PathVariable Long id){
+		/*Long id = ((Guest) httpSession.getAttribute("user")).getId();
+		Guest guest = guestService.findOne(id);*/
+		
+		List<Reservation> reservations = getReservationsRestaurant();
+		
+		Restaurant restaurant = restaurantService.findOne(id);
+		
+		
+		List<Segment> segments = restaurant.getSegments();
+		List<Table> tables = new ArrayList<Table>();
+		for(int i = 0 ; i < segments.size(); i++){
+			tables.addAll(segments.get(i).getTables());
+		}
+		
+		//List<Orderr> orders = orderService.findAll();
+		List<Table> tableReservations = new ArrayList<Table>();
+		for(int i = 0 ; i < tables.size(); i++){
+			if(tables.get(i).getReservations() != null)
+				for(int j = 0 ; j < tables.get(i).getReservations().size(); j++){
+					tableReservations.add(tables.get(i));
+				}
+		}
+		Set<Table> guestTables = new HashSet<Table>();
+		
+		for(int j = 0 ; j < tableReservations.size(); j++){
+			for(int k = 0 ; k < tableReservations.get(j).getReservations().size(); k++){
+				for(int i = 0 ; i < reservations.size(); i++){
+					if(tableReservations.get(j).getReservations().get(k).getId() == reservations.get(i).getId()){
+						guestTables.add(tableReservations.get(j));
+					}
+				}
+			}
+		}
+		List<Table> tableTemp = new ArrayList<Table>(guestTables);
+		List<Reservation> resTemp = new ArrayList<Reservation>();
+		
+		for(int i = 0 ; i < tableTemp.size(); i++){
+			resTemp.addAll(tableTemp.get(i).getReservations());
+		}
+		Set<Orderr> orderTemp = new HashSet<Orderr>();
+		for(int i = 0 ; i < reservations.size();i++){
+			for(int j = 0 ; j < resTemp.size();j++){
+				if(reservations.get(i).getOrders() == resTemp.get(j).getOrders()){
+					orderTemp.addAll(reservations.get(i).getOrders());
+				}
+			}
+		}
+		
+		List<Orderr> guestOrders = new ArrayList<Orderr>(orderTemp);
+		return guestOrders;
+			
+	}
+	
+	//return $http.put("guest/rateRestaurant"+restaurantRate, restaurant);
+	@PutMapping(path = "/rateRestaurant/{rate}/{id}")
+	public Restaurant rateRestaurant(@PathVariable int rate, @PathVariable Long id){
+		Restaurant restaurant = restaurantService.findOne(id);
+		//restaurant.setNumRate(rate);
+		Long guestId = ((Guest) httpSession.getAttribute("user")).getId();
+		Guest guest = guestService.findOne(guestId);
+		RateRestaurant r = new RateRestaurant();
+		r.setGuest(guest);
+		r.setRate(rate);
+		for(int i = 0 ; i < restaurant.getRateRestaurant().size(); i++){
+			if(restaurant.getRateRestaurant().get(i).getGuest().getId() == guestId){
+				return null;
+			}
+		}
+		
+		rateRestaurantService.save(r);
+		
+		restaurant.getRateRestaurant().add(r);
+		
+		restaurantService.save(restaurant);
+		return restaurant;
+	}
+	
+	@PutMapping(path = "/rateOrder/{rate}/{id}")
+	public Orderr rateOrder(@PathVariable int rate, @PathVariable Long id){
+		Orderr order = orderService.findOne(id);
+
+		Long guestId = ((Guest) httpSession.getAttribute("user")).getId();
+		Guest guest = guestService.findOne(guestId);
+		
+		RateOrder rateOrder = new RateOrder();
+		rateOrder.setGuest(guest);
+		rateOrder.setRate(rate);
+		for(int i = 0 ; i < order.getRateOrders().size(); i++){
+			if(order.getRateOrders().get(i).getGuest().getId() == guestId){
+				return null;
+			}
+		}
+		
+		Set<Dish> setFood = new HashSet<Dish>(order.getFood());
+		ArrayList<Dish> food = new ArrayList<Dish>(setFood);
+		for(int i = 0 ; i < food.size(); i++){
+			Dish dish = dishService.findOne(food.get(i).getId());
+			dish.getNumRate().add(rate);
+			double sum = 0;
+			double average = 0;
+			for(int j = 0 ; j < dish.getNumRate().size(); j++){
+				sum += dish.getNumRate().get(j);
+			}
+			average = sum/dish.getNumRate().size();
+			
+			dish.setRate(average);
+			dishService.save(dish);
+		}
+		
+		rateOrderService.save(rateOrder);
+		order.getRateOrders().add(rateOrder);
+		orderService.save(order);
+		return order;
+	}
+	
+	@PutMapping(path = "/rateService/{rate}/{id}")
+	public Orderr rateService(@PathVariable int rate, @PathVariable Long id){
+		Orderr order = orderService.findOne(id);
+
+		Long guestId = ((Guest) httpSession.getAttribute("user")).getId();
+		Guest guest = guestService.findOne(guestId);
+		
+		RateService rateService = new RateService();
+		rateService.setGuest(guest);
+		rateService.setRate(rate);
+		
+		for(int i = 0 ; i < order.getRateServices().size(); i++){
+			if(order.getRateServices().get(i).getGuest().getId() == guest.getId()){
+				return null;
+			}
+		}
+		
+		List<Waiter> waiters = waiterService.findAll();
+		Waiter waiter = new Waiter();
+		for(int i = 0 ; i < waiters.size(); i++){
+			for(int j = 0 ; j < waiters.get(i).getOrders().size(); j++){
+				if(waiters.get(i).getOrders().get(j).getId() == order.getId()){
+					waiter = waiters.get(i);
+				}
+			}
+		}
+		
+		waiter.getNumRate().add(rate);
+		double sum = 0;
+		double average = 0;
+		for(int j = 0 ; j < waiter.getNumRate().size(); j++){
+			sum += waiter.getNumRate().get(j);
+		}
+		average = sum/waiter.getNumRate().size();
+		
+		waiter.setRate(average);
+		waiterService.save(waiter);
+		
+		rateServiceService.save(rateService);
+		order.getRateServices().add(rateService);
+		orderService.save(order);
+		
+		
+		return order;
 	}
 	
 	

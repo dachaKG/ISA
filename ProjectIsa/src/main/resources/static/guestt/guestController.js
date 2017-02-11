@@ -9,6 +9,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 						//myValue = false;
 						//document.getElementById("restaurantMenu").hide;
 						findAll();
+
 					}
 					else {
 						$location.path('login');
@@ -18,6 +19,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		}
 		checkRights();	
 		
+	
 		function findAll(){
 			guestService.restaurants().then(
 				function(response){
@@ -29,6 +31,18 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			guestService.orders().then(
 				function(response){
 					$scope.order = response.data;
+				}
+			)
+			
+			guestService.reservations().then(
+				function(response){
+					$scope.reservations = response.data;
+				}
+			)
+			
+			guestService.visitedRestaurants().then(
+				function(response){
+					$scope.visitedRestaurants = response.data;
 				}
 			)
 		}
@@ -192,8 +206,22 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			);
 		}
 		
+		$scope.nextToOrders = function(restaurant){
+			guestService.nextToOrders(restaurant.id).then(
+				function(response){
+					$scope.state = undefined;
+					$scope.restaurantOrders = response.data;
+					$location.path('loggedIn/guest/restaurantOrders');
+					findAll();
+				},
+				function(response){
+					alert("Error in changing");
+				}
+			);
+		}
+		
 		$scope.makeOrder = function(order){
-			guestService.makeOrder($scope.chosenTable, $scope.order).then(
+			guestService.makeOrder($scope.chosenTable, $scope.reservations.length, $scope.order).then(
 				function(response){
 					//alert("successfully added");
 					$scope.state = undefined;
@@ -218,6 +246,51 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		
 		$scope.reservation3 = function(){
 			$location.path('loggedIn/guest/reservation3');
+		}
+		
+		$scope.rateOrder = function(orderRate, order){
+			guestService.rateOrder(orderRate, order.id).then(
+				function(response){
+					if(response.data == ""){
+						alert("Vec ste ocenili narudzbinu");
+					}else{
+						$scope.state = undefined;
+						findAll();
+					}
+				},
+				function(response){
+					alert("Error in signal");
+				});
+		}
+		
+		$scope.rateService = function(serviceRate, order){
+			guestService.rateService(serviceRate, order.id).then(
+				function(response){
+					if(response.data == ""){
+						alert("Vec ste ocenili narudzbinu");
+					}else{
+						$scope.state = undefined;
+						findAll();
+					}
+				},
+				function(response){
+					alert("Error in signal");
+				});
+		}
+		
+		$scope.rateRestaurant = function(restaurantRate, restaurant){
+			guestService.rateRestaurant(restaurantRate, restaurant.id).then(
+				function(response){
+					if(response.data == ""){
+						alert("Vec ste ocenili restoran");
+					}else{
+						$scope.state = undefined;
+						findAll();
+					}
+				},
+				function(response){
+					alert("Error in signal");
+				});
 		}
 		
 		/*$scope.reservation4 = function(){
@@ -268,6 +341,8 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			
 		}
 		
+		
+		
 		$scope.selectTable = function(table){
 			$("#odabranSto").html("Chosen table: "+table.name);
 			$scope.chosenTable = table.id;
@@ -277,6 +352,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		$scope.makeReservation = function(){
 			guestService.makeReservation($scope.chosenTable, $scope.reservation).then(
 					function(response){
+						 
 						$location.path('loggedIn/guest/reservation4');
 					});
 		}
@@ -333,5 +409,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			          : dish.typeOfDish === 'Cooked' ? 2 
 			          : 1
 			};
+			
+			
 		
 }]);

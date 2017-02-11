@@ -1,6 +1,9 @@
 package app.dish;
 
+import java.util.List;
+
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -43,8 +46,23 @@ public class Dish {
 	private TypeOfDish typeOfDish;
 
 	@Column
-	private Integer summRate;
+	private double rate;
 
-	@Column
-	private Integer numRate;
+/*	@ManyToMany
+	@JoinTable(name = "DISH_NUMRATES", joinColumns = @JoinColumn(name = "DISH_ID"))*/
+	@ElementCollection
+	private List<Integer> numRate;
+	
+	public double getRate(){
+		double sum = 0;
+		double average = 0;
+		
+		if(this.numRate.size() > 0){
+			for(int i = 0 ; i < this.numRate.size(); i++){
+				sum += numRate.get(i);
+			}
+			average = sum/this.numRate.size();
+		}
+		return average;
+	}
 }

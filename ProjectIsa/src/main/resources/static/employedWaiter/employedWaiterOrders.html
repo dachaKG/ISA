@@ -6,11 +6,23 @@
 			<td>
 				{{order.id}}
 			</td>
-			<td ng-repeat = "dish in order.food">
-				{{dish.name}} 
+			<td>
+				<table>
+					<tr ng-repeat = "dish in order.food">
+						<td>
+							{{dish.name}}
+						</td>
+					</tr>
+				</table>
 			</td>
-			<td ng-repeat = "drink in order.drinks">
-				{{drink.name}}
+			<td>
+				<table>
+					<tr ng-repeat = "drink in order.drinks">
+						<td>
+							{{drink.name}}
+						</td>
+					</tr>
+				</table>
 			</td>
 			<td>
 				<a ng-click = "sendToEmployed(order)" class = "btn btn-small btn-default"><span class="glyphicon glyphicon-ok"></span>Send</a>

@@ -100,15 +100,15 @@ public class BartenderController {
 		Long id = ((Bartender) httpSession.getAttribute("user")).getId();
 		// Bartender bartender = ((Bartender) httpSession.getAttribute("user"));
 		List<Orderr> orders = bartenderService.findOne(id).getOrders();
-		Optional.ofNullable(orders).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
+		//Optional.ofNullable(orders).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 
 		List<Orderr> order = new ArrayList<Orderr>();
 
 		for (int i = 0; i < orders.size(); i++) {
 			if (orders.get(i).getDrinks().size() != 0 && orders.get(i).getDrinkStatus() == null) {
-				for (int j = 0; j < orders.get(i).getDrinks().size(); j++) {
+				//for (int j = 0; j < orders.get(i).getDrinks().size(); j++) {
 					order.add(orders.get(i));
-				}
+				//}
 			}
 		}
 
@@ -130,9 +130,9 @@ public class BartenderController {
 		for (int i = 0; i < orders.size(); i++) {
 			if (orders.get(i).getDrinks().size() != 0 && orders.get(i).getDrinkStatus() != null
 					&& orders.get(i).getDrinkStatus().compareTo(DrinkStatus.finished) == 0) {
-				for (int j = 0; j < orders.get(i).getDrinks().size(); j++) {
+				
 					order.add(orders.get(i));
-				}
+				
 			}
 		}
 

@@ -69,8 +69,8 @@ services.service('guestService', ['$http', function($http){
 		return $http.put("/guest/addDrink/"+id);
 	}
 	
-	this.makeOrder = function(tableId, order){
-		return $http.post("/guest/makeOrder/"+tableId, order);
+	this.makeOrder = function(tableId, reservationId, order){
+		return $http.post("/guest/makeOrder/"+tableId +"/"+ reservationId, order);
 	}
 	
 
@@ -81,6 +81,32 @@ services.service('guestService', ['$http', function($http){
 	this.makeReservation = function(tableId, reservation){
 		return $http.post("guest/makeReservation/"+ tableId, reservation);
 	}
+	
+	this.reservations = function(){
+		return $http.get("guest/reservations");
+	}
+	
+	this.visitedRestaurants = function(){
+		return $http.get("guest/visitedRestaurants");
+	}
+	
+	this.nextToOrders = function(id){
+		return $http.get("guest/restaurantOrders/"+id);
+	}
+	
+	this.rateRestaurant = function(restaurantRate, restaurant){
+		return $http.put("/guest/rateRestaurant/"+restaurantRate +"/"+ restaurant);
+	}
+	
+	this.rateOrder = function(orderRate, order){
+		return $http.put("/guest/rateOrder/"+orderRate +"/"+ order);	
+	}
+	
+	this.rateService = function(serviceRate, order){
+		return $http.put("/guest/rateService/"+serviceRate +"/"+ order);	
+	}
+	
+	
 
 	
 }]);

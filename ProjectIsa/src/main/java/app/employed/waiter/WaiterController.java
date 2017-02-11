@@ -29,6 +29,7 @@ import app.employed.bartender.Bartender;
 import app.employed.bartender.BartenderService;
 import app.employed.cook.Cook;
 import app.employed.cook.CookService;
+import app.guest.Guest;
 import app.order.DishStatus;
 import app.order.DrinkStatus;
 import app.order.OrderService;
@@ -176,6 +177,7 @@ public class WaiterController {
 		Optional.ofNullable(orderService.findOne(id)).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 
 		Orderr order = orderService.findOne(id);
+		List<Cook> cooks = cookService.findAll();
 		
 		if(order.getDrinks().size() > 0 && order.getDrinkStatus() == null){
 			Bartender bartender = bartenderService.findOne((long) 1);
@@ -185,10 +187,25 @@ public class WaiterController {
 		}
 		
 		if(order.getFood().size() > 0 && order.getDishStatus() == null){
-			Cook cook = cookService.findOne((long) 1);
+			Cook cook = new Cook();
 			
-			cook.getOrders().add(order);
-			cookService.save(cook);
+			for(int j = 0 ; j < cooks.size(); j++){
+				for(int i = 0 ; i < order.getFood().size(); i++){
+					if(order.getFood().get(i).getTypeOfDish().toString().equals(cooks.get(j).getTypeOfCooker().toString())){
+						cook = cooks.get(j);
+						cook.getOrders().add(order);
+						cookService.save(cook);
+						break;
+					}
+				}
+				
+			}
+		
+		
+			//Cook cook = cookService.findOne((long) 1);
+			
+			/*cook.getOrders().add(order);
+			cookService.save(cook);*/
 		}
 		
 	}
@@ -242,8 +259,13 @@ public class WaiterController {
 		}*/
 		
 		
+		Reservation reservation = reservations.get(1);
+		/*for(int i = 0 ; i < reservation.getGuests().size(); i++){
+			Guest guest = reservation.getGuests().get(i);
+			
+		}*/
 		
-		Reservation reservation = reservations.get(0);
+		
 		Bill bill = new Bill();
 		bill.setDate(reservation.getDate());
 		bill.setTotal(order.getTotal());

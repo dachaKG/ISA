@@ -12,12 +12,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import app.guest.Guest;
+import app.order.Orderr;
+import app.restaurant.Restaurant;
 import lombok.Data;
 
 @Data
@@ -45,13 +48,18 @@ public class Reservation {
 	@Column
 	private Double duration;
 	
-	@OneToMany(cascade = CascadeType.ALL)
+	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "RESERVATION_GUEST", joinColumns = @JoinColumn(name = "RESERVATION_ID"), inverseJoinColumns = @JoinColumn(name = "GUEST_ID"))
 	private List<Guest> guests;
 	
 	@JsonIgnore
-	@ManyToOne
-	private Reservation reservation;
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "RESERVATION_ORDER", joinColumns = @JoinColumn(name = "RESERVATION_ID"), inverseJoinColumns = @JoinColumn(name = "ORDER_ID"))
+	private List<Orderr> orders;
+	
+	@JsonIgnore
+	@ManyToOne(cascade = CascadeType.ALL)
+	private Restaurant restaurant;
 	
 	
 
