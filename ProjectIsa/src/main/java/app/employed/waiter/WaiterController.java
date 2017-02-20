@@ -30,7 +30,7 @@ import app.employed.bartender.BartenderService;
 import app.employed.cook.Cook;
 import app.employed.cook.CookService;
 import app.guest.Guest;
-import app.order.DishStatus;
+import app.order.FoodStatus;
 import app.order.DrinkStatus;
 import app.order.OrderService;
 import app.order.Orderr;
@@ -97,7 +97,7 @@ public class WaiterController {
 
 		for (int i = 0; i < orders.size(); i++) {
 			if (orders.get(i).getFood().size() != 0 && orders.get(i).getDishStatus() != null
-					&& orders.get(i).getDishStatus().compareTo(DishStatus.finished) == 0) {
+					&& orders.get(i).getDishStatus().compareTo(FoodStatus.finished) == 0) {
 				for (int j = 0; j < orders.get(i).getFood().size(); j++) {
 					food.add(orders.get(i).getFood().get(j));
 				}
@@ -143,7 +143,7 @@ public class WaiterController {
 			if (orders.get(i).getDrinks().size() != 0 && orders.get(i).getDrinkStatus() != null
 					&& orders.get(i).getDrinkStatus().compareTo(DrinkStatus.finished) == 0
 					&& orders.get(i).getFood().size() != 0 && orders.get(i).getDishStatus() != null && 
-					orders.get(i).getDishStatus().compareTo(DishStatus.finished) == 0) {
+					orders.get(i).getDishStatus().compareTo(FoodStatus.finished) == 0) {
 				//for (int j = 0; j < orders.get(i).getDrinks().size(); j++) {
 					orderss.add(orders.get(i));
 				//}

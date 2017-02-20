@@ -48,7 +48,7 @@
 					<th>Price</th>
 					<th>Type</th>
 				</tr>
-				<tr ng-repeat="dish in restaurantt.food">
+				<tr ng-repeat="dish in restaurantt.food | orderBy:'typeOfDish'">
 					<td>{{dish.name}}</td>
 					<td>{{dish.price}}</td>
 					<td>{{dish.typeOfDish}}</td>

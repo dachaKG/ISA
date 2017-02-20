@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import app.dish.Dish;
-import app.order.DishStatus;
+import app.order.FoodStatus;
 import app.order.OrderService;
 import app.order.Orderr;
 import app.restaurant.Restaurant;
@@ -150,11 +150,11 @@ public class CookController {
 
 		Orderr order = orderService.findOne(orderId);
 
-		order.setDishStatus(DishStatus.received);
+		order.setDishStatus(FoodStatus.received);
 		order.setId(orderId);
 		for(int i = 0 ; i < cook.getOrders().size(); i++){
 			if(cook.getOrders().get(i).getId() == orderId){
-				cook.getOrders().get(i).setDishStatus(DishStatus.received);
+				cook.getOrders().get(i).setDishStatus(FoodStatus.received);
 				cookService.save(cook);
 				break;
 			}
@@ -175,7 +175,7 @@ public class CookController {
 
 		for (int i = 0; i < orders.size(); i++) {
 			if (orders.get(i).getFood().size() != 0 && orders.get(i).getDishStatus() != null
-					&& orders.get(i).getDishStatus().compareTo(DishStatus.received) == 0) {
+					&& orders.get(i).getDishStatus().compareTo(FoodStatus.received) == 0) {
 				//for(int j = 0 ; j < orders.get(i).getFood().size(); j++){
 					order.add(orders.get(i));
 				//}
@@ -200,11 +200,11 @@ public class CookController {
 		
 		
 
-		orderService.findOne(orderId).setDishStatus(DishStatus.finished);
+		orderService.findOne(orderId).setDishStatus(FoodStatus.finished);
 		
 		for(int i = 0 ; i < cook.getOrders().size(); i++){
 			if(cook.getOrders().get(i).getId() == orderId){
-				cook.getOrders().get(i).setDishStatus(DishStatus.finished);
+				cook.getOrders().get(i).setDishStatus(FoodStatus.finished);
 				cookService.save(cook);
 				break;
 			}
@@ -225,7 +225,7 @@ public class CookController {
 
 		for (int i = 0; i < orders.size(); i++) {
 			if (orders.get(i).getFood().size() != 0 && orders.get(i).getDishStatus() != null
-					&& orders.get(i).getDishStatus().compareTo(DishStatus.finished) == 0) {
+					&& orders.get(i).getDishStatus().compareTo(FoodStatus.finished) == 0) {
 				for(int j = 0 ; j < orders.get(i).getFood().size(); j++){
 					order.add(orders.get(i));
 				}

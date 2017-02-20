@@ -37,7 +37,7 @@ public class Orderr {
 	
 	@Enumerated(EnumType.STRING)
 	@Column
-	private DishStatus dishStatus;
+	private FoodStatus dishStatus;
 	
 	@Enumerated(EnumType.STRING)
 	@Column

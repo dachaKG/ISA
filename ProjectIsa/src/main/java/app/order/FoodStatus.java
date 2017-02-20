@@ -1,6 +1,6 @@
 package app.order;
 
-public enum DishStatus {
+public enum FoodStatus {
 
 	received, inPrepared, finished;
 	
