@@ -98,21 +98,26 @@ public class BartenderController {
 	@GetMapping(path = "/orders")
 	public ResponseEntity<List<Orderr>> findAllOrdrers() {
 		Long id = ((Bartender) httpSession.getAttribute("user")).getId();
-		// Bartender bartender = ((Bartender) httpSession.getAttribute("user"));
-		List<Orderr> orders = bartenderService.findOne(id).getOrders();
+	    Bartender bartender = bartenderService.findOne(id);
+		//List<Orderr> orders = bartenderService.findOne(id).getOrders();
+		
+		List<Orderr> allOrders = orderService.findAll();
 		//Optional.ofNullable(orders).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
+		
+		List<Orderr> orders = new ArrayList<Orderr>();
 
-		List<Orderr> order = new ArrayList<Orderr>();
-
-		for (int i = 0; i < orders.size(); i++) {
-			if (orders.get(i).getDrinks().size() != 0 && orders.get(i).getDrinkStatus() == null) {
+		for (int i = 0; i < allOrders.size(); i++) {
+			if (allOrders.get(i).getDrinks().size() > 0 && allOrders.get(i).getDrinkStatus().compareTo(DrinkStatus.inPrepared) == 0) {
 				//for (int j = 0; j < orders.get(i).getDrinks().size(); j++) {
-					order.add(orders.get(i));
+				orders.add(allOrders.get(i));
 				//}
 			}
 		}
+		bartender.getOrders().addAll(orders);
+		bartenderService.save(bartender);
+		
 
-		return new ResponseEntity<>(order, HttpStatus.OK);
+		return new ResponseEntity<>(orders, HttpStatus.OK);
 	}
 
 	// spisak pica koja su spremna
@@ -152,11 +157,11 @@ public class BartenderController {
 		for(int i = 0 ; i < bartender.getOrders().size(); i++){
 			if(bartender.getOrders().get(i).getId() == orderId){
 				bartender.getOrders().get(i).setDrinkStatus(DrinkStatus.finished);
-				bartenderService.save(bartender);
+				
 				break;
 			}
 		}
-		
+		bartenderService.save(bartender);
 		order.setId(orderId);
 		return orderService.save(order);
 	}

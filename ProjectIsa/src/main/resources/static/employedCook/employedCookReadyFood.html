@@ -2,7 +2,7 @@
 
 <table class = "table table-bordered tableBG" border="1">
 	<tbody>
-		<tr ng-repeat = "readyDish in readyFood.food">
+		<!-- <tr ng-repeat = "readyDish in readyFood.food">
 			<td>
 				{{readyFood.id}}
 			</td>
@@ -13,6 +13,21 @@
 				{{readyDish.price}}
 			</td>
 			
+		</tr> -->
+		
+		<tr ng-repeat = "order in readyFood">
+			<td>
+				{{order.id}}
+			</td>
+			<td>
+				<table>
+					<tr ng-repeat = "dish in order.food">
+						<td>
+							{{dish.name}}
+						</td>
+					</tr>
+				</table>
+			</td>
 		</tr>
 	</tbody>
 </table>

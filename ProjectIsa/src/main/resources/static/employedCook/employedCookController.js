@@ -54,10 +54,10 @@ app.controller('employedCookController',['$scope','employedCookService','$locati
 			);
 		}
 		
-		$scope.ready = function(receivedDish){
-			employedCookService.ready(receivedDish.id).then(
+		$scope.ready = function(order){
+			employedCookService.ready(order).then(
 				function(response){
-					$scope.receivedFood.splice($scope.receivedFood.indexOf(receivedDish),1);
+					$scope.receivedFood.splice($scope.receivedFood.indexOf(order),1);
 					findAll();
 				},
 				function(response){

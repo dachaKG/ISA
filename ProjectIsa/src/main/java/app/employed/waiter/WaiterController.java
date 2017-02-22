@@ -1,5 +1,7 @@
 package app.employed.waiter;
 
+import static org.mockito.Matchers.intThat;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import app.bill.Bill;
 import app.bill.BillService;
 import app.dish.Dish;
+import app.dish.DishStatus;
 import app.drink.Drink;
 import app.drink.DrinkService;
 import app.employed.bartender.Bartender;
@@ -96,8 +99,8 @@ public class WaiterController {
 		List<Dish> food = new ArrayList<Dish>();
 
 		for (int i = 0; i < orders.size(); i++) {
-			if (orders.get(i).getFood().size() != 0 && orders.get(i).getDishStatus() != null
-					&& orders.get(i).getDishStatus().compareTo(FoodStatus.finished) == 0) {
+			if (orders.get(i).getFood().size() != 0 && orders.get(i).getFoodStatus() != null
+					&& orders.get(i).getFoodStatus().compareTo(FoodStatus.finished) == 0) {
 				for (int j = 0; j < orders.get(i).getFood().size(); j++) {
 					food.add(orders.get(i).getFood().get(j));
 				}
@@ -137,20 +140,59 @@ public class WaiterController {
 
 		Optional.ofNullable(orders).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 
-		List<Orderr> orderss = new ArrayList<Orderr>();
-
+		List<Orderr> finishedOrders = new ArrayList<Orderr>();
+		List<Long> longs = new ArrayList<Long>();
 		for (int i = 0; i < orders.size(); i++) {
 			if (orders.get(i).getDrinks().size() != 0 && orders.get(i).getDrinkStatus() != null
 					&& orders.get(i).getDrinkStatus().compareTo(DrinkStatus.finished) == 0
-					&& orders.get(i).getFood().size() != 0 && orders.get(i).getDishStatus() != null && 
-					orders.get(i).getDishStatus().compareTo(FoodStatus.finished) == 0) {
+					&& orders.get(i).getFood().size() != 0 && orders.get(i).getFoodStatus() != null && 
+					orders.get(i).getFoodStatus().compareTo(FoodStatus.finished) == 0) {
+				//for (int j = 0; j < orders.get(i).getDrinks().size(); j++) {
+				finishedOrders.add(orders.get(i));
+				longs.add(orders.get(i).getId());
+				//}
+			}
+		}
+		
+		
+		List<Orderr> newOrders = new ArrayList<Orderr>();
+		//longs.contains(o)
+		boolean food = true;
+		for(int i = 0 ; i < orders.size(); i++){
+			if(orders.get(i).getFood().size() > 0 && !longs.contains(orders.get(i).getId())){
+				for(int j = 0 ; j < orders.get(i).getFood().size(); j++){
+					if(orders.get(i).getFood().get(j).getDishStatus() != null && orders.get(i).getFood().get(j).getDishStatus().compareTo(DishStatus.finished) == 0 && food){
+						food = true;
+						} else {
+							food = false;
+						}
+					}
+				if(food){
+					orders.get(i).setFoodStatus(FoodStatus.finished);
+					newOrders.add(orders.get(i));				
+				}
+			}
+		}
+		
+		if(newOrders.size() > 0){
+			for(int i = 0 ; i < newOrders.size(); i++){
+				finishedOrders.add(newOrders.get(i));
+			}
+		}
+		//finishedOrders.addAll(newOrders);
+
+		/*for (int i = 0; i < orders.size(); i++) {
+			if (orders.get(i).getDrinks().size() != 0 && orders.get(i).getDrinkStatus() != null
+					&& orders.get(i).getDrinkStatus().compareTo(DrinkStatus.finished) == 0
+					&& orders.get(i).getFood().size() != 0 && orders.get(i).getFoodStatus() != null && 
+					orders.get(i).getFoodStatus().compareTo(FoodStatus.finished) == 0) {
 				//for (int j = 0; j < orders.get(i).getDrinks().size(); j++) {
 					orderss.add(orders.get(i));
 				//}
 			}
-		}
+		}*/
 
-		return new ResponseEntity<>(orderss, HttpStatus.OK);
+		return new ResponseEntity<>(finishedOrders, HttpStatus.OK);
 	}
 	
 	@GetMapping(path = "/orders")
@@ -163,7 +205,7 @@ public class WaiterController {
 
 		for(int i = 0 ; i < orders.size(); i++){
 			if(orders.get(i).getDrinks().size() != 0 && orders.get(i).getDrinkStatus() == null &&
-					orders.get(i).getFood().size() != 0 && orders.get(i).getDishStatus() == null	){
+					orders.get(i).getFood().size() != 0 && orders.get(i).getFoodStatus() == null	){
 				orderss.add(orders.get(i));
 			}
 		}
@@ -171,42 +213,24 @@ public class WaiterController {
 		return new ResponseEntity<>(orderss, HttpStatus.OK);
 	}
 	
-	@GetMapping(path = "/sendToEmployed/{id}")
+	@PutMapping(path = "/sendToEmployed/{id}")
+	@ResponseStatus(HttpStatus.OK)
 	public void sendToEmployed(@PathVariable Long id){
 		
 		Optional.ofNullable(orderService.findOne(id)).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 
 		Orderr order = orderService.findOne(id);
-		List<Cook> cooks = cookService.findAll();
+		
 		
 		if(order.getDrinks().size() > 0 && order.getDrinkStatus() == null){
-			Bartender bartender = bartenderService.findOne((long) 1);
-			
-			bartender.getOrders().add(order);
-			bartenderService.save(bartender);
+			order.setDrinkStatus(DrinkStatus.inPrepared);
 		}
 		
-		if(order.getFood().size() > 0 && order.getDishStatus() == null){
-			Cook cook = new Cook();
-			
-			for(int j = 0 ; j < cooks.size(); j++){
-				for(int i = 0 ; i < order.getFood().size(); i++){
-					if(order.getFood().get(i).getTypeOfDish().toString().equals(cooks.get(j).getTypeOfCooker().toString())){
-						cook = cooks.get(j);
-						cook.getOrders().add(order);
-						cookService.save(cook);
-						break;
-					}
-				}
-				
-			}
-		
-		
-			//Cook cook = cookService.findOne((long) 1);
-			
-			/*cook.getOrders().add(order);
-			cookService.save(cook);*/
+		if(order.getFood().size() > 0 && order.getFoodStatus() == null){
+			order.setFoodStatus(FoodStatus.inPrepared);
 		}
+		
+		orderService.save(order);
 		
 	}
 
@@ -250,20 +274,18 @@ public class WaiterController {
 	public void makeBill(@Valid @RequestBody Orderr order){
 		Long id = ((Waiter) httpSession.getAttribute("user")).getId();
 		Waiter waiter = waiterService.findOne(id);
-		Table table = order.getTable();
-		//List<Reservation> reservations = reservationService.findAll();
-		//order.getTable();
+		Table table = tableService.findOne(order.getTable().getId());
+		//Table table = order.getTable();
 		List<Reservation> reservations = table.getReservations();
-		/*for(int i = 0; i < reservations.size(); i++){
-			if(reservations.get(i).get)
-		}*/
-		
-		
-		Reservation reservation = reservations.get(1);
-		/*for(int i = 0 ; i < reservation.getGuests().size(); i++){
-			Guest guest = reservation.getGuests().get(i);
-			
-		}*/
+		Reservation reservation = new Reservation();
+		for(int i = 0 ; i < reservations.size(); i++){
+			for(int j = 0 ; j < reservations.get(i).getOrders().size(); j++){
+				if(reservations.get(i).getOrders().get(j).getId() == order.getId()){
+					reservation = reservations.get(i);
+					break;
+				}
+			}
+		}
 		
 		
 		Bill bill = new Bill();

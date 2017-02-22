@@ -27,7 +27,7 @@ services.service('employedWaiterService',['$http', function($http){
 	}
 	
 	this.sendToEmployed = function(id){
-		return $http.get("/waiter/sendToEmployed/" + id);
+		return $http.put("/waiter/sendToEmployed/" + id);
 	}
 	
 	this.makeBill = function(order){
