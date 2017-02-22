@@ -46,9 +46,9 @@ public class Dish {
 	@Column
 	private TypeOfDish typeOfDish;
 	
-	@Enumerated(EnumType.STRING)
+/*	@Enumerated(EnumType.STRING)
 	@Column
-	private DishStatus dishStatus;
+	private DishStatus dishStatus;*/
 
 	@Column
 	private double rate;

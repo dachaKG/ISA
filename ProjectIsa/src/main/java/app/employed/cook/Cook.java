@@ -2,6 +2,7 @@ package app.employed.cook;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -35,8 +36,8 @@ public class Cook extends Employed {
 	@Column
 	private TypeOfCooker typeOfCooker;
 
-	@OneToMany(mappedBy = "cook")
-	//@JoinTable(name = "COOK_ORDER", joinColumns = @JoinColumn(name = "COOK_ID"),  inverseJoinColumns = @JoinColumn(name = "COOK_ORDER_ID"))
+	@OneToMany(cascade={CascadeType.ALL}, mappedBy = "cook")
+	//@JoinColumn(name="COOK_COOK_ID", referencedColumnName="COOK_ID")
 	private List<CookOrder> orders;
 
 	@JsonIgnore

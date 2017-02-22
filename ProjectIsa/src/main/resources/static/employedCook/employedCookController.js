@@ -55,7 +55,7 @@ app.controller('employedCookController',['$scope','employedCookService','$locati
 		}
 		
 		$scope.ready = function(order){
-			employedCookService.ready(order).then(
+			employedCookService.ready(order.id).then(
 				function(response){
 					$scope.receivedFood.splice($scope.receivedFood.indexOf(order),1);
 					findAll();

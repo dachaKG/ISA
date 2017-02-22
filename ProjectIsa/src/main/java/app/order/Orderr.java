@@ -3,6 +3,7 @@ package app.order;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -85,8 +86,8 @@ public class Orderr {
 	private Restaurant restaurant;
 	*/
 	
-	@OneToMany(mappedBy = "order")
-	//@JoinTable(name = "COOK_ORDER", joinColumns = @JoinColumn(name = "ORDER_ID"))
+	@OneToMany(cascade={CascadeType.ALL}, mappedBy = "order")
+	//@JoinColumn(name="ORDER_ORDER_ID", referencedColumnName="ORDER_ID")
 	private List<CookOrder> cooks;
 	
 	@ManyToOne

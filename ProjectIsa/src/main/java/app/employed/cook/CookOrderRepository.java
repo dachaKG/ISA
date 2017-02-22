@@ -1,7 +1,7 @@
 package app.employed.cook;
 
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CookOrderRepository extends PagingAndSortingRepository<CookOrder, Long>{
+public interface CookOrderRepository extends JpaRepository<CookOrder, CookOrderId>{
 
 }

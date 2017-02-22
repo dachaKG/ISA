@@ -24,8 +24,8 @@ services.service('employedCookService',['$http', function($http){
 		return $http.get("/cook/receivedFood");
 	}
 	
-	this.ready = function(order){
-		return $http.put("/cook/foodReady",order);
+	this.ready = function(id){
+		return $http.get("/cook/foodReady/"+id);
 	}
 	
 	this.readyFood = function(id){

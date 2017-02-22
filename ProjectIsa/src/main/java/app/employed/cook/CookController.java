@@ -1,4 +1,4 @@
-/*package app.employed.cook;
+package app.employed.cook;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import app.dish.Dish;
-import app.dish.DishStatus;
 import app.order.FoodStatus;
 import app.order.OrderService;
 import app.order.Orderr;
@@ -35,13 +34,15 @@ public class CookController {
 
 	private final CookService cookService;
 	private final OrderService orderService;
+	private final CookOrderService cookOrderService;
 
 	@Autowired
-	public CookController(final HttpSession httpSession, final CookService cookService,
-			final OrderService orderService) {
+	public CookController(final HttpSession httpSession, final CookService cookService, final OrderService orderService,
+			final CookOrderService cookOrderService) {
 		this.httpSession = httpSession;
 		this.cookService = cookService;
 		this.orderService = orderService;
+		this.cookOrderService = cookOrderService;
 	}
 
 	@SuppressWarnings("unused")
@@ -62,11 +63,6 @@ public class CookController {
 		Cook cook = cookService.findOne(id);
 		return cook;
 	}
-
-	
-	 * @GetMapping public ResponseEntity<List<Cook>> findAll() { return new
-	 * ResponseEntity<>(cookService.findAll(), HttpStatus.OK); }
-	 
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
@@ -97,7 +93,7 @@ public class CookController {
 		Optional.ofNullable(cookService.findOne(id))
 				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 		Restaurant restaurant = cookService.findOne(id).getRestaurant();
-		Cook cook2 =  cookService.findOne(cook.getId());
+		Cook cook2 = cookService.findOne(cook.getId());
 		cook2.setRestaurant(restaurant);
 		cook2.setId(id);
 		return cookService.save(cook2);
@@ -107,34 +103,50 @@ public class CookController {
 	@GetMapping(path = "/orders")
 	public ResponseEntity<List<Orderr>> findAllOrdrers() {
 		Long id = ((Cook) httpSession.getAttribute("user")).getId();
-		// Bartender bartender = ((Bartender) httpSession.getAttribute("user"));
 		Cook cook = cookService.findOne(id);
-		
-		//----------------------------------
+
 		List<Orderr> orders = new ArrayList<Orderr>();
 		List<Orderr> allOrders = orderService.findAll();
-		for(int i = 0 ; i < allOrders.size(); i++){
-			if(allOrders.get(i).getFood().size() != 0 && allOrders.get(i).getFoodStatus().compareTo(FoodStatus.inPrepared) == 0){
-				orders.add(allOrders.get(i));
+		List<Orderr> tempOrders = new ArrayList<Orderr>();
+		for (int i = 0; i < allOrders.size(); i++) {
+			if (allOrders.get(i).getFood().size() != 0
+					&& allOrders.get(i).getFoodStatus().compareTo(FoodStatus.inPrepared) == 0) {
+				tempOrders.add(allOrders.get(i));
 			}
 		}
-		
+		List<CookOrder> cookOrdersTemp = cookOrderService.findAll();
+		List<CookOrder> cookOrders = new ArrayList<CookOrder>();
+		for (int i = 0; i < cookOrdersTemp.size(); i++) {
+			if (cookOrdersTemp.get(i).getCookId() == cook.getId()) {
+				cookOrders.add(cookOrdersTemp.get(i));
+			}
+		}
+
+		orders.addAll(tempOrders);
+		for (int i = 0; i < cookOrders.size(); i++) {
+			for (int j = 0; j < tempOrders.size(); j++) {
+				if (cook.getId() == cookOrders.get(i).getCookId()
+						&& tempOrders.get(j).getId() == cookOrders.get(i).getOrderId()) {
+					orders.remove(j);
+				}
+			}
+		}
 		List<Orderr> orderFood = new ArrayList<Orderr>();
-		for(int i = 0 ; i < orders.size(); i++){
+
+		for (int i = 0; i < orders.size(); i++) {
 			List<Dish> food = new ArrayList<Dish>();
-			for(int j = 0 ; j < orders.get(i).getFood().size(); j++){
-				if(orders.get(i).getFood().get(j).getTypeOfDish().toString().equals(cook.getTypeOfCooker().toString()) && 
-						orders.get(i).getFood().get(j).getDishStatus() == null){
+			for (int j = 0; j < orders.get(i).getFood().size(); j++) {
+				if (orders.get(i).getFood().get(j).getTypeOfDish().toString()
+						.equals(cook.getTypeOfCooker().toString())) {
 					food.add(orders.get(i).getFood().get(j));
 				}
 			}
 			orders.get(i).setFood(food);
-			if(orders.get(i).getFood().size() > 0){
-				cook.getOrders().addAll(orders);
+			if (orders.get(i).getFood().size() > 0) {
 				orderFood.add(orders.get(i));
 			}
 		}
-		
+
 		return new ResponseEntity<>(orderFood, HttpStatus.OK);
 	}
 
@@ -149,139 +161,152 @@ public class CookController {
 				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 
 		Orderr order = orderService.findOne(orderId);
-		
-		for(int i = 0 ; i < order.getFood().size(); i++){
-			if(order.getFood().get(i).getTypeOfDish().toString().equals(cook.getTypeOfCooker().toString())){
-				cook.getOrders().add(order);
-				break;
-			}
-		}
-		
-		for(int i = 0 ; i < cook.getOrders().size(); i++){
-			if(cook.getOrders().get(i).getId() == orderId){
-				for(int j = 0 ; j < cook.getOrders().get(i).getFood().size(); j++){
-					if(cook.getOrders().get(i).getFood().get(j).getTypeOfDish().toString().equals(cook.getTypeOfCooker().toString())
-							&& cook.getOrders().get(i).getFood().get(j).getDishStatus() == null){
-						cook.getOrders().get(i).getFood().get(j).setDishStatus(DishStatus.received);
-					}
-				}
-				break;
-			}
-		}
 
-		for(int i = 0 ; i < cook.getOrders().size(); i++){
-			if(cook.getOrders().get(i).getId() == orderId){
-				for(int j = 0 ; j < cook.getOrders().get(i).getFood().size(); j++){
-					if(cook.getOrders().get(i).getFood().get(j).getTypeOfDish().toString().equals(cook.getTypeOfCooker().toString())){
-						cook.getOrders().get(i).getFood().get(j).setDishStatus(DishStatus.received);
-					}
-				}
-				break;
-				
-			}
-		}
-		cookService.save(cook);
-		//order.setFoodStatus(FoodStatus.received);
-		return orderService.save(order);
+		CookOrder cookOrder = new CookOrder();
+		cookOrder.setOrder(order);
+		cookOrder.setCook(cook);
+		cookOrder.setDishStatus(DishStatus.received);
+		cookOrder.setCookId(cook.getId());
+		cookOrder.setOrderId(order.getId());
+		cookOrderService.save(cookOrder);
+
+		return order;
 	}
 
-	
 	@GetMapping(path = "/receivedFood")
 	public ResponseEntity<List<Orderr>> receivedFood() {
 		Long id = ((Cook) httpSession.getAttribute("user")).getId();
 		Cook cook = cookService.findOne(id);
-		List<Orderr> orders = cook.getOrders();
 
-		Optional.ofNullable(orders).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
-
-		List<Orderr> order = new ArrayList<Orderr>();
-		
-		for(int i = 0 ; i < orders.size(); i++){
-			if(orders.get(i).getFood().size() > 0 && orders.get(i).getFoodStatus().compareTo(FoodStatus.inPrepared) == 0){
-				for(int j = 0; j < orders.get(i).getFood().size(); j++){
-					if(orders.get(i).getFood().get(j).getDishStatus() != null && orders.get(i).getFood().get(j).getDishStatus().compareTo(DishStatus.received) == 0){
-						order.add(orders.get(i));
-						break;
-					}
-				}
+		List<CookOrder> cookService = cookOrderService.findAll();
+		List<Orderr> orders = new ArrayList<Orderr>();
+		for (int i = 0; i < cookService.size(); i++) {
+			if (cookService.get(i).getCook().getId() == cook.getId()
+					&& cookService.get(i).getDishStatus().compareTo(DishStatus.received) == 0) {
+				orders.add(cookService.get(i).getOrder());
 			}
 		}
-		
-		for(int i = 0 ; i < order.size(); i++){
-			List<Dish> food = new ArrayList<Dish>();
-			for(int j = 0 ; j < order.get(i).getFood().size(); j++){
-				if(order.get(i).getFood().get(j).getTypeOfDish().toString().equals(cook.getTypeOfCooker().toString()) && 
-						order.get(i).getFood().get(j).getDishStatus().compareTo(DishStatus.received) == 0){
-					food.add(order.get(i).getFood().get(j));
+		List<Dish> food = new ArrayList<Dish>();
+		for (int i = 0; i < orders.size(); i++) {
+			for (int j = 0; j < orders.get(i).getFood().size(); j++) {
+				if (orders.get(i).getFood().get(j).getTypeOfDish().toString()
+						.equals(cook.getTypeOfCooker().toString())) {
+					food.add(orders.get(i).getFood().get(j));
 				}
 			}
-			order.get(i).setFood(food);
+			if (food.size() > 0) {
+				orders.get(i).setFood(food);
+			}
 		}
-		
-		return new ResponseEntity<>(order, HttpStatus.OK);
-		
+
+		return new ResponseEntity<>(orders, HttpStatus.OK);
+
 	}
 
 	// 2.4 signazilira da je odgovarajuca narudzbina jela gotova
-	@PutMapping(path = "/foodReady")
+	@GetMapping(path = "/foodReady/{orderId}")
 	@ResponseStatus(HttpStatus.OK)
-	public Orderr foodReady(@RequestBody Orderr orderFinished) {
+	public Orderr foodReady(@PathVariable Long orderId) {
+
 		Long id = ((Cook) httpSession.getAttribute("user")).getId();
 		Cook cook = cookService.findOne(id);
 		Optional.ofNullable(cook).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 
-		Orderr orders = orderService.findOne(orderFinished.getId());
-		
-		for(int i = 0; i < orders.getFood().size(); i++){
-			for(int j = 0 ; j < orderFinished.getFood().size(); j++){
-				if(orders.getFood().get(i).getId() == orderFinished.getFood().get(j).getId()
-						&& orders.getFood().get(i).getDishStatus().compareTo(DishStatus.received) == 0){
-					orders.getFood().get(i).setDishStatus(DishStatus.finished);
-					//break; //mislim da ovaj break ne treba proveriti tako sto cu staviti dva ista jela
-				}
-			}
-		}
+		Optional.ofNullable(orderService.findOne(orderId))
+				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 
-		for(int i = 0 ; i < cook.getOrders().size(); i++){
-			if(cook.getOrders().get(i).getId() == orderFinished.getId() && cook.getOrders().get(i).getFood().size() > 0){
-				for(int j = 0 ; j < cook.getOrders().get(i).getFood().size(); j++){
-					if(cook.getOrders().get(i).getFood().get(j).getTypeOfDish().toString().equals(cook.getTypeOfCooker().toString())){
-						cook.getOrders().get(i).getFood().get(j).setDishStatus(DishStatus.finished);
-						cookService.save(cook);
-						
-					}
-					
-					//break;
-				}
-				break;
+		Orderr order = orderService.findOne(orderId);
+
+		CookOrder cookOrder = new CookOrder();
+		cookOrder.setOrder(order);
+		cookOrder.setCook(cook);
+		cookOrder.setDishStatus(DishStatus.finished);
+		cookOrder.setCookId(cook.getId());
+		cookOrder.setOrderId(order.getId());
+		cookOrderService.save(cookOrder);
+		List<Dish> foodTemp = new ArrayList<Dish>();
+		for (int i = 0; i < order.getFood().size(); i++) {
+			if (!order.getFood().get(i).getTypeOfDish().toString().equals(cook.getTypeOfCooker().toString())) {
+				foodTemp.add(order.getFood().get(i));
 			}
 		}
-		//orders.setId(orderId);
-		return orderService.save(orders);
+		List<Dish> foodTypeOne = new ArrayList<Dish>();
+		List<Dish> foodTypeTwo = new ArrayList<Dish>();
+		if (foodTemp.size() > 0) {
+			for (int i = 0; i < foodTemp.size(); i++) {
+				if (i == 0) {
+					foodTypeOne.add(foodTemp.get(i));
+				} else {
+					if (!foodTemp.get(i).getTypeOfDish().toString()
+							.equals(foodTypeOne.get(0).getTypeOfDish().toString())) {
+						foodTypeTwo.add(foodTemp.get(i));
+					} else {
+						foodTypeOne.add(foodTemp.get(i));
+					}
+				}
+
+			}
+		}
+		
+		int numberOfTypeDish = 1;
+		if(foodTypeOne.size() > 0){
+			numberOfTypeDish++;
+		}
+		if(foodTypeTwo.size() > 0){
+			numberOfTypeDish++;
+		}
+		
+		List<CookOrder> numberOfCookOrders = new ArrayList<CookOrder>();
+		for(int i = 0 ; i < cookOrderService.findAll().size(); i++){
+			if(cookOrderService.findAll().get(i).getOrderId() == order.getId()){
+				numberOfCookOrders.add(cookOrderService.findAll().get(i));
+			}
+		}
+		
+		boolean finishedFood = false;
+		if(numberOfCookOrders.size() == numberOfTypeDish){
+			for(int i = 0; i < numberOfCookOrders.size(); i++){
+				if(numberOfCookOrders.get(i).getDishStatus().compareTo(DishStatus.finished) == 0){
+					finishedFood = true;
+				} else {
+					finishedFood = false;
+					break;
+				}
+			}
+		}
+		
+		if(finishedFood){
+			order.setFoodStatus(FoodStatus.finished);
+			orderService.save(order);
+		}
+		
+		return order;
+
 	}
-	
+
 	@GetMapping(path = "/readyFood")
 	public ResponseEntity<List<Orderr>> readyFood() {
-		Long id = ((Cook) httpSession.getAttribute("user")).getId();
-		Cook cook = cookService.findOne(id);
-		List<Orderr> orders = cook.getOrders();
+		/*
+		 * Long id = ((Cook) httpSession.getAttribute("user")).getId(); Cook
+		 * cook = cookService.findOne(id); List<Orderr> orders =
+		 * cook.getOrders();
+		 * 
+		 * Optional.ofNullable(orders).orElseThrow(() -> new
+		 * ResourceNotFoundException("Resource Not Found!"));
+		 * 
+		 * List<Orderr> order = new ArrayList<Orderr>();
+		 * 
+		 * for (int i = 0; i < orders.size(); i++) { if
+		 * (orders.get(i).getFood().size() != 0 && orders.get(i).getFoodStatus()
+		 * != null &&
+		 * (orders.get(i).getFoodStatus().compareTo(FoodStatus.finished) == 0 ||
+		 * orders.get(i).getFoodStatus().compareTo(FoodStatus.inPrepared) == 0))
+		 * { // for(int j = 0 ; j < orders.get(i).getFood().size(); j++){
+		 * order.add(orders.get(i)); // } } } return new ResponseEntity<>(order,
+		 * HttpStatus.OK);
+		 */
+		return null;
 
-		Optional.ofNullable(orders).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
-
-		List<Orderr> order = new ArrayList<Orderr>();
-
-		for (int i = 0; i < orders.size(); i++) {
-			if (orders.get(i).getFood().size() != 0 && orders.get(i).getFoodStatus() != null
-					&& (orders.get(i).getFoodStatus().compareTo(FoodStatus.finished) == 0 || 
-					orders.get(i).getFoodStatus().compareTo(FoodStatus.inPrepared) == 0)) {
-				//for(int j = 0 ; j < orders.get(i).getFood().size(); j++){
-					order.add(orders.get(i));
-				//}
-			}
-		}
-		return new ResponseEntity<>(order, HttpStatus.OK);
-		
 	}
 
 }
-*/

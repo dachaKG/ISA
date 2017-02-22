@@ -7,7 +7,7 @@ public interface CookOrderService {
 
 	CookOrder save(CookOrder cookOrder);
 
-	CookOrder findOne(Long id);
+	void delete(CookOrder entity);
 
-	void delete(Long id);
+	CookOrder findOne(CookOrderId id);
 }

@@ -147,50 +147,14 @@ public class WaiterController {
 					&& orders.get(i).getDrinkStatus().compareTo(DrinkStatus.finished) == 0
 					&& orders.get(i).getFood().size() != 0 && orders.get(i).getFoodStatus() != null && 
 					orders.get(i).getFoodStatus().compareTo(FoodStatus.finished) == 0) {
-				//for (int j = 0; j < orders.get(i).getDrinks().size(); j++) {
+				
 				finishedOrders.add(orders.get(i));
 				longs.add(orders.get(i).getId());
-				//}
+				
 			}
 		}
 		
 		
-		List<Orderr> newOrders = new ArrayList<Orderr>();
-		//longs.contains(o)
-		boolean food = true;
-		for(int i = 0 ; i < orders.size(); i++){
-			if(orders.get(i).getFood().size() > 0 && !longs.contains(orders.get(i).getId())){
-				for(int j = 0 ; j < orders.get(i).getFood().size(); j++){
-					if(orders.get(i).getFood().get(j).getDishStatus() != null && orders.get(i).getFood().get(j).getDishStatus().compareTo(DishStatus.finished) == 0 && food){
-						food = true;
-						} else {
-							food = false;
-						}
-					}
-				if(food){
-					orders.get(i).setFoodStatus(FoodStatus.finished);
-					newOrders.add(orders.get(i));				
-				}
-			}
-		}
-		
-		if(newOrders.size() > 0){
-			for(int i = 0 ; i < newOrders.size(); i++){
-				finishedOrders.add(newOrders.get(i));
-			}
-		}
-		//finishedOrders.addAll(newOrders);
-
-		/*for (int i = 0; i < orders.size(); i++) {
-			if (orders.get(i).getDrinks().size() != 0 && orders.get(i).getDrinkStatus() != null
-					&& orders.get(i).getDrinkStatus().compareTo(DrinkStatus.finished) == 0
-					&& orders.get(i).getFood().size() != 0 && orders.get(i).getFoodStatus() != null && 
-					orders.get(i).getFoodStatus().compareTo(FoodStatus.finished) == 0) {
-				//for (int j = 0; j < orders.get(i).getDrinks().size(); j++) {
-					orderss.add(orders.get(i));
-				//}
-			}
-		}*/
 
 		return new ResponseEntity<>(finishedOrders, HttpStatus.OK);
 	}
