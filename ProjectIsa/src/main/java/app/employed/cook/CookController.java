@@ -1,4 +1,4 @@
-package app.employed.cook;
+/*package app.employed.cook;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,10 +63,10 @@ public class CookController {
 		return cook;
 	}
 
-	/*
+	
 	 * @GetMapping public ResponseEntity<List<Cook>> findAll() { return new
 	 * ResponseEntity<>(cookService.findAll(), HttpStatus.OK); }
-	 */
+	 
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
@@ -169,7 +169,7 @@ public class CookController {
 			}
 		}
 
-		/*for(int i = 0 ; i < cook.getOrders().size(); i++){
+		for(int i = 0 ; i < cook.getOrders().size(); i++){
 			if(cook.getOrders().get(i).getId() == orderId){
 				for(int j = 0 ; j < cook.getOrders().get(i).getFood().size(); j++){
 					if(cook.getOrders().get(i).getFood().get(j).getTypeOfDish().toString().equals(cook.getTypeOfCooker().toString())){
@@ -179,7 +179,7 @@ public class CookController {
 				break;
 				
 			}
-		}*/
+		}
 		cookService.save(cook);
 		//order.setFoodStatus(FoodStatus.received);
 		return orderService.save(order);
@@ -284,3 +284,4 @@ public class CookController {
 	}
 
 }
+*/

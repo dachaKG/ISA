@@ -18,6 +18,7 @@ import javax.persistence.OneToMany;
 
 import app.dish.Dish;
 import app.drink.Drink;
+import app.employed.cook.CookOrder;
 import app.restaurant.Table;
 import lombok.Data;
 
@@ -83,6 +84,11 @@ public class Orderr {
 	@JoinTable(name = "ORDER_RESTAURANT", joinColumns = @JoinColumn(name = "ORDER_ID"), inverseJoinColumns = @JoinColumn(name = "RESTAURANT_ID"))
 	private Restaurant restaurant;
 	*/
+	
+	@OneToMany(mappedBy = "order")
+	//@JoinTable(name = "COOK_ORDER", joinColumns = @JoinColumn(name = "ORDER_ID"))
+	private List<CookOrder> cooks;
+	
 	@ManyToOne
 	@JoinTable(name = "ORDER_TABLE", joinColumns = @JoinColumn(name = "ORDER_ID"), inverseJoinColumns = @JoinColumn(name = "TABLE_ID"))
 	private Table table;

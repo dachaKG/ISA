@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import app.employed.cook.DishStatus;
 import lombok.Data;
 
 @Data
