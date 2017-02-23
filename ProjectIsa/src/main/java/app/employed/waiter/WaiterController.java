@@ -166,13 +166,21 @@ public class WaiterController {
 		List<Orderr> orders = waiter.getOrders();
 		
 		List<Orderr> orderss = new ArrayList<Orderr>();
-
+		
 		for(int i = 0 ; i < orders.size(); i++){
+			if(orders.get(i).getDrinkStatus() == null && orders.get(i).getFoodStatus() == null){
+				orderss.add(orders.get(i));
+			}
+		}
+		
+		
+		
+		/*for(int i = 0 ; i < orders.size(); i++){
 			if(orders.get(i).getDrinks().size() != 0 && orders.get(i).getDrinkStatus() == null &&
 					orders.get(i).getFood().size() != 0 && orders.get(i).getFoodStatus() == null	){
 				orderss.add(orders.get(i));
 			}
-		}
+		}*/
 		
 		return new ResponseEntity<>(orderss, HttpStatus.OK);
 	}
@@ -188,10 +196,14 @@ public class WaiterController {
 		
 		if(order.getDrinks().size() > 0 && order.getDrinkStatus() == null){
 			order.setDrinkStatus(DrinkStatus.inPrepared);
+		} else if (order.getDrinks().size() == 0){
+			order.setDrinkStatus(DrinkStatus.finished);
 		}
 		
 		if(order.getFood().size() > 0 && order.getFoodStatus() == null){
 			order.setFoodStatus(FoodStatus.inPrepared);
+		} else if (order.getFood().size() == 0){
+			order.setFoodStatus(FoodStatus.finished);
 		}
 		
 		orderService.save(order);

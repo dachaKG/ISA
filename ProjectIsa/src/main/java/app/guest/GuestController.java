@@ -1,5 +1,7 @@
 package app.guest;
 
+import static org.mockito.Matchers.intThat;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -30,6 +32,8 @@ import app.drink.Drink;
 import app.drink.DrinkService;
 import app.employed.waiter.Waiter;
 import app.employed.waiter.WaiterService;
+import app.manager.changedShiftWaiter.ChangedShiftWaiter;
+import app.manager.changedShiftWaiter.ChangedShiftWaiterService;
 import app.order.OrderService;
 import app.order.Orderr;
 import app.order.RateOrder;
@@ -67,6 +71,7 @@ public class GuestController {
 	private final RateOrderService rateOrderService;
 	private final RateServiceService rateServiceService;
 	private final BillService billService;
+	private final ChangedShiftWaiterService changedShiftWaiterService;
 	private HttpSession httpSession;
 	
 
@@ -76,7 +81,7 @@ public class GuestController {
 			final OrderService orderService, final TableService tableService, final ReservationService reservationService,
 			final WaiterService waiterService,final SegmentService segmentService,
 			final RateRestaurantService rateRestaurantService, final RateOrderService rateOrderService, 
-			final RateServiceService rateServiceService, final BillService billService) {
+			final RateServiceService rateServiceService, final BillService billService, final ChangedShiftWaiterService changedShiftWaiterService) {
 		this.guestService = service;
 		this.httpSession = httpSession;
 		this.restaurantService = restaurantService;
@@ -90,6 +95,7 @@ public class GuestController {
 		this.rateOrderService = rateOrderService;
 		this.rateServiceService = rateServiceService;
 		this.billService = billService;
+		this.changedShiftWaiterService = changedShiftWaiterService;
 	}
 
 	@SuppressWarnings("unused")
@@ -196,22 +202,40 @@ public class GuestController {
 			order.setTable(tableService.findOne(id));
 			order.setTotal(order.getTotal());
 			orderService.save(order);
-			Restaurant restaurant = new Restaurant();
-			//----------------------------
-			//obrisati ovaj deo samo meni da olaksa
-			List<Restaurant> rest = restaurantService.findAll();
-			for(int i = 0 ; i < rest.size(); i++){
-				for(int j = 0 ; j < rest.get(i).getSegments().size(); j++){
-					for(int k = 0 ; k < rest.get(i).getSegments().get(j).getTables().size(); k++){
-						if(rest.get(i).getSegments().get(j).getTables().get(k).getId() == id){
-							restaurant = rest.get(i);
-						}
+			Restaurant restaurant = restaurantService.findOne(reservation.getRestaurant().getId());
+			
+			restaurant.getOrder().add(order);
+			List<Waiter> waiters = restaurant.getWaiters();
+			Waiter waiter = new Waiter();
+			List<ChangedShiftWaiter> changedShifts = restaurant.getChangedShiftsForWaiters();
+			
+			
+			String shift = "";
+			if(reservation.getHours() > 8 && reservation.getHours() < 16){
+				shift = "First";
+			} else if (reservation.getHours() >= 16 && reservation.getHours() < 24){
+				shift = "Second";
+			}
+			
+			
+			for(int i = 0 ; i < waiters.size(); i++){
+				for(int j = 0 ; j < waiters.get(i).getTablesForHandling().size(); j++){
+					if(waiters.get(i).getTablesForHandling().get(j).getId() == table.getId() &&
+							waiters.get(i).getDefaultShift().toString().equals(shift)){
+						waiter = waiterService.findOne(waiters.get(i).getId());
 					}
 				}
 			}
 			
-			restaurant.getOrder().add(order);
-			Waiter waiter = waiterService.findOne((long) 1);
+			for(int i = 0 ; i < changedShifts.size(); i++){
+				if((changedShifts.get(i).getWaiter1().getId() == waiter.getId() &&
+						changedShifts.get(i).getDate().compareTo(reservation.getDate()) == 0)){
+					waiter = changedShifts.get(i).getWaiter2();
+				} else if ((changedShifts.get(i).getWaiter2().getId() == waiter.getId() &&
+						changedShifts.get(i).getDate().compareTo(reservation.getDate()) == 0)){
+					waiter = changedShifts.get(i).getWaiter1();
+				}
+			}
 			waiter.getOrders().add(order);
 			reservation.getOrders().add(order);
 			reservationService.save(reservation);
