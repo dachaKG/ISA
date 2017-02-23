@@ -101,4 +101,12 @@ services.service('restaurantManagerService', ['$http', function($http){
 		return $http.post("/restaurantManager/restaurant/changeShiftBartenderAction", changeShiftBartender);
 	}
 	
+	this.getWaiterWithInputName = function(waiterName){
+		return $http.get("/restaurantManager/restaurant/getWaiterWithInputName/"+waiterName);
+	}
+	
+	this.geDishWithInputName = function(dishName){
+		return $http.get("/restaurantManager/restaurant/geDishWithInputName/"+dishName);
+	}
+	
 }]);

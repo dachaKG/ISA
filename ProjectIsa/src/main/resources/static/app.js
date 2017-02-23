@@ -138,7 +138,11 @@ angular.module('routerApp', ['ui.router',
 			url : '/tablesConfig',
 			templateUrl : 'managerRestaurant/restaurantManagerTableConfig.html'
 		})
-		.state('loggedIn.restaurantManager.changeShift', {
+		.state('loggedIn.restaurantManager.reports', {
+			url : '/reports',
+			templateUrl : 'managerRestaurant/restaurantManagerReports.html'
+		})
+        .state('loggedIn.restaurantManager.changeShift', {
 			url : '/changeShift',
 			templateUrl : 'managerRestaurant/restaurantManagerChangeShift.html'
 		})

@@ -32,10 +32,23 @@ app.controller('restaurantManagerController', ['$scope','$window','restaurantMan
 					$scope.cooks = response.data.cooks;
 					$scope.bartenders = response.data.bartenders;
 					$scope.bidders = response.data.bidders;
+
+					$scope.averageRate = calculateAverageRate(response.data.rateRestaurant);
 					myMap();
 					
 				}
 	        );
+		}
+		
+		function calculateAverageRate (rates) {
+			var rate = 0;
+			if(rates.length > 0)
+				for (var i =0;i<rates.length;i++) {
+					rate += rates[i].rate;
+				}
+			else
+				return "/";
+			return rate/rates.length;
 		}
 		
 		function showFreeBidders() {
@@ -383,5 +396,51 @@ app.controller('restaurantManagerController', ['$scope','$window','restaurantMan
 				function(response){
 					alert("Successfully added.");
                    });
+		}
+		
+		$scope.getWaiterWithInputName = function(){
+			restaurantManagerService.getWaiterWithInputName($scope.waiterName).then(
+				function(response){
+					if(response.data != "") {
+						alert("Successfully find waiter.");
+						$scope.waiterRate = response.data.rate;
+					} else
+						alert("Waiter doesn't exist.");
+		   });
+		}
+		
+		$scope.geDishWithInputName = function(){
+			restaurantManagerService.geDishWithInputName($scope.dishName).then(
+					function(response){
+						if(response.data != "-1.0") {
+							alert("Successfully find dish.");
+							$scope.dishRate = response.data;
+						} else
+							alert("Dish doesn't exist.");
+			   });
+		}
+		
+		$scope.calculateRevenues = function(){
+			$scope.restaurantRevenues = 0;
+			for(var i=0;i<$scope.restaurant.waiters.length;i++) {
+				for(var j=0;j<$scope.restaurant.waiters[i].bills.length;j++) {
+					if(new Date($scope.fromDateRevenues).getTime() < new Date($scope.restaurant.waiters[i].bills[j].date).getTime() < new Date($scope.toDateRevenues).getTime())
+						$scope.restaurantRevenues += $scope.restaurant.waiters[i].bills[j].total;
+				}
+			}
+		}
+		
+		$scope.showRevenuesForWaiters = function(){
+			$scope.revenuesWaiter = [];
+			for(var i=0;i<$scope.restaurant.waiters.length;i++) {
+				revenues = 0;
+				for(var j=0;j<$scope.restaurant.waiters[i].bills.length;j++) {
+					revenues += $scope.restaurant.waiters[i].bills[j].total;
+				}
+				var waiter = {name:"", revenues:"0"};
+				waiter['name'] = $scope.restaurant.waiters[i].firstname;
+				waiter['revenues'] = revenues;
+				$scope.revenuesWaiter.push(waiter);
+			}
 		}
 }]);
