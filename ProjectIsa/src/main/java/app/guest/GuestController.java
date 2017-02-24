@@ -268,16 +268,6 @@ public class GuestController {
 		reservation.getGuests().add(guest);
 		table.getReservations().add(reservation);
 		
-		//--------------------------------
-		/*List<Segment> segments = segmentService.findAll();
-		Segment segment = new Segment();
-		for(int i = 0 ; i < segments.size(); i++){
-			if(table.getSegmentName().equals(segments.get(i).getName())){
-				segment = segments.get(i);
-				break;
-			}
-		}*/
-		
 		List<Restaurant> restaurants = restaurantService.findAll();
 		Restaurant restaurant = new Restaurant();
 		label :
@@ -451,12 +441,8 @@ public class GuestController {
 		for(int i = 0 ; i < food.size(); i++){
 			Dish dish = dishService.findOne(food.get(i).getId());
 			dish.getNumRate().add(rate);
-			double sum = 0;
-			double average = 0;
-			for(int j = 0 ; j < dish.getNumRate().size(); j++){
-				sum += dish.getNumRate().get(j);
-			}
-			average = sum/dish.getNumRate().size();
+			
+			double average = dish.getRate();
 			average = Math.round(average*100.0)/100.0;
 			dish.setRate(average);
 			dishService.save(dish);
@@ -496,13 +482,8 @@ public class GuestController {
 		}
 		
 		waiter.getNumRate().add(rate);
-		double sum = 0;
-		double average = 0;
-		for(int j = 0 ; j < waiter.getNumRate().size(); j++){
-			sum += waiter.getNumRate().get(j);
-		}
-		average = sum/waiter.getNumRate().size();
-		
+		double average = waiter.getRate();
+		average = Math.round(average*100.0)/100.0;
 		waiter.setRate(average);
 		waiterService.save(waiter);
 		

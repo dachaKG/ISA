@@ -54,6 +54,17 @@ public class Waiter extends Employed {
 	@ElementCollection
 	private List<Integer> numRate;
 	
-	
+	public double getRate(){
+		double sum = 0;
+		double average = 0;
+		
+		if(this.numRate.size() > 0){
+			for(int i = 0 ; i < this.numRate.size(); i++){
+				sum += numRate.get(i);
+			}
+			average = sum/this.numRate.size();
+		}
+		return average;
+	}
 	
 }
