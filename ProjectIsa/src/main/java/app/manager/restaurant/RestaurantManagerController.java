@@ -388,4 +388,26 @@ public class RestaurantManagerController {
 			throw new BadRequestException();
 	}
 
+	
+	@GetMapping(path = "/restaurant/getWaiterWithInputName/{waiterName}")
+	@ResponseStatus(HttpStatus.OK)
+	public Waiter getWaiterWithInputName(@PathVariable String waiterName) {
+		Restaurant rest = findRestaurantForRestaurantManager();
+		for(int i=0;i<rest.getWaiters().size();i++) {
+			if(rest.getWaiters().get(i).getFirstname().equals(waiterName))
+				return rest.getWaiters().get(i);
+		}
+		return null;
+	}
+	
+	@GetMapping(path = "/restaurant/geDishWithInputName/{dishName}")
+	@ResponseStatus(HttpStatus.OK)
+	public double geDishWithInputName(@PathVariable String dishName) {
+		Restaurant rest = findRestaurantForRestaurantManager();
+		for(int i=0;i<rest.getFood().size();i++) {
+			if(rest.getFood().get(i).getName().equals(dishName))
+				return rest.getFood().get(i).getRate();
+		}
+		return -1;
+	}
 }
