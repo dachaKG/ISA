@@ -51,6 +51,11 @@ public class Dish {
 	@ElementCollection
 	private List<Integer> numRate;
 	
+	/*public List<Integer> getNumRate(){
+		
+		
+	}*/
+	
 	public double getRate(){
 		double sum = 0;
 		double average = 0;

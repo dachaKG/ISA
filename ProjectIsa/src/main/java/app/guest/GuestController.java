@@ -413,6 +413,9 @@ public class GuestController {
 		r.setGuest(guest);
 		r.setRate(rate);
 		for(int i = 0 ; i < restaurant.getRateRestaurant().size(); i++){
+			if(restaurant.getRateRestaurant().get(i).getGuest() == null){
+				continue;
+			}
 			if(restaurant.getRateRestaurant().get(i).getGuest().getId() == guestId){
 				return null;
 			}
@@ -442,6 +445,7 @@ public class GuestController {
 			}
 		}
 		
+			
 		Set<Dish> setFood = new HashSet<Dish>(order.getFood());
 		ArrayList<Dish> food = new ArrayList<Dish>(setFood);
 		for(int i = 0 ; i < food.size(); i++){
@@ -453,7 +457,7 @@ public class GuestController {
 				sum += dish.getNumRate().get(j);
 			}
 			average = sum/dish.getNumRate().size();
-			
+			average = Math.round(average*100.0)/100.0;
 			dish.setRate(average);
 			dishService.save(dish);
 		}
@@ -509,6 +513,7 @@ public class GuestController {
 		
 		return order;
 	}
+	
 	
 	
 	
