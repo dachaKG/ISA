@@ -26,10 +26,10 @@
 	
 	<form name = "revenuesForm">
 	    <label>From date</label>
-	    <input type="date" class="form-control" ng-model = "$parent.fromDateRevenues" required max="2020-12-31">  
+	    <input type="date" class="form-control" ng-model = "$parent.fromDateRevenues" required>  
 	
 	    <label>To date</label>
-	    <input type="date" class="form-control" ng-model = "$parent.toDateRevenues" required max="2020-12-31">  
+	    <input type="date" class="form-control" ng-model = "$parent.toDateRevenues" required>  
 		<button class="btn btn-default" ng-click="revenuesForm.$valid && calculateRevenues()"><span class="glyphicon glyphicon-ok" ></span>Get revenues</button>
 		<br><br>
 		<label class="form-control"> Revenues: {{$parent.restaurantRevenues}}</label>
@@ -53,6 +53,17 @@
 	</table>
 	
 	
+	</form>
+	
+	<form name = "week" >
+		<canvas id="myChartWeek" style = "background: white"></canvas>
+		<input type="date" class="form-control" ng-model = "$parent.chartForWeek" required>  
+		<button class="btn btn-default" ng-click="week.$valid && showNumOfVisitorsForWeek()"><span class="glyphicon glyphicon-ok" ></span>Show num of visitors</button>
+	</form>
+	<form  name = "day">
+		<canvas style = "background: white" id="myChartDay"></canvas>
+		<input type="date" class="form-control" ng-model = "$parent.chartForDay" required>  
+		<button class="btn btn-default" ng-click="day.$valid &&showNumOfVisitorsForDay()"><span class="glyphicon glyphicon-ok" ></span>Show num of visitors</button>
 	</form>
 		
 </div>

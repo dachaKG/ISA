@@ -443,4 +443,119 @@ app.controller('restaurantManagerController', ['$scope','$window','restaurantMan
 				$scope.revenuesWaiter.push(waiter);
 			}
 		}
+		
+		$scope.showNumOfVisitorsForWeek = function() {
+			dataVisitors = getDataForWeek();
+			var ctx = document.getElementById('myChartWeek').getContext('2d');
+			var myChart = new Chart(ctx, {
+			  type: 'bar',
+			  data: {
+			    labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
+			    datasets: [{
+			      label: 'Visitors',
+			      data: dataVisitors,
+			      backgroundColor: "rgba(153,255,51,1.0)"
+			    }]
+			  }
+			});			
+		}
+		
+		$scope.showNumOfVisitorsForDay = function() {
+			dataVisitors = getDataForDay();
+			var ctx = document.getElementById('myChartDay').getContext('2d');
+			var myChart = new Chart(ctx, {
+			  type: 'bar',
+			  data: {
+			    labels: ['9', '11', '13', '15', '17', '19', '21'],
+			    datasets: [{
+			      label: 'Visitors',
+			      data: dataVisitors,
+			      backgroundColor: "rgba(153,255,51,1.0)"
+			    }]
+			  }
+			});			
+		}
+		
+		function getDataForDay() {
+			//uzimanje svih racuna iz restorana
+			bills = [];
+			visitors = [0,0,0,0,0,0,0];
+			for(var i =0;i<$scope.restaurant.waiters.length;i++) {
+				for(var j =0;j<$scope.restaurant.waiters[i].bills.length;j++) {
+					bills.push($scope.restaurant.waiters[i].bills[j]);
+				}
+			}
+			var requestedDate = new Date($scope.chartForDay);
+			reservationsThatDay = [];
+			for(var j =0;j<bills.length;j++) {
+				var day = new Date(bills[j].date);
+				if(requestedDate.getFullYear() == day.getFullYear() && requestedDate.getMonth() == day.getMonth() && requestedDate.getDate() == day.getDate())
+					reservationsThatDay.push(bills[j]);
+			}
+			
+			for(var j =0;j<reservationsThatDay.length;j++) {
+				var hours = reservationsThatDay[j].reservation.hours;
+				var termin = findClosestTermin(hours);
+				visitors[termin] += reservationsThatDay[j].reservation.guests.length;	
+			}
+			return visitors;		
+		}
+		
+		function getDataForWeek() {
+			//uzimanje svih racuna iz restorana
+			bills = [];
+			visitors = [0,0,0,0,0,0,0];
+			for(var i =0;i<$scope.restaurant.waiters.length;i++) {
+				for(var j =0;j<$scope.restaurant.waiters[i].bills.length;j++) {
+					bills.push($scope.restaurant.waiters[i].bills[j]);
+				}
+			}
+			var requestedDate = new Date($scope.chartForWeek);
+			var requestedWeekForDate = getWeekNumber(requestedDate);
+			reservationsThatWeek = [];
+			for(var j =0;j<bills.length;j++) {
+				var day = new Date(bills[j].date);
+				var weekForDate = getWeekNumber(day);
+				if(weekForDate[0] == requestedWeekForDate[0] && weekForDate[1] == requestedWeekForDate[1])
+					reservationsThatWeek.push(bills[j]);
+			}
+			
+			for(var j =0;j<reservationsThatWeek.length;j++) {
+				var day = new Date(reservationsThatWeek[j].date).getDay();
+				visitors[day-1] += reservationsThatWeek[j].reservation.guests.length;	
+			}
+			return visitors;		
+		}
+		
+		function findClosestTermin(houerInDay) {
+			if(houerInDay <= 10)
+				return 0;
+			else if(houerInDay <= 12)
+				return 1;
+			else if(houerInDay <= 14)
+				return 2;
+			else if(houerInDay <= 16)
+				return 3;
+			else if(houerInDay <= 18)
+				return 4;
+			else if(houerInDay <= 20)
+				return 5;
+			else if(houerInDay <= 22)
+				return 6;			
+		}	
+		
+		function getWeekNumber(d) {
+		    // Copy date so don't modify original
+		    d = new Date(+d);
+		    d.setHours(0,0,0,0);
+		    // Set to nearest Thursday: current date + 4 - current day number
+		    // Make Sunday's day number 7
+		    d.setDate(d.getDate() + 4 - (d.getDay()||7));
+		    // Get first day of year
+		    var yearStart = new Date(d.getFullYear(),0,1);
+		    // Calculate full weeks to nearest Thursday
+		    var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
+		    // Return array of year and week number
+		    return [d.getFullYear(), weekNo];
+		}
 }]);
