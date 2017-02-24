@@ -109,8 +109,8 @@ public class CookController {
 		List<Orderr> allOrders = orderService.findAll();
 		List<Orderr> tempOrders = new ArrayList<Orderr>();
 		for (int i = 0; i < allOrders.size(); i++) {
-			if (allOrders.get(i).getFood().size() != 0
-					&& allOrders.get(i).getFoodStatus().compareTo(FoodStatus.inPrepared) == 0) {
+			if (allOrders.get(i).getFood().size() != 0 && allOrders.get(i).getFoodStatus() != null
+					&& allOrders.get(i).getFoodStatus().compareTo(FoodStatus.inPrepared) == 0 ) {
 				tempOrders.add(allOrders.get(i));
 			}
 		}

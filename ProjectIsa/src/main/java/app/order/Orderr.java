@@ -17,9 +17,12 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import app.dish.Dish;
 import app.drink.Drink;
 import app.employed.cook.CookOrder;
+import app.reservation.Reservation;
 import app.restaurant.Table;
 import lombok.Data;
 
@@ -87,7 +90,6 @@ public class Orderr {
 	*/
 	
 	@OneToMany(cascade={CascadeType.ALL}, mappedBy = "order")
-	//@JoinColumn(name="ORDER_ORDER_ID", referencedColumnName="ORDER_ID")
 	private List<CookOrder> cooks;
 	
 	@ManyToOne

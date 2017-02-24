@@ -107,10 +107,11 @@ public class BartenderController {
 		List<Orderr> orders = new ArrayList<Orderr>();
 
 		for (int i = 0; i < allOrders.size(); i++) {
-			if (allOrders.get(i).getDrinks().size() > 0 && allOrders.get(i).getDrinkStatus().compareTo(DrinkStatus.inPrepared) == 0) {
-				//for (int j = 0; j < orders.get(i).getDrinks().size(); j++) {
+			if (allOrders.get(i).getDrinks().size() > 0 && allOrders.get(i).getDrinkStatus() != null
+					&& allOrders.get(i).getDrinkStatus().compareTo(DrinkStatus.inPrepared) == 0) {
+				
 				orders.add(allOrders.get(i));
-				//}
+				
 			}
 		}
 		bartender.getOrders().addAll(orders);
