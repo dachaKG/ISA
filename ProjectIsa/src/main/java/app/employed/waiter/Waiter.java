@@ -10,11 +10,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import app.bill.Bill;
 import app.employed.Employed;
 import app.order.Orderr;
+import app.restaurant.Restaurant;
 import app.restaurant.Table;
 import lombok.Data;
 
@@ -38,6 +42,11 @@ public class Waiter extends Employed {
 	@OneToMany
 	@JoinTable(name = "WAITER_BILLS", joinColumns = @JoinColumn(name = "WAITER_ID"), inverseJoinColumns = @JoinColumn(name = "BILL_ID"))
 	private List<Bill> bills;
+	
+	@ManyToOne
+	@JsonIgnore
+	private Restaurant restaurant;
+	
 	
 	@Column
 	private double rate;

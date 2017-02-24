@@ -1,7 +1,5 @@
 package app.guest;
 
-import static org.mockito.Matchers.intThat;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -353,8 +351,6 @@ public class GuestController {
 	
 	@GetMapping(path = "/restaurantOrders/{id}")
 	public List<Orderr> getRestaurantOrders(@PathVariable Long id){
-		/*Long id = ((Guest) httpSession.getAttribute("user")).getId();
-		Guest guest = guestService.findOne(id);*/
 		
 		List<Reservation> reservations = getReservationsRestaurant();
 		
