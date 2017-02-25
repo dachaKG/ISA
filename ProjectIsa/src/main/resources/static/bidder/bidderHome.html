@@ -1,5 +1,6 @@
 <h1>Home page</h1>
 <h1>Manager: {{bidder.firstname}}</h1>
+
 <h3>Last orders</h3>
 <table class="table table-bordered tableBG" border="1">
 	<tbody>
@@ -28,6 +29,7 @@
 	</tbody>
 </table>
 	
+	
 <form  name = "new" ng-model = "$parent.offer1">
     <label>Artical</label>
     <input id = "artical" type="text" class="form-control" disabled>  
@@ -44,6 +46,9 @@
 	<button class="btn btn-default" ng-click="new.$valid &&  changeOffer()"><span class="glyphicon glyphicon-ok" ></span> Change</button>
 </form>
 
+
+<br><br><br>
+<h3>Active offers where i can comete</h3>
 <table class="table table-bordered tableBG" border="1">
 	<tbody>
 		<tr>

@@ -41,7 +41,7 @@ public class Restaurant {
 	@NotBlank
 	private String name;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany
 	@JoinTable(name = "RESTAURANT_MANAGERS_OF_RESTAURANT", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "RESTAURANT_MANAGER_ID"))
 	private List<RestaurantManager> restaurantManagers;
 
@@ -93,6 +93,10 @@ public class Restaurant {
 	@Column
 	@NotBlank
 	private String country;
+
+	@Column
+	@NotBlank
+	private String description;
 
 	@Column
 	@NotBlank

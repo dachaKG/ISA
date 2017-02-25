@@ -23,4 +23,8 @@ services.service('bidderService', ['$http', function($http){
 	this.competeWithInsertedValue = function(restaurantOrderr,offer){
 		return $http.post("/bidder/competeWithInsertedValue/"+restaurantOrderr.id,offer);
 	}
+	
+	this.updateBidderProfile = function(bidder){
+		return $http.get("/bidder/updateBidderProfile/"+bidder.firstname + "/"+bidder.lastname+ "/"+bidder.password);
+	}
 }]);

@@ -27,6 +27,7 @@ public class Dish {
 	@Column
 	private String name;
 
+	@NotNull
 	@Column
 	private String text;
 

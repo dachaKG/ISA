@@ -88,7 +88,8 @@ app.controller('restaurantManagerController', ['$scope','$window','restaurantMan
 		}
 		
 		$scope.demissionBartender = function(bartender) {
-			restaurantManagerService.deleteBartender(bartender).then(
+			if(bartender.orders.length < 0) {
+				restaurantManagerService.deleteBartender(bartender).then(
 				function (response) {
                     alert("Successfully removed.");
                     $scope.state = undefined;
@@ -98,11 +99,15 @@ app.controller('restaurantManagerController', ['$scope','$window','restaurantMan
                 function (response) {
                     alert("Error in deleting.");
                 }
-			);
+				);
+			}
+			else
+		        alert("Forrbidden becouse he have orders.");
 		}
 		
 		$scope.demissionWaiter = function(waiter) {
-			restaurantManagerService.deleteWaiter(waiter).then(
+			if(waiter.orders.length < 0) {
+				restaurantManagerService.deleteWaiter(waiter).then(
 				function (response) {
                     alert("Successfully removed.");
                     $scope.state = undefined;
@@ -112,25 +117,33 @@ app.controller('restaurantManagerController', ['$scope','$window','restaurantMan
                 function (response) {
                     alert("Error in deleting.");
                 }
-			);
+				);
+			}
+			else
+		        alert("Forrbidden becouse he have orders.");
 		}
 		
 		$scope.demissionCook = function(cook) {
-			restaurantManagerService.deleteCook(cook).then(
-				function (response) {
-                    alert("Successfully removed.");
-                    $scope.state = undefined;
-                    findAll();
-                    $location.path('loggedIn/restaurantManager/info');
-                },
-                function (response) {
-                    alert("Error in deleting.");
-                }
-			);
+			if(cook.orders.length < 0) {
+				restaurantManagerService.deleteCook(cook).then(
+					function (response) {
+	                    alert("Successfully removed.");
+	                    $scope.state = undefined;
+	                    findAll();
+	                    $location.path('loggedIn/restaurantManager/info');
+	                },
+	                function (response) {
+	                    alert("Error in deleting.");
+	                }
+				);
+			}
+			else
+		        alert("Forrbidden becouse he have orders.");
+            
 		}
 		
 		$scope.update = function() {
-			restaurantManagerService.updateMangerProfile($scope.restaurant.restaurantManager).then(
+			restaurantManagerService.updateMangerProfile($scope.restaurantManager).then(
 				function (response) {
                     alert("Successfully change.");
                     $scope.state = undefined;
@@ -177,6 +190,7 @@ app.controller('restaurantManagerController', ['$scope','$window','restaurantMan
 		$scope.saveEmployed = function() {
 			//$scope.drink.restaurant = $scope.restaurant;
 			if($scope.employedType == 'Waiter') {
+				$scope.employed.tablesForHandling = tablesForNewWaiter;
 				restaurantManagerService.saveWaiter($scope.employed).then(
 					function (response) {
 	                    alert("Successfully added.");
@@ -190,7 +204,9 @@ app.controller('restaurantManagerController', ['$scope','$window','restaurantMan
 				);
 			}
 			else if($scope.employedType == 'Cook') {
-				restaurantManagerService.saveCook($scope.employed).then(
+				cookType = document.getElementById("cookType").value;
+
+				restaurantManagerService.saveCook($scope.employed,cookType).then(
 					function (response) {
 						alert("Successfully added.");
 		                $scope.state = undefined;
@@ -312,7 +328,11 @@ app.controller('restaurantManagerController', ['$scope','$window','restaurantMan
 			dish = $scope.newRestaurantOrder.dish
 			$scope.newRestaurantOrder.startDate = new Date($scope.newRestaurantOrder.startDate).toISOString();
 			$scope.newRestaurantOrder.endDate = new Date($scope.newRestaurantOrder.endDate).toISOString();
-		
+			if (dish.id === "")
+				$scope.newRestaurantOrder.dish = null;
+			if (drink.id === "")
+				$scope.newRestaurantOrder.drink = null;
+				
 			if(((dish === undefined || dish.id === "") && drink.id !== "") || (dish.id !== "" && (drink == null || drink.id === ""))) {
 				restaurantManagerService.createNewOffer($scope.newRestaurantOrder).then(
 					function (response) {
@@ -336,6 +356,8 @@ app.controller('restaurantManagerController', ['$scope','$window','restaurantMan
 			    mapTypeId: google.maps.MapTypeId.ROADMAP
 			};
 			pos = [];
+
+			map=new google.maps.Map(document.getElementById("googleMap2"),mapProp);
 			if (navigator.geolocation) {
 			    navigator.geolocation.getCurrentPosition(function(position) {
 			    	pos = {
@@ -353,7 +375,6 @@ app.controller('restaurantManagerController', ['$scope','$window','restaurantMan
 			    });
 			}
 			
-			map=new google.maps.Map(document.getElementById("googleMap1"),mapProp);
 			geocoder = new google.maps.Geocoder();
 			address = $scope.restaurant.street + " " + $scope.restaurant.number + " , " + $scope.restaurant.city + " , " + $scope.restaurant.country; 
 			geocoder.geocode( { 'address': address}, function(results, status) {
@@ -558,4 +579,76 @@ app.controller('restaurantManagerController', ['$scope','$window','restaurantMan
 		    // Return array of year and week number
 		    return [d.getFullYear(), weekNo];
 		}
+		
+		$scope.updateRestaurant = function(){
+			restaurantManagerService.updateRestaurant($scope.restaurant).then(
+				function(response){
+					alert("Successfully changed.");
+                 });
+		}
+		
+		$scope.changeDish = function(dish){
+			x = document.getElementById("artical");
+			x.setAttribute("value", dish.name);
+			y = document.getElementById("count");
+			y.setAttribute("value", dish.count);
+			$scope.dishForChange = dish;
+		}
+		
+		$scope.changeDrink = function(drink){
+			x = document.getElementById("articalDrink");
+			x.setAttribute("value", drink.name);
+			y = document.getElementById("countDrink");
+			y.setAttribute("value", drink.count);
+			$scope.drinkForChange = drink;
+		}
+		
+		$scope.tryToChangeDish = function(){
+			dishName = document.getElementById("artical").value;
+			dishCount = document.getElementById("count").value;
+			restaurantManagerService.tryToChangeDish($scope.dishForChange,dishName,dishCount).then(
+				function(response){
+					$window.location.reload();
+					alert("Successfully changed.");
+	            });
+		}
+		
+		$scope.tryToChangeDrink = function(){
+			drinkName = document.getElementById("articalDrink").value;
+			drinkCount = document.getElementById("countDrink").value;
+			restaurantManagerService.tryToChangeDrink($scope.drinkForChange,drinkName,drinkCount).then(
+				function(response){
+					alert("Successfully changed.");
+					$window.location.reload();
+	            });
+		}
+		
+		tablesForNewWaiter = [];
+		$scope.loadTables = function(){
+			restaurantManagerService.getTables().then(
+					function(response){
+						var stolovi = [];
+						var red = [];
+						var lastXPos = 0;
+						var counter = 0;
+						angular.forEach(response.data, function(value, key){	// punjenje matrice stolova
+							counter++;
+							if(value.xpos == lastXPos){	
+								red.push(value);
+							}
+							if((value.xpos != lastXPos) || counter==response.data.length ) {
+								stolovi.push(red);
+								red =[];
+								red.push(value);
+							}
+							lastXPos = value.xpos;
+						});
+						$scope.tables = stolovi;
+					});
+		}
+		
+		$scope.addTableInListFowWaiter = function(id){
+			tablesForNewWaiter.push(id);
+		}
+		
 }]);

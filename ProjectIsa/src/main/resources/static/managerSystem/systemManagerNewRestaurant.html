@@ -3,6 +3,9 @@
     <label>Name</label>
     <input type="text" class="form-control" ng-model = "$parent.restaurant.name" required>  
 
+    <label>Descritpion</label>
+    <input type="text" class="form-control" ng-model = "$parent.restaurant.description" required>  
+
     <label>Country</label>
     <input type="text" class="form-control" ng-model = "$parent.restaurant.country" required>  
 
@@ -15,13 +18,27 @@
     <label>Number</label>
     <input type="text" class="form-control" ng-model = "$parent.restaurant.number" required>  
 
-    <label>Manager</label>
-    <select ng-model="$parent.restaurant.restaurantManager.id" class="form-control" required>
-   		<option value="" disabled="" selected="">Select manager</option>
-     	<option ng-repeat="manager in freeRestaurantManagers" value="{{ manager.id }}">{{manager.firstname}}</option>
-	</select>
-<button class="btn btn-default" ng-click="new.$valid &&  saveRestaurant()"><span class="glyphicon glyphicon-ok" ></span> Create</button>
-<button class="btn btn-default" ng-click="cancel()"><span class="glyphicon glyphicon-remove" ></span> Cancel</button>
+
+<br><br>
+<label>Managers</label>
+    <table  class="table table-bordered tableBG" border="1">
+		<tr>
+	    	<th>Manager Name </th>
+	    	<th> Action </th>
+    	</tr>
+    	<tr ng-repeat="manager in freeRestaurantManagers">
+			<td> 
+				{{manager.firstname}}
+			</td>
+			<td>
+				<button class="btn btn-default" ng-click="addManagerInRestaurant(manager)"><span class="glyphicon glyphicon-add" ></span>Add</button>
+			</td>
+    	</tr>	
+    </table>
+	<button class="btn btn-default" ng-click="new.$valid &&  saveRestaurant()"><span class="glyphicon glyphicon-ok" ></span> Create</button>
+	<button class="btn btn-default" ng-click="cancel()"><span class="glyphicon glyphicon-remove" ></span> Cancel</button>
+
 </form>
+
 
 </div>
