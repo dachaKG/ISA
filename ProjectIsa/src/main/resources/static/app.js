@@ -165,10 +165,6 @@ angular.module('routerApp', ['ui.router',
         	url : '/orders',
         	templateUrl : 'employedBartender/employedBartenderOrders.html'
         })
-        .state('loggedIn.bartender.readyDrinks', {
-        	url : '/readyDrinks',
-        	templateUrl : 'employedBartender/employedBartenderReadyDrinks.html'
-        })
         .state('loggedIn.bartender.profile', {
         	url : '/profile',
         	templateUrl : 'employedBartender/employedBartenderProfile.html'
@@ -193,10 +189,7 @@ angular.module('routerApp', ['ui.router',
         	url : '/receivedFood',
         	templateUrl : 'employedCook/employedCookReceivedFood.html'
         })
-        .state('loggedIn.cook.readyFood', {
-        	url : '/readyFood',
-        	templateUrl : 'employedCook/employedCookReadyFood.html'
-        })
+        
          .state('loggedIn.cook.shift', {
         	url : '/shift',
         	templateUrl : 'employedCook/employedCookShift.html'
@@ -231,6 +224,14 @@ angular.module('routerApp', ['ui.router',
         .state('loggedIn.waiter.shifts', {
         	url : '/shifts',
         	templateUrl : 'employedWaiter/employedWaiterShifts.html'
+        })
+        .state('loggedIn.waiter.newOrder', {
+        	url : '/newOrder',
+        	templateUrl : 'employedWaiter/employedWaiterNewOrder.html'
+        })
+        .state('loggedIn.waiter.profile', {
+        	url : '/profile',
+        	templateUrl : 'employedWaiter/employedWaiterProfile.html'
         })
         
         .state('loggedIn.guest', {

@@ -39,19 +39,7 @@ app.controller('employedWaiterController', [ '$scope', 'employedWaiterService','
 					$scope.restaurant = response.data;
 				}
 			)
-			
-			employedWaiterService.readyDrinks().then(
-				function(response){
-					$scope.readyDrinks = response.data;
-				}
-			);
-			
-			employedWaiterService.readyFood().then(
-				function(response){
-					$scope.readyFood = response.data;
-				}
-			);
-			
+						
 			employedWaiterService.readyOrders().then(
 				function(response){
 					$scope.readyOrders = response.data;
@@ -67,6 +55,12 @@ app.controller('employedWaiterController', [ '$scope', 'employedWaiterService','
 			employedWaiterService.newOrder().then(
 				function(response){
 					$scope.newOrder = response.data;
+				}
+			)
+			
+			employedWaiterService.tables().then(
+				function(response){
+					$scope.waiterTables = response.data;
 				}
 			)
 			
@@ -199,6 +193,34 @@ app.controller('employedWaiterController', [ '$scope', 'employedWaiterService','
 		$scope.newOrderDrink = function(drink){
 			employedWaiterService.newOrderDrink(drink.id, $scope.reservation, $scope.newOrder).then(
 				function(response){
+					
+					$scope.newOrder = response.data;
+					$scope.state = undefined;
+					//findAll();
+				},
+				function(response){
+					alert("Error in changing");
+				}
+			);
+		}
+		
+		$scope.removeNewDish = function(dish){
+			employedWaiterService.removeNewDish(dish.id, $scope.newOrder).then(
+				function(response){
+					$scope.newOrder = response.data;
+					$scope.state = undefined;
+					//findAll();
+				},
+				function(response){
+					alert("Error in changing");
+				}
+			);
+		}
+		
+
+		$scope.removeNewDrink = function(drink){
+			employedWaiterService.removeNewDrink(drink.id, $scope.newOrder).then(
+				function(response){
 					$scope.newOrder = response.data;
 					$scope.state = undefined;
 					//findAll();
@@ -212,10 +234,91 @@ app.controller('employedWaiterController', [ '$scope', 'employedWaiterService','
 		$scope.makeNewOrder = function(){
 			employedWaiterService.makeNewOrder($scope.reservation, $scope.newOrder).then(
 				function(response){
-					$location.path('loggedIn/waiter/home');
+					$location.path('loggedIn/waiter/orders');
 					findAll();
 					
 				}
 			)
 		}
+		
+		$scope.changeProfile = function(){
+			employedWaiterService.changeProfile($scope.waiter.id,$scope.waiter).then(
+				function(response){
+					alert("successfully changed profile");
+					$scope.state = undefined;
+					findAll();
+					$location.path('loggedIn/waiter/home');
+				},
+				function(response){
+					alert("Error in changing");
+				}
+			);
+		}
+		
+		$scope.changePassword = function(){
+			employedWaiterService.changePassword($scope.waiter.id,$scope.waiter).then(
+				function(response){
+					alert("successfully changed password");
+					$scope.state = undefined;
+					findAll();
+					$location.path('loggedIn/waiter/home');
+				},
+				function(response){
+					alert("Error in changing");
+				}
+			);
+		}
+		
+		
+		$scope.loadTables = function(){
+			employedWaiterService.restaurant().then(
+					function(response){
+						$scope.restaurant = response.data;
+						
+						employedWaiterService.allTables($scope.restaurant.id).then(
+								function(response){
+									
+									employedWaiterService.tables().then(
+											function(response2){
+												$scope.waiterTables = response2.data;
+											
+											
+												var stolovi = [];
+												var red = [];
+												var lastXPos = 0;
+												var counter = 0;
+												angular.forEach(response.data, function(value, key){	// punjenje matrice stolova
+													angular.forEach(response2.data, function(value2, key2){
+														if(value.id == value2.id){
+															value.status = "Reserved";
+														}
+													});
+													
+													
+													counter++;
+																
+													if(value.xpos == lastXPos){	
+														red.push(value);
+													}
+													if((value.xpos != lastXPos) || counter==response.data.length ) {
+														stolovi.push(red);
+														red =[];
+														red.push(value);
+													}
+													lastXPos = value.xpos;
+												});
+												$scope.tables = stolovi;
+											
+											
+											}
+										);
+							
+			});
+			
+			
+			
+		});
+		}
+		
+		
 }]);

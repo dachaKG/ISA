@@ -24,6 +24,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			guestService.restaurants().then(
 				function(response){
 					$scope.restaurants = response.data;
+					$scope.orderByField = 'restaurants.name';
 					
 				}
 			);
@@ -308,8 +309,8 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 							
 							angular.forEach(value.reservations, function(res,key){// for za proveru rezervisanog stola
 								if(res.date===$scope.reservation.date){
-									if(((res.hours + res.minuts/60+res.duration) >= ($scope.reservation.hours+$scope.reservation.minuts/60)) &&
-										(($scope.reservation.hours+$scope.reservation.minuts/60+$scope.reservation.duration)>=(res.hours + res.minuts/60) )	){
+									if(((res.hours + res.minutes/60+res.duration) >= ($scope.reservation.hours+$scope.reservation.minutes/60)) &&
+										(($scope.reservation.hours+$scope.reservation.minutes/60+$scope.reservation.duration)>=(res.hours + res.minutes/60) )	){
 									value.status = "Reserved";
 									}
 								}

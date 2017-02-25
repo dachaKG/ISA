@@ -35,4 +35,9 @@ services.service('employedCookService',['$http', function($http){
 	this.changeProfile = function(id, cook){
 		return $http.put("/cook/profile/"+id,cook);
 	}
+	
+	this.changePassword = function(id, cook){
+		return $http.put("/cook/changePassword/"+id,cook);
+	}
+	
 }]);
