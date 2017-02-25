@@ -1,16 +1,19 @@
 <div id = "restaurantDiv">
+<span class="label">Ordered By: {{orderByField}}</span><br><br>
 <table  class="table table-bordered tableBG" border="1">
-		<tbody>
+		<thead>
 	        <tr>
 				<th>Id</th>
-				<th>Name</th>
-				<th>City</th>
-				<th>Street</th>
-				<th>Number</th>
+				<th><a href ng-click="orderByField='name'">Name</a></th>
+				<th><a href ng-click="orderByField='city'">City</a></th>
+				<th><a href ng-click="orderByField='street'">Street</a></th>
+				<th><a href ng-click="orderByField='number'">Number</a></th>
 				<th>Menu</th>
 				<th>Map</th>
             </tr>
-			<tr ng-repeat="restaurant in restaurants">
+         </thead>
+         <tbody>
+			<tr ng-repeat="restaurant in restaurants|orderBy:orderByField">
 				<td> 
 					{{restaurant.id}}
 				</td>
