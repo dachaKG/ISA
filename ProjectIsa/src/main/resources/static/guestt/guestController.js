@@ -24,6 +24,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			guestService.restaurants().then(
 				function(response){
 					$scope.restaurants = response.data;
+					$scope.orderByField = 'restaurants.name';
 					
 				}
 			);
