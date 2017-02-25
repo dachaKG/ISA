@@ -32,8 +32,6 @@ import app.dish.DishService;
 import app.drink.Drink;
 import app.drink.DrinkService;
 import app.employed.DefaultShift;
-import app.employed.bartender.BartenderService;
-import app.employed.cook.CookService;
 import app.manager.changedShiftWaiter.ChangedShiftWaiter;
 import app.manager.changedShiftWaiter.ChangedShiftWaiterService;
 import app.order.DrinkStatus;
@@ -55,8 +53,7 @@ public class WaiterController {
 
 	private final WaiterService waiterService;
 	private final OrderService orderService;
-	private final BartenderService bartenderService;
-	private final CookService cookService;
+
 	private final TableService tableService;
 	private final ReservationService reservationService;
 	private final BillService billService;
@@ -67,14 +64,12 @@ public class WaiterController {
 
 	@Autowired
 	public WaiterController(final HttpSession httpSession, final WaiterService service, final OrderService orderService,
-			final DrinkService drinkService, final BartenderService bartenderService, final CookService cookService,
-			final TableService tableService, final ReservationService reservationService, final BillService billService,
-			final ChangedShiftWaiterService changedShiftService, final RestaurantService restaurantService, final DishService dishService) {
+			final DrinkService drinkService,final TableService tableService, final ReservationService reservationService, 
+			final BillService billService, final ChangedShiftWaiterService changedShiftService, 
+			final RestaurantService restaurantService, final DishService dishService) {
 		this.httpSession = httpSession;
 		this.waiterService = service;
 		this.orderService = orderService;
-		this.bartenderService = bartenderService;
-		this.cookService = cookService;
 		this.tableService = tableService;
 		this.reservationService = reservationService;
 		this.billService = billService;
@@ -102,72 +97,7 @@ public class WaiterController {
 		return new ResponseEntity<Waiter>(waiter, HttpStatus.OK);
 	}
 
-	/*@GetMapping(path = "/readyFood")
-	public ResponseEntity<List<Dish>> readyFood() {
-		Long id = ((Waiter) httpSession.getAttribute("user")).getId();
-		Waiter waiter = waiterService.findOne(id);
-		List<Orderr> orders = waiter.getOrders();
 
-		Optional.ofNullable(orders).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
-
-		List<Dish> food = new ArrayList<Dish>();
-
-		for (int i = 0; i < orders.size(); i++) {
-			if (orders.get(i).getFood().size() != 0 && orders.get(i).getFoodStatus() != null
-					&& orders.get(i).getFoodStatus().compareTo(FoodStatus.finished) == 0) {
-				for (int j = 0; j < orders.get(i).getFood().size(); j++) {
-					food.add(orders.get(i).getFood().get(j));
-				}
-			}
-		}
-		return new ResponseEntity<>(food, HttpStatus.OK);
-
-	}*/
-
-	/*@GetMapping(path = "/readyDrinks")
-	public ResponseEntity<List<Drink>> readyDrinks() {
-		Long id = ((Waiter) httpSession.getAttribute("user")).getId();
-		Waiter waiter = waiterService.findOne(id);
-		List<Orderr> orders = waiter.getOrders();
-
-		Optional.ofNullable(orders).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
-
-		List<Drink> drinks = new ArrayList<Drink>();
-
-		for (int i = 0; i < orders.size(); i++) {
-			if (orders.get(i).getDrinks().size() != 0 && orders.get(i).getDrinkStatus() != null
-					&& orders.get(i).getDrinkStatus().compareTo(DrinkStatus.finished) == 0) {
-				for (int j = 0; j < orders.get(i).getDrinks().size(); j++) {
-					drinks.add(orders.get(i).getDrinks().get(j));
-				}
-			}
-		}
-
-		return new ResponseEntity<>(drinks, HttpStatus.OK);
-	}*/
-
-	@GetMapping(path = "/readyOrders")
-	public ResponseEntity<List<Orderr>> readyOrder() {
-		Long id = ((Waiter) httpSession.getAttribute("user")).getId();
-		Waiter waiter = waiterService.findOne(id);
-		List<Orderr> orders = waiter.getOrders();
-
-		Optional.ofNullable(orders).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
-
-		List<Orderr> finishedOrders = new ArrayList<Orderr>();
-		for (int i = 0; i < orders.size(); i++) {
-			if (orders.get(i).getDrinkStatus() != null
-					&& orders.get(i).getDrinkStatus().compareTo(DrinkStatus.finished) == 0
-					&& orders.get(i).getFoodStatus() != null
-					&& orders.get(i).getFoodStatus().compareTo(FoodStatus.finished) == 0) {
-
-				finishedOrders.add(orders.get(i));
-
-			}
-		}
-
-		return new ResponseEntity<>(finishedOrders, HttpStatus.OK);
-	}
 
 	@GetMapping(path = "/orders")
 	public ResponseEntity<List<Orderr>> orders() {
@@ -200,42 +130,6 @@ public class WaiterController {
 				reservations.add(reservationsTemp.get(i));
 			}
 		}
-
-		// rezervacije koje su u toku
-		/*SimpleDateFormat date24Format = new SimpleDateFormat("HH:mm");
-		String timeString = date24Format.format(date);
-		List<Reservation> returnReservation = new ArrayList<Reservation>();
-		
-		try {
-			date = date24Format.parse(timeString);
-			for (int i = 0; i < reservations.size(); i++) {
-				String time = "", timeEnd = "";
-				time += "" + reservations.get(i).getHours() + ":" + reservations.get(i).getMinutes();
-				timeEnd += "" + (reservations.get(i).getHours() + reservations.get(i).getDuration().intValue()) + ":"
-						+ reservations.get(i).getMinutes();
-				Date timeDate = new Date();
-				Date timeDateEnd = new Date();
-				Date shiftTime = new Date();
-				timeDate = date24Format.parse(time);
-				timeDateEnd = date24Format.parse(timeEnd);
-				shiftTime = date24Format.parse("16:00");
-				
-				if (date.after(timeDate) && date.before(timeDateEnd)) {
-					if(waiter.getDefaultShift().compareTo(DefaultShift.First) == 0){
-						if(date.before(shiftTime)){
-							returnReservation.add(reservations.get(i));
-						}
-					} else {
-						if(date.after(shiftTime)){
-							returnReservation.add(reservations.get(i));
-						}
-					}
-				}
-			}
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
 		
 		List<Reservation> returnReservation = getActiveReservations(reservations, waiter);
 
@@ -250,6 +144,30 @@ public class WaiterController {
 		}
 
 		return new ResponseEntity<>(returnOrders, HttpStatus.OK);
+	}
+	
+
+	@GetMapping(path = "/readyOrders")
+	public ResponseEntity<List<Orderr>> readyOrder() {
+		Long id = ((Waiter) httpSession.getAttribute("user")).getId();
+		Waiter waiter = waiterService.findOne(id);
+		List<Orderr> orders = waiter.getOrders();
+
+		Optional.ofNullable(orders).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
+
+		List<Orderr> finishedOrders = new ArrayList<Orderr>();
+		for (int i = 0; i < orders.size(); i++) {
+			if (orders.get(i).getDrinkStatus() != null
+					&& orders.get(i).getDrinkStatus().compareTo(DrinkStatus.finished) == 0
+					&& orders.get(i).getFoodStatus() != null
+					&& orders.get(i).getFoodStatus().compareTo(FoodStatus.finished) == 0) {
+
+				finishedOrders.add(orders.get(i));
+
+			}
+		}
+
+		return new ResponseEntity<>(finishedOrders, HttpStatus.OK);
 	}
 
 	@PutMapping(path = "/sendToEmployed/{id}")
@@ -295,7 +213,7 @@ public class WaiterController {
 		return waiter;
 	}
 
-	@PutMapping(path = "/{id}")
+	@PutMapping(path = "/profile/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public Waiter update(@PathVariable Long id, @Valid @RequestBody Waiter waiter) {
 		Optional.ofNullable(waiterService.findOne(id))
@@ -303,14 +221,14 @@ public class WaiterController {
 		waiter.setId(id);
 		return waiterService.save(waiter);
 	}
-
-	// sve narudzbine za odredjenog konobara
-	@GetMapping(path = "/{id}/order")
-	public ResponseEntity<List<Orderr>> findAllOrders(@PathVariable Long id) {
-		Optional.ofNullable(waiterService.findOne(id).getOrders())
+	
+	@PutMapping(path = "/changePassword/{id}")
+	@ResponseStatus(HttpStatus.OK)
+	public Waiter changePassword(@PathVariable Long id, @Valid @RequestBody Waiter waiter) {
+		Optional.ofNullable(waiterService.findOne(id))
 				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
-		return new ResponseEntity<>(waiterService.findOne(id).getOrders(), HttpStatus.OK);
-
+		waiter.setId(id);
+		return waiterService.save(waiter);
 	}
 
 	@PostMapping(path = "/makeBill")
@@ -321,7 +239,6 @@ public class WaiterController {
 		Waiter waiterTemp = waiterService.findOne(id);
 		Table table = tableService.findOne(order.getTable().getId());
 		Orderr saveOrder = orderService.findOne(order.getId());
-		// Table table = order.getTable();
 		List<Reservation> reservations = table.getReservations();
 		Reservation reservation = new Reservation();
 		for (int i = 0; i < reservations.size(); i++) {
@@ -452,7 +369,7 @@ public class WaiterController {
 	@PutMapping(path = "/newOrderDish/{id}/{reservationId}")
 	public Orderr newOrderDish(@PathVariable Long id, @PathVariable Long reservationId, @RequestBody Orderr order){
 		Dish dish = dishService.findOne(id);
-		Reservation reservation = reservationService.findOne(reservationId);
+		//Reservation reservation = reservationService.findOne(reservationId);
 		order.getFood().add(dish);
 		//reservation.getOrders().add(order);
 		return order;
@@ -461,9 +378,35 @@ public class WaiterController {
 	@PutMapping(path = "/newOrderDrink/{id}/{reservationId}")
 	public Orderr newOrderDrink(@PathVariable Long id, @PathVariable Long reservationId, @RequestBody Orderr order){
 		Drink drink = drinkService.findOne(id);
-		Reservation reservation = reservationService.findOne(reservationId);
 		order.getDrinks().add(drink);
-		//reservation.getOrders().add(order);
+		return order;
+	}
+	
+	@PutMapping(path = "/removeNewDish/{dishId}")
+	public Orderr removeNewDish(@PathVariable Long dishId, @RequestBody Orderr order){
+		Dish dish = dishService.findOne(dishId);
+		
+		for(int i = 0 ; i < order.getFood().size(); i++){
+			if(order.getFood().get(i).getId() == dish.getId()){
+				order.getFood().remove(i);
+				break;
+			}
+		}
+		
+		return order;
+	}
+	
+	@PutMapping(path = "/removeNewDrink/{dishId}")
+	public Orderr removeNewDrink(@PathVariable Long dishId, @RequestBody Orderr order){
+		Drink drink = drinkService.findOne(dishId);
+		
+		for(int i = 0 ; i < order.getDrinks().size(); i++){
+			if(order.getDrinks().get(i).getId() == drink.getId()){
+				order.getDrinks().remove(i);
+				break;
+			}
+		}
+		
 		return order;
 	}
 	
@@ -541,6 +484,40 @@ public class WaiterController {
 		
 		return activeReservations;
 	}
+	
+	@GetMapping("/waiterTables")
+	public List<Table> waiterTables(){
+		Long id = ((Waiter) httpSession.getAttribute("user")).getId();
+		Waiter waiter = waiterService.findOne(id);
+		
+		Date date = new Date();
+		SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+		List<ChangedShiftWaiter> changedShifts = changedShiftService.findAll();
+		for (int i = 0; i < changedShifts.size(); i++) {
+			if ((changedShifts.get(i).getWaiter1().getId() == waiter.getId()
+					&& changedShifts.get(i).getDate().toString().equals(ft.format(date)))) {
+				return changedShifts.get(i).getWaiter2().getTablesForHandling();
+			} else if ((changedShifts.get(i).getWaiter2().getId() == waiter.getId()
+					&& changedShifts.get(i).getDate().toString().equals(ft.format(date)))) {
+				return changedShifts.get(i).getWaiter1().getTablesForHandling();
+			}
+		}
+		
+		return waiter.getTablesForHandling();
+	}
+	
+	@GetMapping(path="/getTables/{id}")
+	public List<app.restaurant.Table> getTables(@PathVariable Long id){
+		Restaurant restaurant = restaurantService.findOne(id);
+		ArrayList<app.restaurant.Table> outTables = new ArrayList<app.restaurant.Table>();
+		for(int i=0; i<restaurant.getSegments().size(); i++){
+			outTables.addAll(restaurant.getSegments().get(i).getTables());
+		}
+		return outTables;
+	}
+	
+	
+	
 	
 	public List<Reservation> getActiveReservations(List<Reservation> reservations, Waiter waiter){
 		

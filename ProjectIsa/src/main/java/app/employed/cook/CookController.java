@@ -1,6 +1,9 @@
 package app.employed.cook;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,10 +25,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import app.dish.Dish;
+import app.employed.DefaultShift;
+import app.employed.waiter.Waiter;
 import app.order.FoodStatus;
 import app.order.OrderService;
 import app.order.Orderr;
+import app.reservation.Reservation;
+import app.reservation.ReservationService;
 import app.restaurant.Restaurant;
+import app.restaurant.RestaurantService;
 
 @RestController
 @RequestMapping("/cook")
@@ -35,14 +43,19 @@ public class CookController {
 	private final CookService cookService;
 	private final OrderService orderService;
 	private final CookOrderService cookOrderService;
+	private final ReservationService reservationService;
+	private final RestaurantService restaurantService;
 
 	@Autowired
 	public CookController(final HttpSession httpSession, final CookService cookService, final OrderService orderService,
-			final CookOrderService cookOrderService) {
+			final CookOrderService cookOrderService, final ReservationService reservationService, final RestaurantService restaurantService) {
 		this.httpSession = httpSession;
 		this.cookService = cookService;
 		this.orderService = orderService;
 		this.cookOrderService = cookOrderService;
+		this.reservationService = reservationService;
+		this.restaurantService = restaurantService;
+		
 	}
 
 	@SuppressWarnings("unused")
@@ -92,11 +105,17 @@ public class CookController {
 	public Cook update(@PathVariable Long id, @Valid @RequestBody Cook cook) {
 		Optional.ofNullable(cookService.findOne(id))
 				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
-		Restaurant restaurant = cookService.findOne(id).getRestaurant();
-		Cook cook2 = cookService.findOne(cook.getId());
-		cook2.setRestaurant(restaurant);
-		cook2.setId(id);
-		return cookService.save(cook2);
+		cook.setId(id);
+		return cookService.save(cook);
+	}
+	
+	@PutMapping(path = "/changePassword/{id}")
+	@ResponseStatus(HttpStatus.OK)
+	public Cook changePassword(@PathVariable Long id, @Valid @RequestBody Cook cook) {
+		Optional.ofNullable(cookService.findOne(id))
+				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
+		cook.setId(id);
+		return cookService.save(cook);
 	}
 
 	// 2.4 vidi listu porudzbina jela koje je potrebno pripremiti
@@ -123,14 +142,15 @@ public class CookController {
 		}
 
 		orders.addAll(tempOrders);
+		/*List<Orderr> orders = new ArrayList<Orderr>();
 		for (int i = 0; i < cookOrders.size(); i++) {
 			for (int j = 0; j < tempOrders.size(); j++) {
 				if (cook.getId() == cookOrders.get(i).getCookId()
-						&& tempOrders.get(j).getId() == cookOrders.get(i).getOrderId()) {
-					orders.remove(j);
+						&& tempOrders.get(j).getId() != cookOrders.get(i).getOrderId()) {
+					orders.add(tempOrders.get(j));
 				}
 			}
-		}
+		}*/
 		List<Orderr> orderFood = new ArrayList<Orderr>();
 
 		for (int i = 0; i < orders.size(); i++) {
@@ -146,8 +166,39 @@ public class CookController {
 				orderFood.add(orders.get(i));
 			}
 		}
+		
+		List<Orderr> returnOrderFood = new ArrayList<Orderr>(); 
+		List<Reservation> reservationsTemp = new ArrayList<Reservation>();
+		Date date = new Date();
+		SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+		
+		//danasnje rezervacije
+		for(int i = 0 ; i < reservationService.findAll().size(); i++){
+			if(reservationService.findAll().get(i).getDate().toString().equals(ft.format(date))){
+				reservationsTemp.add(reservationService.findAll().get(i));
+			}
+		}
+		
+		//provera smene
+		List<Reservation> reservations = getActiveReservations(reservationsTemp, cook);
+		
+		
+		
+		//provera  da li se narudzbiina poklapa sa narudzbinom rezervacije
+		for(int i = 0 ; i < reservations.size(); i++){
+			for(int k = 0 ; k < reservations.get(i).getOrders().size(); k++){
+				for(int j = 0 ; j < orderFood.size(); j++){
+					if(reservations.get(i).getOrders().get(k).getId() == orderFood.get(j).getId()){
+						returnOrderFood.add(orderFood.get(j));
+					}
+				}
+			}
+		}
+		
+		
+		
 
-		return new ResponseEntity<>(orderFood, HttpStatus.OK);
+		return new ResponseEntity<>(returnOrderFood, HttpStatus.OK);
 	}
 
 	@GetMapping(path = "/foodReceived/{orderId}")
@@ -283,30 +334,49 @@ public class CookController {
 		return order;
 
 	}
+	
+	public List<Reservation> getActiveReservations(List<Reservation> reservations, Cook cook){
+		
+		List<Reservation> returnReservation = new ArrayList<Reservation>();
+		Date date = new Date();
+		SimpleDateFormat date24Format = new SimpleDateFormat("HH:mm");
+		String timeString = date24Format.format(date);
+		try {
+			date = date24Format.parse(timeString);
+			for (int i = 0; i < reservations.size(); i++) {
+				String time = "", timeEnd = "";
+				time += "" + reservations.get(i).getHours() + ":" + reservations.get(i).getMinutes();
+				timeEnd += "" + (reservations.get(i).getHours() + reservations.get(i).getDuration().intValue()) + ":"
+						+ reservations.get(i).getMinutes();
+				Date timeDate = new Date();
+				Date timeDateEnd = new Date();
+				Date shiftTime = new Date();
+				timeDate = date24Format.parse(time);
+				timeDateEnd = date24Format.parse(timeEnd);
+				shiftTime = date24Format.parse("16:00");
+				
+				if (date.after(timeDate) && date.before(timeDateEnd)) {
+					if(cook.getDefaultShift().compareTo(DefaultShift.First) == 0){
+						if(date.before(shiftTime)){
+							returnReservation.add(reservations.get(i));
+						}
+					} else {
+						if(date.after(shiftTime)){
+							returnReservation.add(reservations.get(i));
+						}
+					}
+				}
+			}
+			return returnReservation;
 
-	@GetMapping(path = "/readyFood")
-	public ResponseEntity<List<Orderr>> readyFood() {
-		/*
-		 * Long id = ((Cook) httpSession.getAttribute("user")).getId(); Cook
-		 * cook = cookService.findOne(id); List<Orderr> orders =
-		 * cook.getOrders();
-		 * 
-		 * Optional.ofNullable(orders).orElseThrow(() -> new
-		 * ResourceNotFoundException("Resource Not Found!"));
-		 * 
-		 * List<Orderr> order = new ArrayList<Orderr>();
-		 * 
-		 * for (int i = 0; i < orders.size(); i++) { if
-		 * (orders.get(i).getFood().size() != 0 && orders.get(i).getFoodStatus()
-		 * != null &&
-		 * (orders.get(i).getFoodStatus().compareTo(FoodStatus.finished) == 0 ||
-		 * orders.get(i).getFoodStatus().compareTo(FoodStatus.inPrepared) == 0))
-		 * { // for(int j = 0 ; j < orders.get(i).getFood().size(); j++){
-		 * order.add(orders.get(i)); // } } } return new ResponseEntity<>(order,
-		 * HttpStatus.OK);
-		 */
-		return null;
-
+			
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return returnReservation;
 	}
+
 
 }

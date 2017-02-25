@@ -1,6 +1,9 @@
 package app.employed.bartender;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,11 +23,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import app.drink.Drink;
+import app.employed.DefaultShift;
 import app.employed.cook.Cook;
 import app.order.DrinkStatus;
 import app.order.OrderService;
 import app.order.Orderr;
+import app.reservation.Reservation;
+import app.reservation.ReservationService;
 
 @RestController
 @RequestMapping("/bartender")
@@ -34,13 +39,15 @@ public class BartenderController {
 
 	private final BartenderService bartenderService;
 	private final OrderService orderService;
+	private final ReservationService reservationService;
 
 	@Autowired
 	public BartenderController(final HttpSession httpSession, final BartenderService bartenderService,
-			final OrderService orderService) {
+			final OrderService orderService, final ReservationService reservationService) {
 		this.httpSession = httpSession;
 		this.bartenderService = bartenderService;
 		this.orderService = orderService;
+		this.reservationService = reservationService;
 	}
 
 	@SuppressWarnings("unused")
@@ -61,10 +68,6 @@ public class BartenderController {
 		return new ResponseEntity<Bartender>(bartender, HttpStatus.OK);
 	}
 
-	/*
-	 * @GetMapping public ResponseEntity<List<Bartender>> findAll() { return new
-	 * ResponseEntity<>(bartenderService.findAll(), HttpStatus.OK); }
-	 */
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
@@ -88,9 +91,16 @@ public class BartenderController {
 	public Bartender update(@Valid @RequestBody Bartender bartender) {
 		Optional.ofNullable(bartenderService.findOne(bartender.getId()))
 					.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
-		//Bartender bar = bartenderService.findOne(bartender.getId());
-		//bartender.setId(id);
-		
+		return bartenderService.save(bartender);
+	}
+	
+	
+	@PutMapping(path = "/changePassword/{id}")
+	@ResponseStatus(HttpStatus.OK)
+	public Bartender changePassword(@PathVariable Long id, @Valid @RequestBody Bartender bartender) {
+		Optional.ofNullable(bartenderService.findOne(id))
+				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
+		bartender.setId(id);
 		return bartenderService.save(bartender);
 	}
 
@@ -114,8 +124,32 @@ public class BartenderController {
 				
 			}
 		}
-		bartender.getOrders().addAll(orders);
-		bartenderService.save(bartender);
+		
+		List<Reservation> reservationsTemp = new ArrayList<Reservation>();
+		Date date = new Date();
+		SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+		
+		//danasnje rezervacije
+		for(int i = 0 ; i < reservationService.findAll().size(); i++){
+			if(reservationService.findAll().get(i).getDate().toString().equals(ft.format(date))){
+				reservationsTemp.add(reservationService.findAll().get(i));
+			}
+		}
+		
+		List<Reservation> reservations = getActiveReservations(reservationsTemp, bartender);
+		List<Orderr> returnOrders = new ArrayList<Orderr>();
+		
+		for(int i = 0 ; i < reservations.size(); i++){
+			for(int k = 0 ; k < reservations.get(i).getOrders().size(); k++){
+				for(int j = 0 ; j < orders.size(); j++){
+					if(reservations.get(i).getOrders().get(k).getId() == orders.get(j).getId()){
+						returnOrders.add(orders.get(j));
+					}
+				}
+			}
+		}
+		bartender.getOrders().addAll(returnOrders);
+		//bartenderService.save(bartender);
 		
 
 		return new ResponseEntity<>(orders, HttpStatus.OK);
@@ -167,4 +201,47 @@ public class BartenderController {
 		return orderService.save(order);
 	}
 
+	
+	public List<Reservation> getActiveReservations(List<Reservation> reservations, Bartender bartender){
+		
+		List<Reservation> returnReservation = new ArrayList<Reservation>();
+		Date date = new Date();
+		SimpleDateFormat date24Format = new SimpleDateFormat("HH:mm");
+		String timeString = date24Format.format(date);
+		try {
+			date = date24Format.parse(timeString);
+			for (int i = 0; i < reservations.size(); i++) {
+				String time = "", timeEnd = "";
+				time += "" + reservations.get(i).getHours() + ":" + reservations.get(i).getMinutes();
+				timeEnd += "" + (reservations.get(i).getHours() + reservations.get(i).getDuration().intValue()) + ":"
+						+ reservations.get(i).getMinutes();
+				Date timeDate = new Date();
+				Date timeDateEnd = new Date();
+				Date shiftTime = new Date();
+				timeDate = date24Format.parse(time);
+				timeDateEnd = date24Format.parse(timeEnd);
+				shiftTime = date24Format.parse("16:00");
+				
+				if (date.after(timeDate) && date.before(timeDateEnd)) {
+					if(bartender.getDefaultShift().compareTo(DefaultShift.First) == 0){
+						if(date.before(shiftTime)){
+							returnReservation.add(reservations.get(i));
+						}
+					} else {
+						if(date.after(shiftTime)){
+							returnReservation.add(reservations.get(i));
+						}
+					}
+				}
+			}
+			return returnReservation;
+
+			
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return returnReservation;
+	}
 }

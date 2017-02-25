@@ -10,15 +10,7 @@ services.service('employedWaiterService',['$http', function($http){
 		return $http.get("/waiter");
 	}
 	
-	this.readyFood = function(id){
-		return $http.get("/waiter/readyFood");
-	}
-	
-	this.readyDrinks = function(id){
-		return $http.get("/waiter/readyDrinks");
-	}
-	
-	this.readyOrders = function(id){
+	this.readyOrders = function(){
 		return $http.get("/waiter/readyOrders");
 	}
 	
@@ -78,5 +70,28 @@ services.service('employedWaiterService',['$http', function($http){
 		return $http.put("/waiter/makeNewOrder/"+reservationId,order);
 	}
 	
+	this.removeNewDish = function(id, order){
+		return $http.put("/waiter/removeNewDish/" + id, order);
+	}
+	
+	this.removeNewDrink = function(id, order){
+		return $http.put("/waiter/removeNewDrink/" + id, order);
+	}
+	
+	this.changeProfile = function(id, waiter){
+		return $http.put("/waiter/profile/"+id,waiter);
+	}
+	
+	this.changePassword = function(id, waiter){
+		return $http.put("/waiter/changePassword/"+id,waiter);
+	}
+	
+	this.tables = function(){
+		return $http.get("/waiter/waiterTables");
+	}
+
+	this.allTables = function(id){
+		return $http.get("/waiter/getTables/" + id);
+	}
 	
 }]);

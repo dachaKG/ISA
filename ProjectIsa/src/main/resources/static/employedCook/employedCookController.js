@@ -69,7 +69,7 @@ app.controller('employedCookController',['$scope','employedCookService','$locati
 		$scope.changeProfile = function(){
 			employedCookService.changeProfile($scope.cook.id,$scope.cook).then(
 				function(response){
-					alert("successfully added");
+					alert("successfully changed profile");
 					$scope.state = undefined;
 					findAll();
 					$location.path('loggedIn/cook/home');
@@ -79,4 +79,19 @@ app.controller('employedCookController',['$scope','employedCookService','$locati
 				}
 			);
 		}
+		
+		$scope.changePassword = function(){
+			employedCookService.changePassword($scope.cook.id,$scope.cook).then(
+				function(response){
+					alert("successfully changed password");
+					$scope.state = undefined;
+					findAll();
+					$location.path('loggedIn/cook/home');
+				},
+				function(response){
+					alert("Error in changing");
+				}
+			);
+		}
+		
 }]);
