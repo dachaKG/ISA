@@ -204,7 +204,7 @@ public class GuestController {
 			
 			restaurant.getOrder().add(order);
 			List<Waiter> waiters = restaurant.getWaiters();
-			Waiter waiter = new Waiter();
+			List<Waiter> waiter = new ArrayList<Waiter>();
 			List<ChangedShiftWaiter> changedShifts = restaurant.getChangedShiftsForWaiters();
 			
 			
@@ -215,29 +215,59 @@ public class GuestController {
 				shift = "Second";
 			}
 			
+			int endTime = (int) (reservation.getHours() + reservation.getDuration());
 			
-			for(int i = 0 ; i < waiters.size(); i++){
-				for(int j = 0 ; j < waiters.get(i).getTablesForHandling().size(); j++){
-					if(waiters.get(i).getTablesForHandling().get(j).getId() == table.getId() &&
-							waiters.get(i).getDefaultShift().toString().equals(shift)){
-						waiter = waiterService.findOne(waiters.get(i).getId());
+			if(endTime > 16 && shift == "Second"){
+				for(int i = 0 ; i < waiters.size(); i++){
+					for(int j = 0 ; j < waiters.get(i).getTablesForHandling().size(); j++){
+						if(waiters.get(i).getTablesForHandling().get(j).getId() == table.getId() &&
+								waiters.get(i).getDefaultShift().toString().equals(shift)){
+							waiter.add(waiterService.findOne(waiters.get(i).getId()));
+						}
+					}
+				}
+			} else if (endTime > 16 && shift == "First"){
+				for(int i = 0 ; i < waiters.size(); i++){
+					for(int j = 0 ; j < waiters.get(i).getTablesForHandling().size(); j++){
+						if(waiters.get(i).getTablesForHandling().get(j).getId() == table.getId()){
+							waiter.add(waiterService.findOne(waiters.get(i).getId()));
+						}
+					}
+				}
+			} else {
+				for(int i = 0 ; i < waiters.size(); i++){
+					for(int j = 0 ; j < waiters.get(i).getTablesForHandling().size(); j++){
+						if(waiters.get(i).getTablesForHandling().get(j).getId() == table.getId() &&
+								waiters.get(i).getDefaultShift().toString().equals(shift)){
+							waiter.add(waiterService.findOne(waiters.get(i).getId()));
+						}
 					}
 				}
 			}
 			
-			for(int i = 0 ; i < changedShifts.size(); i++){
-				if((changedShifts.get(i).getWaiter1().getId() == waiter.getId() &&
-						changedShifts.get(i).getDate().compareTo(reservation.getDate()) == 0)){
-					waiter = changedShifts.get(i).getWaiter2();
-				} else if ((changedShifts.get(i).getWaiter2().getId() == waiter.getId() &&
-						changedShifts.get(i).getDate().compareTo(reservation.getDate()) == 0)){
-					waiter = changedShifts.get(i).getWaiter1();
+			
+			for(int j = 0 ; j < waiter.size(); j++){
+				for(int i = 0 ; i < changedShifts.size(); i++){
+					if((changedShifts.get(i).getWaiter1().getId() == waiter.get(j).getId() &&
+							changedShifts.get(i).getDate().compareTo(reservation.getDate()) == 0)){
+						
+						//waiter = changedShifts.get(i).getWaiter2();
+						waiter.set(i, changedShifts.get(i).getWaiter2());
+					} else if ((changedShifts.get(i).getWaiter2().getId() == waiter.get(j).getId() &&
+							changedShifts.get(i).getDate().compareTo(reservation.getDate()) == 0)){
+						waiter.set(i, changedShifts.get(i).getWaiter1());
+					}
 				}
 			}
-			waiter.getOrders().add(order);
+			for(int i = 0 ; i < waiter.size(); i++){
+				waiter.get(i).getOrders().add(order);
+				Waiter w = waiterService.findOne(waiter.get(i).getId());
+				waiterService.save(w);
+			}
+			//waiter.getOrders().add(order);
 			reservation.getOrders().add(order);
 			reservationService.save(reservation);
-			waiterService.save(waiter);
+			//waiterService.save(waiter);
 			restaurantService.save(restaurant);
 			
 			

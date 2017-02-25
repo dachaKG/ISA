@@ -34,6 +34,12 @@ app.controller('employedWaiterController', [ '$scope', 'employedWaiterService','
 				}
 			)
 			
+			employedWaiterService.restaurant().then(
+				function(response){
+					$scope.restaurant = response.data;
+				}
+			)
+			
 			employedWaiterService.readyDrinks().then(
 				function(response){
 					$scope.readyDrinks = response.data;
@@ -51,7 +57,32 @@ app.controller('employedWaiterController', [ '$scope', 'employedWaiterService','
 					$scope.readyOrders = response.data;
 				}
 			);
+			
+			employedWaiterService.reservations().then(
+				function(response){
+					$scope.reservations = response.data;
+				}
+			);
+			
+			employedWaiterService.newOrder().then(
+				function(response){
+					$scope.newOrder = response.data;
+				}
+			)
+			
+			$scope.reservation = "";
 		}
+		
+		$scope.changedValue = function(reservationId) {
+			//findAll();
+		    $scope.reservation = reservationId.id;
+		    employedWaiterService.newOrder().then(
+					function(response){
+						$scope.newOrder = response.data;
+					}
+				)
+		    
+		  }  
 		
 		$scope.makeBill = function(order){
 			employedWaiterService.makeBill(order).then(
@@ -77,5 +108,114 @@ app.controller('employedWaiterController', [ '$scope', 'employedWaiterService','
 						alert("Error while signal");
 					}
 			);
+		}
+		
+		$scope.changeOrder = function(order){
+			employedWaiterService.changeOrder(order.id).then(
+					function(response){
+						$scope.changedOrder = response.data;
+						$location.path('loggedIn/waiter/changeOrder');
+			});				
+		}
+		
+		$scope.orderFood = function(dish){
+			employedWaiterService.orderFood(dish.id,$scope.changedOrder).then(
+				function(response){
+					$scope.changedOrder = response.data;
+					$scope.state = undefined;
+					findAll();
+				},
+				function(response){
+					alert("Error in changing");
+				}
+			);
+		}
+		
+		$scope.orderDrink = function(drink){
+			employedWaiterService.orderDrink(drink.id, $scope.changedOrder).then(
+				function(response){
+					$scope.changedOrder = response.data;
+					$scope.state = undefined;
+					findAll();
+				},
+				function(response){
+					alert("Error in changing");
+				}
+			);
+		}
+		
+		$scope.removeDish = function(dish){
+			employedWaiterService.removeFood(dish.id, $scope.changedOrder.id).then(
+				function(response){
+					$scope.changedOrder.food.splice($scope.changedOrder.food.indexOf(dish),1);
+					
+					$scope.state = undefined;
+					findAll();
+				}
+			)
+		}
+		
+		$scope.removeDrink = function(drink){
+			employedWaiterService.removeDrink(drink.id, $scope.changedOrder.id).then(
+				function(response){
+					$scope.changedOrder.drinks.splice($scope.changedOrder.drinks.indexOf(drink),1);
+					//$scope.changeOrder
+					$scope.state = undefined;
+					findAll();
+				}
+			)
+		}
+		
+		$scope.makeOrder = function(){
+			$location.path('loggedIn/waiter/orders');
+		}
+		
+		$scope.newOrderDrink = function(drink){
+			employedWaiterService.newOrderDrink(drink.id, $scope.newOrder).then(
+				function(response){
+					$scope.newOrder = response.data;
+					$scope.state = undefined;
+					//findAll();
+				},
+				function(response){
+					alert("Error in changing");
+				}
+			);
+		}
+		
+		$scope.newOrderFood = function(dish){
+			employedWaiterService.newOrderFood(dish.id, $scope.reservation, $scope.newOrder).then(
+				function(response){
+					$scope.newOrder = response.data;
+					$scope.state = undefined;
+					//findAll();
+				},
+				function(response){
+					alert("Error in changing");
+				}
+			);
+		}
+		
+		$scope.newOrderDrink = function(drink){
+			employedWaiterService.newOrderDrink(drink.id, $scope.reservation, $scope.newOrder).then(
+				function(response){
+					$scope.newOrder = response.data;
+					$scope.state = undefined;
+					//findAll();
+				},
+				function(response){
+					alert("Error in changing");
+				}
+			);
+		}
+		
+		$scope.makeNewOrder = function(){
+			employedWaiterService.makeNewOrder($scope.reservation, $scope.newOrder).then(
+				function(response){
+					$location.path('loggedIn/waiter/home');
+					findAll();
+					
+				}
+			)
 		}
 }]);

@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -31,11 +32,11 @@ public class Waiter extends Employed {
 	@Column(name = "WAITER_ID")
 	private Long id;
 
-	@OneToMany
+	@ManyToMany
 	@JoinTable(name = "WAITER_ORDERS", joinColumns = @JoinColumn(name = "WAITER_ID"), inverseJoinColumns = @JoinColumn(name = "ORDER_ID"))
 	private List<Orderr> orders;
 	
-	@OneToMany
+	@ManyToMany
 	@JoinTable(name = "WAITER_TABLES", joinColumns = @JoinColumn(name = "WAITER_ID"), inverseJoinColumns = @JoinColumn(name = "TABLE_ID"))
 	private List<Table> tablesForHandling;
 	

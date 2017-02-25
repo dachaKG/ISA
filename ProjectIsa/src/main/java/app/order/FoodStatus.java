@@ -2,6 +2,6 @@ package app.order;
 
 public enum FoodStatus {
 
-	received, inPrepared, finished;
+	received, inPrepared, finished, madeBill;
 	
 }

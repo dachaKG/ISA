@@ -216,17 +216,21 @@ angular.module('routerApp', ['ui.router',
         	url : '/orders',
         	templateUrl : 'employedWaiter/employedWaiterOrders.html'
         })
-         .state('loggedIn.waiter.ready', {
-        	url : '/ready',
-        	templateUrl : 'employedWaiter/employedWaiterReadyOrder.html'
+         .state('loggedIn.waiter.changeOrder', {
+        	url : '/changeOrder',
+        	templateUrl : 'employedWaiter/employedWaiterChangeOrder.html'
         })
          .state('loggedIn.waiter.readyOrders', {
-        	url : '/readyOrders',
+        	url : '/ready',
         	templateUrl : 'employedWaiter/employedWaiterReadyOrders.html'
         })
         .state('loggedIn.waiter.shifts', {
         	url : '/shifts',
         	templateUrl : 'employedWaiter/employedWaiterShifts.html'
+        })
+        .state('loggedIn.waiter.ready', {
+        	url : '/newOrder',
+        	templateUrl : 'employedWaiter/employedWaiterNewOrder.html'
         })
         
         .state('loggedIn.guest', {

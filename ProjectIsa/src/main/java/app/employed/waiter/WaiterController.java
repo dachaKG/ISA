@@ -1,10 +1,13 @@
 package app.employed.waiter;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -25,8 +28,10 @@ import org.springframework.web.bind.annotation.RestController;
 import app.bill.Bill;
 import app.bill.BillService;
 import app.dish.Dish;
+import app.dish.DishService;
 import app.drink.Drink;
 import app.drink.DrinkService;
+import app.employed.DefaultShift;
 import app.employed.bartender.BartenderService;
 import app.employed.cook.CookService;
 import app.manager.changedShiftWaiter.ChangedShiftWaiter;
@@ -37,6 +42,8 @@ import app.order.OrderService;
 import app.order.Orderr;
 import app.reservation.Reservation;
 import app.reservation.ReservationService;
+import app.restaurant.Restaurant;
+import app.restaurant.RestaurantService;
 import app.restaurant.Table;
 import app.restaurant.TableService;
 
@@ -54,12 +61,15 @@ public class WaiterController {
 	private final ReservationService reservationService;
 	private final BillService billService;
 	private final ChangedShiftWaiterService changedShiftService;
+	private final RestaurantService restaurantService;
+	private final DrinkService drinkService;
+	private final DishService dishService;
 
 	@Autowired
 	public WaiterController(final HttpSession httpSession, final WaiterService service, final OrderService orderService,
 			final DrinkService drinkService, final BartenderService bartenderService, final CookService cookService,
-			final TableService tableService, final ReservationService reservationService,
-			final BillService billService, final ChangedShiftWaiterService changedShiftService) {
+			final TableService tableService, final ReservationService reservationService, final BillService billService,
+			final ChangedShiftWaiterService changedShiftService, final RestaurantService restaurantService, final DishService dishService) {
 		this.httpSession = httpSession;
 		this.waiterService = service;
 		this.orderService = orderService;
@@ -69,6 +79,9 @@ public class WaiterController {
 		this.reservationService = reservationService;
 		this.billService = billService;
 		this.changedShiftService = changedShiftService;
+		this.restaurantService = restaurantService;
+		this.drinkService = drinkService;
+		this.dishService = dishService;
 	}
 
 	@SuppressWarnings("unused")
@@ -89,7 +102,7 @@ public class WaiterController {
 		return new ResponseEntity<Waiter>(waiter, HttpStatus.OK);
 	}
 
-	@GetMapping(path = "/readyFood")
+	/*@GetMapping(path = "/readyFood")
 	public ResponseEntity<List<Dish>> readyFood() {
 		Long id = ((Waiter) httpSession.getAttribute("user")).getId();
 		Waiter waiter = waiterService.findOne(id);
@@ -109,9 +122,9 @@ public class WaiterController {
 		}
 		return new ResponseEntity<>(food, HttpStatus.OK);
 
-	}
+	}*/
 
-	@GetMapping(path = "/readyDrinks")
+	/*@GetMapping(path = "/readyDrinks")
 	public ResponseEntity<List<Drink>> readyDrinks() {
 		Long id = ((Waiter) httpSession.getAttribute("user")).getId();
 		Waiter waiter = waiterService.findOne(id);
@@ -131,7 +144,7 @@ public class WaiterController {
 		}
 
 		return new ResponseEntity<>(drinks, HttpStatus.OK);
-	}
+	}*/
 
 	@GetMapping(path = "/readyOrders")
 	public ResponseEntity<List<Orderr>> readyOrder() {
@@ -149,7 +162,7 @@ public class WaiterController {
 					&& orders.get(i).getFoodStatus().compareTo(FoodStatus.finished) == 0) {
 
 				finishedOrders.add(orders.get(i));
-				
+
 			}
 		}
 
@@ -162,20 +175,18 @@ public class WaiterController {
 		Waiter waiter = waiterService.findOne(id);
 		List<Reservation> reservationsTemp = new ArrayList<Reservation>();
 		Date date = new Date();
-		SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd");
-		
-		
+		SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
 		List<ChangedShiftWaiter> changedShifts = changedShiftService.findAll();
-		for (int i = 0 ; i < changedShifts.size(); i++){
-			if((changedShifts.get(i).getWaiter1().getId() == waiter.getId() &&
-					changedShifts.get(i).getDate().toString().equals(ft.format(date)))){
+		for (int i = 0; i < changedShifts.size(); i++) {
+			if ((changedShifts.get(i).getWaiter1().getId() == waiter.getId()
+					&& changedShifts.get(i).getDate().toString().equals(ft.format(date)))) {
 				waiter.setTablesForHandling(changedShifts.get(i).getWaiter2().getTablesForHandling());
-			} else if ((changedShifts.get(i).getWaiter2().getId() == waiter.getId() &&
-					changedShifts.get(i).getDate().toString().equals(ft.format(date)))){
+			} else if ((changedShifts.get(i).getWaiter2().getId() == waiter.getId()
+					&& changedShifts.get(i).getDate().toString().equals(ft.format(date)))) {
 				waiter.setTablesForHandling(changedShifts.get(i).getWaiter1().getTablesForHandling());
 			}
 		}
-		
+		// preuzeti sve rezervacije konobara
 		for (int i = 0; i < waiter.getTablesForHandling().size(); i++) {
 			for (int j = 0; j < waiter.getTablesForHandling().get(i).getReservations().size(); j++) {
 				reservationsTemp.add(waiter.getTablesForHandling().get(i).getReservations().get(j));
@@ -183,16 +194,58 @@ public class WaiterController {
 		}
 
 		List<Reservation> reservations = new ArrayList<Reservation>();
-		
+		// rezervacije koje su za danasnji datum
 		for (int i = 0; i < reservationsTemp.size(); i++) {
 			if (reservationsTemp.get(i).getDate().toString().equals(ft.format(date))) {
 				reservations.add(reservationsTemp.get(i));
 			}
 		}
+
+		// rezervacije koje su u toku
+		/*SimpleDateFormat date24Format = new SimpleDateFormat("HH:mm");
+		String timeString = date24Format.format(date);
+		List<Reservation> returnReservation = new ArrayList<Reservation>();
+		
+		try {
+			date = date24Format.parse(timeString);
+			for (int i = 0; i < reservations.size(); i++) {
+				String time = "", timeEnd = "";
+				time += "" + reservations.get(i).getHours() + ":" + reservations.get(i).getMinutes();
+				timeEnd += "" + (reservations.get(i).getHours() + reservations.get(i).getDuration().intValue()) + ":"
+						+ reservations.get(i).getMinutes();
+				Date timeDate = new Date();
+				Date timeDateEnd = new Date();
+				Date shiftTime = new Date();
+				timeDate = date24Format.parse(time);
+				timeDateEnd = date24Format.parse(timeEnd);
+				shiftTime = date24Format.parse("16:00");
+				
+				if (date.after(timeDate) && date.before(timeDateEnd)) {
+					if(waiter.getDefaultShift().compareTo(DefaultShift.First) == 0){
+						if(date.before(shiftTime)){
+							returnReservation.add(reservations.get(i));
+						}
+					} else {
+						if(date.after(shiftTime)){
+							returnReservation.add(reservations.get(i));
+						}
+					}
+				}
+			}
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+		
+		List<Reservation> returnReservation = getActiveReservations(reservations, waiter);
+
 		List<Orderr> returnOrders = new ArrayList<Orderr>();
-		for (int i = 0; i < reservations.size(); i++) {
-			for (int j = 0; j < reservations.get(i).getOrders().size(); j++) {
-				returnOrders.add(reservations.get(i).getOrders().get(j));
+		for (int i = 0; i < returnReservation.size(); i++) {
+			for (int j = 0; j < returnReservation.get(i).getOrders().size(); j++) {
+				if (returnReservation.get(i).getOrders().get(j).getDrinkStatus() == null
+						&& returnReservation.get(i).getOrders().get(j).getFoodStatus() == null) {
+					returnOrders.add(returnReservation.get(i).getOrders().get(j));
+				}
 			}
 		}
 
@@ -264,8 +317,10 @@ public class WaiterController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public void makeBill(@Valid @RequestBody Orderr order) {
 		Long id = ((Waiter) httpSession.getAttribute("user")).getId();
-		Waiter waiter = waiterService.findOne(id);
+		
+		Waiter waiterTemp = waiterService.findOne(id);
 		Table table = tableService.findOne(order.getTable().getId());
+		Orderr saveOrder = orderService.findOne(order.getId());
 		// Table table = order.getTable();
 		List<Reservation> reservations = table.getReservations();
 		Reservation reservation = new Reservation();
@@ -273,11 +328,14 @@ public class WaiterController {
 			for (int j = 0; j < reservations.get(i).getOrders().size(); j++) {
 				if (reservations.get(i).getOrders().get(j).getId() == order.getId()) {
 					reservation = reservations.get(i);
+					saveOrder.setDrinkStatus(DrinkStatus.madeBill);
+					saveOrder.setFoodStatus(FoodStatus.madeBill);
+					orderService.save(saveOrder);
 					break;
 				}
 			}
 		}
-
+		Waiter waiter = billForWaiter(reservation, saveOrder, waiterTemp, table);
 		Bill bill = new Bill();
 		bill.setDate(reservation.getDate());
 		bill.setTotal(order.getTotal());
@@ -288,39 +346,241 @@ public class WaiterController {
 		waiterService.save(waiter);
 
 	}
+	
+	public Waiter billForWaiter(Reservation reservation, Orderr order, Waiter waiter, Table table){
+		
+		for(int i = 0 ; i < reservation.getOrders().size(); i++){
+			if(reservation.getOrders().get(i).getId() == order.getId()){
+				Date startReservation = new Date();
+				Date endReservation = new Date();
+				SimpleDateFormat date24Format = new SimpleDateFormat("HH:mm");
+				String time = "", timeEnd = "";
+				time += "" + reservation.getHours() + ":" + reservation.getMinutes();
+				timeEnd += "" + (reservation.getHours() + reservation.getDuration().intValue()) + ":"
+						+ reservation.getMinutes();
+				
+				Date shiftTime = new Date();
+				try {
+					startReservation = date24Format.parse(time);
+					endReservation = date24Format.parse(timeEnd);
+					shiftTime = date24Format.parse("16:00");
+					long differenceShiftOne = shiftTime.getTime() - startReservation.getTime();
+					long differenceShiftTwo = endReservation.getTime() - shiftTime.getTime();
+					
 
-	// 2.4. Konobar izmeni porudzbinu za odredjeni sto
-	/*
-	 * @PutMapping(path = "/{id}/order/{orderId}")
-	 * 
-	 * @ResponseStatus(HttpStatus.OK) public Orderr update(@PathVariable("id")
-	 * Long id, @PathVariable("orderId") Long orderId, @Valid @RequestBody
-	 * Orderr order) { Optional.ofNullable(service.findOne(id)) .orElseThrow(()
-	 * -> new ResourceNotFoundException("Resource Not Found!"));
-	 * Optional.ofNullable(orderService.findOne(orderId)) .orElseThrow(() -> new
-	 * ResourceNotFoundException("Resource Not Found!"));
-	 * 
-	 * order.setId(orderId); // orderService.findOne(id1).getTable(); //
-	 * service.findOne(id).getSegment().getTables().
-	 * 
-	 * return orderService.save(order); }
-	 */
+					if(differenceShiftTwo > differenceShiftOne){
+						if(waiter.getDefaultShift().compareTo(DefaultShift.Second) == 0){
+							return waiter;
+						} else {
+							return secondWaiter(table, waiter);							
+						}
+					} else {
+						if(waiter.getDefaultShift().compareTo(DefaultShift.First) == 0){
+							return waiter;
+						} else {
+							return secondWaiter(table, waiter);
+						}
+					}
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+			}
+		}
+		return waiter;
+		
+	}
+	
+	public Waiter secondWaiter(Table table, Waiter waiter){
+		for(int j = 0 ; j < waiterService.findAll().size(); j++){
+			for(int k = 0 ; k < waiterService.findAll().get(j).getTablesForHandling().size(); k++){
+				if(waiterService.findAll().get(j).getTablesForHandling().get(k).getId() == table.getId() && 
+						waiterService.findAll().get(j).getId() != waiter.getId()){
+					return waiterService.findOne(waiterService.findAll().get(j).getId());
+				}
+			}
+		}
+		return waiter;
+	}
+	
+	@GetMapping("/changeOrder/{orderId}")
+	public Orderr changeOrder(@PathVariable Long orderId){
+		Orderr order = orderService.findOne(orderId);
+		return order;
+	}
+	
+	@GetMapping("/getRestaurant")
+	public Restaurant getRestaurant(){
+		Long id = ((Waiter) httpSession.getAttribute("user")).getId();
+		Waiter waiter = waiterService.findOne(id);
+		
+		for(int i = 0 ; i < restaurantService.findAll().size(); i++){
+			for(int j = 0 ; j < restaurantService.findAll().get(i).getWaiters().size(); j++){
+				if(restaurantService.findAll().get(i).getWaiters().get(j).getId() == waiter.getId()){
+					return restaurantService.findAll().get(i);
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	@PutMapping(path = "/addDrink/{id}")
+	public Orderr guestAddDrink(@PathVariable Long id, @RequestBody Orderr order){
+		Drink drink = drinkService.findOne(id);
+		order.getDrinks().add(drink);
+		return orderService.save(order);
+	}
+	
+	@PutMapping(path = "/addDish/{id}")
+	public Orderr guestAddDish(@PathVariable Long id,  @RequestBody Orderr order){
+		Dish dish = dishService.findOne(id);
+		order.getFood().add(dish);
+		
+		return orderService.save(order);
+	}
+	
+	@GetMapping(path = "/newOrder")
+	public Orderr newOrder(){
+		Orderr order = new Orderr();
+		return order;
+	}
+	
+	
+	@PutMapping(path = "/newOrderDish/{id}/{reservationId}")
+	public Orderr newOrderDish(@PathVariable Long id, @PathVariable Long reservationId, @RequestBody Orderr order){
+		Dish dish = dishService.findOne(id);
+		Reservation reservation = reservationService.findOne(reservationId);
+		order.getFood().add(dish);
+		//reservation.getOrders().add(order);
+		return order;
+	}
+	
+	@PutMapping(path = "/newOrderDrink/{id}/{reservationId}")
+	public Orderr newOrderDrink(@PathVariable Long id, @PathVariable Long reservationId, @RequestBody Orderr order){
+		Drink drink = drinkService.findOne(id);
+		Reservation reservation = reservationService.findOne(reservationId);
+		order.getDrinks().add(drink);
+		//reservation.getOrders().add(order);
+		return order;
+	}
+	
+	@PutMapping(path = "/makeNewOrder/{reservationId}")
+	public Orderr makeNewOrder(@PathVariable Long reservationId, @RequestBody Orderr order){
+		Reservation reservation = reservationService.findOne(reservationId);
+		reservation.getOrders().add(order);
+		label:
+		for(int i = 0 ; i < tableService.findAll().size(); i++){
+			for(int j = 0 ; j < tableService.findAll().get(i).getReservations().size(); j++){
+				if(tableService.findAll().get(i).getReservations().get(j).getId() == reservation.getId()){
+					order.setTable(tableService.findAll().get(i));
+					break label;
+				}
+			}
+		}
+		
+		int total = order.getTotal();
+		order.setTotal(total);
+		reservationService.save(reservation);
 
-	// 2.4 zavrsi porudzbinu i kreira racun
-	/*
-	 * @GetMapping(path = "/{id}/finishOrder/{id1}")
-	 * //@ResponseStatus(HttpStatus.OK) public ResponseEntity<Orderr>
-	 * finishTheOrder(@PathVariable Long id, @PathVariable Long
-	 * id1, @Valid @RequestBody Orderr order) { order =
-	 * orderService.findOne(id1); Optional.ofNullable(service.findOne(id))
-	 * .orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
-	 * Optional.ofNullable(order) .orElseThrow(() -> new
-	 * ResourceNotFoundException("Resource Not Found!"));
-	 * 
-	 * orderService.findOne(id1).setStatus(true);
-	 * 
-	 * return new ResponseEntity<>(orderService.findOne(id1), HttpStatus.OK);
-	 * 
-	 * }
-	 */
+		return orderService.save(order);
+	}
+	
+	@GetMapping(path = "/removeDish/{id}/{orderId}")
+	public Orderr removeDish(@PathVariable Long id, @PathVariable Long orderId){
+		//da li treba zastita ovde sa ifom za size hrane?
+		Dish dish = dishService.findOne(id);
+		Orderr order = orderService.findOne(orderId);
+		for(int i = 0 ; i < order.getFood().size(); i++){
+			if(order.getFood().get(i).getId() == dish.getId()){
+				order.getFood().remove(i);
+				break;
+			}
+		}
+		
+		return orderService.save(order);
+	}
+	
+	@GetMapping(path = "/removeDrink/{id}/{orderId}")
+	public Orderr removeDrink(@PathVariable Long id, @PathVariable Long orderId){
+		//da li treba zastita ovde sa ifom za size hrane?
+		Drink drink = drinkService.findOne(id);
+		Orderr order = orderService.findOne(orderId);
+		for(int i = 0 ; i < order.getDrinks().size(); i++){
+			if(order.getDrinks().get(i).getId() == drink.getId()){
+				order.getDrinks().remove(i);
+				break;
+			}
+		}
+		
+		return orderService.save(order);
+	}
+	
+	@GetMapping(path = "/getReservations")
+	public List<Reservation> getReservations(){
+		Long id = ((Waiter) httpSession.getAttribute("user")).getId();
+		
+		Waiter waiter = waiterService.findOne(id);
+		List<Reservation> reservations = reservationService.findAll();
+		Set<Reservation> returnReservationsSet = new HashSet<Reservation>();
+		for(int i = 0 ; i < reservations.size(); i++){
+			for(int j = 0 ; j < reservations.get(i).getOrders().size(); j++){
+				for(int k = 0 ; k < waiter.getOrders().size(); k++){
+					if(reservations.get(i).getOrders().get(j).getId() == waiter.getOrders().get(k).getId()){
+						returnReservationsSet.add(reservations.get(i));
+					}
+				}
+			}
+		}
+		
+		List<Reservation> returnReservations = new ArrayList<>(returnReservationsSet);
+		
+		List<Reservation> activeReservations = getActiveReservations(returnReservations, waiter);
+		
+		return activeReservations;
+	}
+	
+	public List<Reservation> getActiveReservations(List<Reservation> reservations, Waiter waiter){
+		
+		List<Reservation> returnReservation = new ArrayList<Reservation>();
+		Date date = new Date();
+		SimpleDateFormat date24Format = new SimpleDateFormat("HH:mm");
+		String timeString = date24Format.format(date);
+		try {
+			date = date24Format.parse(timeString);
+			for (int i = 0; i < reservations.size(); i++) {
+				String time = "", timeEnd = "";
+				time += "" + reservations.get(i).getHours() + ":" + reservations.get(i).getMinutes();
+				timeEnd += "" + (reservations.get(i).getHours() + reservations.get(i).getDuration().intValue()) + ":"
+						+ reservations.get(i).getMinutes();
+				Date timeDate = new Date();
+				Date timeDateEnd = new Date();
+				Date shiftTime = new Date();
+				timeDate = date24Format.parse(time);
+				timeDateEnd = date24Format.parse(timeEnd);
+				shiftTime = date24Format.parse("16:00");
+				
+				if (date.after(timeDate) && date.before(timeDateEnd)) {
+					if(waiter.getDefaultShift().compareTo(DefaultShift.First) == 0){
+						if(date.before(shiftTime)){
+							returnReservation.add(reservations.get(i));
+						}
+					} else {
+						if(date.after(shiftTime)){
+							returnReservation.add(reservations.get(i));
+						}
+					}
+				}
+			}
+			
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return returnReservation;
+	}
+
 }
