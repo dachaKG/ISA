@@ -659,13 +659,13 @@ app.controller('restaurantManagerController', ['$scope','$window','restaurantMan
 			tablesForNewWaiter.push(table);
 		}
 
-		$scope.changedShift = function() {
+		$scope.changedShift = function(cook) {
 		    var today = Date.now();
 		    var tomorrow = new Date(Date.now() + 86400000 * 1);
 			var step = 2;
 			var datesArr = [];
 			var temp = 0;
-			if($scope.employed.defaultShift != "First") 
+			if(cook.defaultShift != "First") 
 				temp = 1;
 			else
 				temp = 0;

@@ -1,5 +1,7 @@
 package app.guest;
 
+import static org.assertj.core.api.Assertions.useRepresentation;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -8,11 +10,14 @@ import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import javax.ws.rs.Path;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,6 +35,7 @@ import app.drink.Drink;
 import app.drink.DrinkService;
 import app.employed.waiter.Waiter;
 import app.employed.waiter.WaiterService;
+import app.friends.FriendsService;
 import app.manager.changedShiftWaiter.ChangedShiftWaiter;
 import app.manager.changedShiftWaiter.ChangedShiftWaiterService;
 import app.order.OrderService;
@@ -59,18 +65,17 @@ public class GuestController {
 
 	private final DishService dishService;
 	private final DrinkService drinkService;
-	private final OrderService orderService;
-	//private Orderr order = new Orderr();
-	
-	
+	private final OrderService orderService;	
 	private final TableService tableService;
 	private final ReservationService reservationService;
 	private final RateRestaurantService rateRestaurantService;
 	private final RateOrderService rateOrderService;
 	private final RateServiceService rateServiceService;
 	private final BillService billService;
+	private final FriendsService friendsService;
 	private final ChangedShiftWaiterService changedShiftWaiterService;
 	private HttpSession httpSession;
+	private JavaMailSender javaMailSender;
 	
 
 	@Autowired
@@ -78,8 +83,10 @@ public class GuestController {
 			DishService dishService,final DrinkService drinkService,
 			final OrderService orderService, final TableService tableService, final ReservationService reservationService,
 			final WaiterService waiterService,final SegmentService segmentService,
-			final RateRestaurantService rateRestaurantService, final RateOrderService rateOrderService, 
-			final RateServiceService rateServiceService, final BillService billService, final ChangedShiftWaiterService changedShiftWaiterService) {
+			final RateRestaurantService rateRestaurantService, final RateOrderService rateOrderService,
+			final RateServiceService rateServiceService, final BillService billService,
+			final ChangedShiftWaiterService changedShiftWaiterService,
+			final JavaMailSender javaMailSender,final FriendsService friendsService) {
 		this.guestService = service;
 		this.httpSession = httpSession;
 		this.restaurantService = restaurantService;
@@ -94,6 +101,8 @@ public class GuestController {
 		this.rateServiceService = rateServiceService;
 		this.billService = billService;
 		this.changedShiftWaiterService = changedShiftWaiterService;
+		this.javaMailSender = javaMailSender;
+		this.friendsService = friendsService;
 	}
 
 	@SuppressWarnings("unused")
@@ -284,6 +293,7 @@ public class GuestController {
 				waiterService.save(w);
 			}
 			//waiter.getOrders().add(order);
+			orderService.save(order);
 			reservation.getOrders().add(order);
 			reservationService.save(reservation);
 			//waiterService.save(waiter);
@@ -309,6 +319,7 @@ public class GuestController {
 	
 	@PostMapping(path="/makeReservation/{id}")
 	public void makeReservation(@PathVariable Long id, @RequestBody Reservation reservation){
+		//reservation.setInvitedGuests(new ArrayList<>());
 		Long guestId = ((Guest) httpSession.getAttribute("user")).getId();
 		Guest guest = guestService.findOne(guestId);
 		System.out.println("SUCCESS, id:"+id);
@@ -328,11 +339,22 @@ public class GuestController {
 				}
 			}
 		}
-		
+		for(int i=0; i<reservation.getInvitedGuests().size(); i++){
+		// ----Salje mejl sam sebi, zbog testiranja...
+				try {
+					SimpleMailMessage mail = new SimpleMailMessage();
+					mail.setTo("isarestorani2@gmail.com");// umesto ovoga guest.mail..ako neces da testiras
+					mail.setFrom("isarestorani2@gmail.com");
+					mail.setSubject("Activation link");
+					mail.setText("http://localhost:8080/#/loggedIn/guest/invites");
+
+					javaMailSender.send(mail);
+				} catch (Exception m) {
+					m.printStackTrace();
+				}
+		}
 		reservation.setRestaurant(restaurant);
 		reservationService.save(reservation);
-		//---------------------------------
-		//tableService.save(table);
 		
 	}
 	
@@ -441,7 +463,45 @@ public class GuestController {
 			
 	}
 	
-	//return $http.put("guest/rateRestaurant"+restaurantRate, restaurant);
+	@GetMapping(path = "/avgRateFriends/{restaurantId}")
+	public double avgRateFriend(@PathVariable Long restaurantId){
+		Restaurant restaurant = restaurantService.findOne(restaurantId);
+		Long id = ((Guest) httpSession.getAttribute("user")).getId();
+		
+		Guest guest = guestService.findOne(id);
+		List<Guest> guests = new ArrayList<Guest>();
+		guests.add(guest);
+		for(int i = 0 ; i < friendsService.findAll().size(); i++){
+			if(friendsService.findAll().get(i).getFriendReciveRequest().getId() == guest.getId() && 
+					friendsService.findAll().get(i).getStatus().equals("accepted")){
+				guests.add(friendsService.findAll().get(i).getFriendSendRequest());
+			} else if (friendsService.findAll().get(i).getFriendSendRequest().getId() == guest.getId() && 
+					friendsService.findAll().get(i).getStatus().equals("accepted")){
+				guests.add(friendsService.findAll().get(i).getFriendReciveRequest());
+			}
+		}
+		List<Integer> marks = new ArrayList<Integer>();
+		
+		for(int i = 0 ; i < restaurant.getRateRestaurant().size(); i++){
+			for(int j = 0 ; j < guests.size(); j++){
+				if(restaurant.getRateRestaurant().get(i).getGuest().getId() == guests.get(j).getId()){
+					marks.add(restaurant.getRateRestaurant().get(i).getRate());
+				}
+			}
+		}
+		
+		double sum = 0;
+		double average = 0;
+		for(int i = 0 ; i < marks.size(); i++){
+			sum += marks.get(i);
+			
+		}
+		average = sum/marks.size();
+		
+		return average;
+		
+	}
+	
 	@PutMapping(path = "/rateRestaurant/{rate}/{id}")
 	public Restaurant rateRestaurant(@PathVariable int rate, @PathVariable Long id){
 		Restaurant restaurant = restaurantService.findOne(id);
@@ -501,6 +561,25 @@ public class GuestController {
 		order.getRateOrders().add(rateOrder);
 		orderService.save(order);
 		return order;
+	}
+	
+	@PostMapping(path = "/acceptInvite/{id}")
+	public void acceptInvite(@PathVariable Long id){
+		Reservation r = reservationService.findOne(id);
+		Long guestId = ((Guest) httpSession.getAttribute("user")).getId();
+		Guest guest = guestService.findOne(guestId);
+		r.getInvitedGuests().remove(guestId);
+		r.getGuests().add(guest);
+		reservationService.save(r);
+	}
+	
+	@PostMapping(path = "/rejectInvite/{id}")
+	public void rejectInvite(@PathVariable Long id){
+		Reservation r = reservationService.findOne(id);
+		Long guestId = ((Guest) httpSession.getAttribute("user")).getId();
+		Guest guest = guestService.findOne(guestId);
+		r.getInvitedGuests().remove(guestId);
+		reservationService.save(r);
 	}
 	
 	@PutMapping(path = "/rateService/{rate}/{id}")

@@ -230,10 +230,21 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		$scope.nextToOrders = function(restaurant){
 			guestService.nextToOrders(restaurant.id).then(
 				function(response){
-					$scope.state = undefined;
-					$scope.restaurantOrders = response.data;
-					$location.path('loggedIn/guest/restaurantOrders');
-					findAll();
+					guestService.avgRateFriends(restaurant.id).then(
+						function(response1){
+							if(response1.data == "Nan"){
+								$scope.avg = 0;
+							} else {
+								$scope.avg = response1.data;
+							}
+							$scope.state = undefined;
+							$scope.restaurantOrder = restaurant;
+							$scope.restaurantOrders = response.data;
+							$location.path('loggedIn/guest/restaurantOrders');
+							findAll();
+						}
+					);
+				
 				},
 				function(response){
 					alert("Error in changing");
@@ -267,6 +278,12 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		
 		$scope.reservation3 = function(){
 			$location.path('loggedIn/guest/reservation3');
+		}
+		
+		
+		var friendsInReservation = [];
+		$scope.addFriendToReservation = function(id){
+			friendsInReservation.push(id);
 		}
 		
 		$scope.rateOrder = function(orderRate, order){
@@ -358,7 +375,6 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		$scope.closeModal = function(){
 			var modal = document.getElementById('myModal');
 			modal.style.display = "none";
-			//$window.location.reload();
 			
 		}
 		
@@ -371,14 +387,17 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		
 		
 		$scope.makeReservation = function(){
+			alert("Sending mails...");
+			$scope.reservation.invitedGuests = friendsInReservation;
 			guestService.makeReservation($scope.chosenTable, $scope.reservation).then(
 					function(response){
-						 
 						$location.path('loggedIn/guest/reservation4');
 					});
 		}
 		
 		$scope.orderForReservation = function(){
+			alert("Sending mails...");
+			$scope.reservation.invitedGuests = friendsInReservation;
 			guestService.makeReservation($scope.chosenTable, $scope.reservation).then(
 					function(response){
 						$location.path('loggedIn/guest/reservation4');
@@ -386,8 +405,45 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		}
 		
 		$scope.dontOrderForReservation = function(){
+			alert("Sending mails...");
+			$scope.reservation.invitedGuests = friendsInReservation;
 			guestService.makeReservation($scope.chosenTable, $scope.reservation).then(
 					function(response){
+						$location.path('loggedIn/guest/home');
+					});
+		}
+		
+		
+		
+		$scope.loadInvites = function(){
+			$scope.invites = [];
+			guestService.reservations().then(
+			function(response){
+				var reservations = response.data;
+				angular.forEach(reservations, function(reservation, key){
+					angular.forEach(reservation.invitedGuests, function(id, key2){
+						if(id==$scope.loggedUser.id){
+							($scope.invites).push(reservation);
+						}
+					});
+					
+				});
+				
+			});
+		}
+		
+		$scope.acceptInvite = function(id){
+			guestService.acceptInvite(id).then(
+				function(response){
+					alert("Success");
+					$location.path('loggedIn/guest/home');
+				});
+		}
+		
+		$scope.rejectInvite = function(id){
+			guestService.rejectInvite(id).then(
+					function(response){
+						alert("Rejected");
 						$location.path('loggedIn/guest/home');
 					});
 		}
