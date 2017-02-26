@@ -30,8 +30,8 @@ import app.drink.Drink;
 import app.drink.DrinkService;
 import app.employed.waiter.Waiter;
 import app.employed.waiter.WaiterService;
+import app.friends.FriendsService;
 import app.manager.changedShiftWaiter.ChangedShiftWaiter;
-import app.manager.changedShiftWaiter.ChangedShiftWaiterService;
 import app.order.OrderService;
 import app.order.Orderr;
 import app.order.RateOrder;
@@ -59,17 +59,14 @@ public class GuestController {
 
 	private final DishService dishService;
 	private final DrinkService drinkService;
-	private final OrderService orderService;
-	//private Orderr order = new Orderr();
-	
-	
+	private final OrderService orderService;	
 	private final TableService tableService;
 	private final ReservationService reservationService;
 	private final RateRestaurantService rateRestaurantService;
 	private final RateOrderService rateOrderService;
 	private final RateServiceService rateServiceService;
 	private final BillService billService;
-	private final ChangedShiftWaiterService changedShiftWaiterService;
+	private final FriendsService friendsService;
 	private HttpSession httpSession;
 	
 
@@ -79,7 +76,7 @@ public class GuestController {
 			final OrderService orderService, final TableService tableService, final ReservationService reservationService,
 			final WaiterService waiterService,final SegmentService segmentService,
 			final RateRestaurantService rateRestaurantService, final RateOrderService rateOrderService, 
-			final RateServiceService rateServiceService, final BillService billService, final ChangedShiftWaiterService changedShiftWaiterService) {
+			final RateServiceService rateServiceService, final BillService billService, final FriendsService friendsService) {
 		this.guestService = service;
 		this.httpSession = httpSession;
 		this.restaurantService = restaurantService;
@@ -93,7 +90,7 @@ public class GuestController {
 		this.rateOrderService = rateOrderService;
 		this.rateServiceService = rateServiceService;
 		this.billService = billService;
-		this.changedShiftWaiterService = changedShiftWaiterService;
+		this.friendsService = friendsService;
 	}
 
 	@SuppressWarnings("unused")
@@ -284,6 +281,7 @@ public class GuestController {
 				waiterService.save(w);
 			}
 			//waiter.getOrders().add(order);
+			orderService.save(order);
 			reservation.getOrders().add(order);
 			reservationService.save(reservation);
 			//waiterService.save(waiter);
@@ -441,7 +439,45 @@ public class GuestController {
 			
 	}
 	
-	//return $http.put("guest/rateRestaurant"+restaurantRate, restaurant);
+	@GetMapping(path = "/avgRateFriends/{restaurantId}")
+	public double avgRateFriend(@PathVariable Long restaurantId){
+		Restaurant restaurant = restaurantService.findOne(restaurantId);
+		Long id = ((Guest) httpSession.getAttribute("user")).getId();
+		
+		Guest guest = guestService.findOne(id);
+		List<Guest> guests = new ArrayList<Guest>();
+		guests.add(guest);
+		for(int i = 0 ; i < friendsService.findAll().size(); i++){
+			if(friendsService.findAll().get(i).getFriendReciveRequest().getId() == guest.getId() && 
+					friendsService.findAll().get(i).getStatus().equals("accepted")){
+				guests.add(friendsService.findAll().get(i).getFriendSendRequest());
+			} else if (friendsService.findAll().get(i).getFriendSendRequest().getId() == guest.getId() && 
+					friendsService.findAll().get(i).getStatus().equals("accepted")){
+				guests.add(friendsService.findAll().get(i).getFriendReciveRequest());
+			}
+		}
+		List<Integer> marks = new ArrayList<Integer>();
+		
+		for(int i = 0 ; i < restaurant.getRateRestaurant().size(); i++){
+			for(int j = 0 ; j < guests.size(); j++){
+				if(restaurant.getRateRestaurant().get(i).getGuest().getId() == guests.get(j).getId()){
+					marks.add(restaurant.getRateRestaurant().get(i).getRate());
+				}
+			}
+		}
+		
+		double sum = 0;
+		double average = 0;
+		for(int i = 0 ; i < marks.size(); i++){
+			sum += marks.get(i);
+			
+		}
+		average = sum/marks.size();
+		
+		return average;
+		
+	}
+	
 	@PutMapping(path = "/rateRestaurant/{rate}/{id}")
 	public Restaurant rateRestaurant(@PathVariable int rate, @PathVariable Long id){
 		Restaurant restaurant = restaurantService.findOne(id);

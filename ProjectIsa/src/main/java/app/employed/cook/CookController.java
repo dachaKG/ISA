@@ -118,6 +118,22 @@ public class CookController {
 		cook.setId(id);
 		return cookService.save(cook);
 	}
+	
+	@GetMapping(path = "/employedCooks")
+	public List<Cook> employedCooks(){
+		Long id = ((Cook) httpSession.getAttribute("user")).getId();
+		Cook cook = cookService.findOne(id);
+		Restaurant restaurant = new Restaurant();
+		for(int i = 0 ; i < restaurantService.findAll().size(); i++){
+			for(int j = 0 ; j < restaurantService.findAll().get(i).getCooks().size(); j++){
+				if(restaurantService.findAll().get(i).getCooks().get(j).getId() == cook.getId()){
+					restaurant = restaurantService.findAll().get(i);
+				}
+			}
+		}
+		
+		return restaurant.getCooks();
+	}
 
 	// 2.4 vidi listu porudzbina jela koje je potrebno pripremiti
 	@GetMapping(path = "/orders")

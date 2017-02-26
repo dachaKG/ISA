@@ -114,7 +114,9 @@ services.service('guestService', ['$http', function($http){
 		return $http.put("/guest/rateService/"+serviceRate +"/"+ order);	
 	}
 	
-	
+	this.avgRateFriends = function(id){
+		return $http.get("/guest/avgRateFriends/" + id)
+	}
 
 	
 }]);

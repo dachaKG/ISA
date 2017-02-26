@@ -12,6 +12,10 @@ services.service('employedCookService',['$http', function($http){
 		return $http.get("/cook");
 	}
 	
+	this.employedCooks = function(){
+		return $http.get("/cook/employedCooks");
+	}
+	
 	this.findAllOrders = function(){
 		return $http.get("/cook/orders");
 	}
