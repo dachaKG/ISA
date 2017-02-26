@@ -564,13 +564,17 @@ public class GuestController {
 	}
 	
 	@PostMapping(path = "/acceptInvite/{id}")
-	public void acceptInvite(@PathVariable Long id){
+	public Restaurant acceptInvite(@PathVariable Long id){
 		Reservation r = reservationService.findOne(id);
+		Long idR = r.getRestaurant().getId();
+		Restaurant out = restaurantService.findOne(idR);
+		
 		Long guestId = ((Guest) httpSession.getAttribute("user")).getId();
 		Guest guest = guestService.findOne(guestId);
 		r.getInvitedGuests().remove(guestId);
 		r.getGuests().add(guest);
 		reservationService.save(r);
+		return out;
 	}
 	
 	@PostMapping(path = "/rejectInvite/{id}")

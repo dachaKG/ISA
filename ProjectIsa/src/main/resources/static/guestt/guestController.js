@@ -435,8 +435,10 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		$scope.acceptInvite = function(id){
 			guestService.acceptInvite(id).then(
 				function(response){
-					alert("Success");
-					$location.path('loggedIn/guest/home');
+					
+					alert("restoran: "+response.data.name)
+					
+					
 				});
 		}
 		
