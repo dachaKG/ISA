@@ -155,6 +155,12 @@ public class GuestController {
 		return result;
 	}
 	
+	@GetMapping(path = "/findRestaurant/{inputStr}")
+	public List<Restaurant> findRestaurant(@PathVariable String inputStr) {
+		List<Restaurant> result = restaurantService.findByNameAndType(inputStr);
+		return result;
+	}
+	
 
 	@GetMapping(path = "/order")
 	public Orderr guestOrder(){

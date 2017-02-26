@@ -68,6 +68,17 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		}
 		
 		
+		$scope.findRestaurants = function(){
+			if($scope.findRestaurantStr !== '') {
+				guestService.findRestaurants($scope.findRestaurantStr).then(
+					function(response){
+						$scope.foundRestaurants = response.data;
+					//	alert("success");
+					}
+				)
+			}
+		}
+		
 		
 		$scope.update = function() {
 			guestService.updateGuestProfile($scope.loggedUser).then(
