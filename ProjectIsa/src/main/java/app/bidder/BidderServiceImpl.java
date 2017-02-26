@@ -70,7 +70,7 @@ public class BidderServiceImpl implements BidderService {
 				if (restaurant.getBidders().get(j).getId() == bidder.getId()) {
 					for (int q = 0; q < restaurant.getRestaurantOrders().size(); q++)
 						if (restaurant.getRestaurantOrders().get(q).getStartDate()
-								.before(restaurant.getRestaurantOrders().get(q).getEndDate()))
+								.before(restaurant.getRestaurantOrders().get(q).getEndDate()) && restaurant.getRestaurantOrders().get(q).getOrderActive().equals("open"))
 							restaurantOrders.add(restaurant.getRestaurantOrders().get(q));
 				}
 			}

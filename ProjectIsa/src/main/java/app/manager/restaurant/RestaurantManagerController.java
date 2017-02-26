@@ -23,11 +23,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import app.bidder.Bidder;
 import app.bidder.BidderService;
+import app.bill.Bill;
 import app.dish.Dish;
+import app.dish.DishService;
 import app.drink.Drink;
+import app.drink.DrinkService;
 import app.employed.bartender.Bartender;
 import app.employed.cook.Cook;
+import app.employed.cook.CookOrder;
+import app.employed.cook.CookService;
+import app.employed.cook.TypeOfCooker;
 import app.employed.waiter.Waiter;
+import app.employed.waiter.WaiterService;
 import app.manager.changedShiftBartender.ChangedShiftBartender;
 import app.manager.changedShiftBartender.ChangedShiftBartenderService;
 import app.manager.changedShiftCook.ChangedShiftCook;
@@ -36,6 +43,8 @@ import app.manager.changedShiftWaiter.ChangedShiftWaiter;
 import app.manager.changedShiftWaiter.ChangedShiftWaiterService;
 import app.offer.Offer;
 import app.offer.OfferService;
+import app.order.Orderr;
+import app.restaurant.Description;
 import app.restaurant.Restaurant;
 import app.restaurant.RestaurantService;
 import app.restaurant.Segment;
@@ -51,6 +60,8 @@ public class RestaurantManagerController {
 	private HttpSession httpSession;
 	private RestaurantService restaurantService;
 	private BidderService bidderService;
+	private WaiterService waiterService;
+	private CookService cookService;
 	private RestaurantOrderService restaurantOrderService;
 	private RestaurantManagerService restaurantManagerService;
 	private OfferService offerService;
@@ -58,19 +69,23 @@ public class RestaurantManagerController {
 	private ChangedShiftCookService changedShiftCookService;
 	private ChangedShiftBartenderService changedShiftBartenderService;
 	private ChangedShiftWaiterService changedShiftWaiterService;
+	private DrinkService drinkService;
+	private DishService dishService;
 	private TableService tableService;
 
 	@Autowired
 	public RestaurantManagerController(final HttpSession httpSession, final RestaurantService restaurantService,
-			final RestaurantManagerService restaurantManagerService, final BidderService bidderService,
+			final RestaurantManagerService restaurantManagerService, final BidderService bidderService, WaiterService waiterService, CookService cookService,
 			final RestaurantOrderService restaurantOrderService, final OfferService offerService,
 			final SegmentService segmentService, final TableService tableService,
 			final ChangedShiftCookService changedShiftCookService,
-			final ChangedShiftWaiterService changedShiftWaiterService,
-			final ChangedShiftBartenderService changedShiftBartenderService) {
+			final ChangedShiftWaiterService changedShiftWaiterService, final DishService dishService,
+			final DrinkService drinkService, final ChangedShiftBartenderService changedShiftBartenderService) {
 		this.httpSession = httpSession;
 		this.restaurantService = restaurantService;
 		this.bidderService = bidderService;
+		this.waiterService = waiterService;
+		this.cookService = cookService;
 		this.restaurantOrderService = restaurantOrderService;
 		this.restaurantManagerService = restaurantManagerService;
 		this.offerService = offerService;
@@ -78,7 +93,9 @@ public class RestaurantManagerController {
 		this.changedShiftCookService = changedShiftCookService;
 		this.changedShiftBartenderService = changedShiftBartenderService;
 		this.changedShiftWaiterService = changedShiftWaiterService;
-			this.tableService = tableService;
+		this.dishService = dishService;
+		this.drinkService = drinkService;
+		this.tableService = tableService;
 	}
 
 	@GetMapping("/checkRights")
@@ -105,7 +122,7 @@ public class RestaurantManagerController {
 					// sluzi za inicijalizaciju posto preko data u konsturktoru
 					// nzm kako da dam default values
 					if (restaurant.getSummRate() == 0) {
-						//restaurant.setNumRate(0);
+						// restaurant.setNumRate(0);
 						restaurant.setSummRate(0.0);
 						restaurantService.save(restaurant);
 					}
@@ -118,41 +135,81 @@ public class RestaurantManagerController {
 	@PostMapping(path = "/restaurant/saveDrink")
 	@ResponseStatus(HttpStatus.CREATED)
 	public void saveDrink(@Valid @RequestBody Drink drink) {
+		drink = setDrink(drink);
 		Restaurant restaurant = findRestaurantForRestaurantManager();
+		drinkService.save(drink);
 		restaurant.getDrinks().add(drink);
 		restaurantService.save(restaurant);
+	}
+	
+	private Drink setDrink(Drink drink) {
+		drink.setNumRate(0);
+		drink.setSummRate(0);
+		return drink;
 	}
 
 	@PostMapping(path = "/restaurant/saveDish")
 	@ResponseStatus(HttpStatus.CREATED)
-	public void saveDish(@Valid @RequestBody Dish dish) {
+	public void saveDish(@RequestBody Dish dish) {
+		dish = setDish(dish);
 		Restaurant restaurant = findRestaurantForRestaurantManager();
+		dishService.save(dish);
 		restaurant.getFood().add(dish);
 		restaurantService.save(restaurant);
+	}
+	
+	private Dish setDish(Dish dish) {
+		dish.setNumRate(new ArrayList<Integer>());
+		dish.setRate(0.0);
+		return dish;
 	}
 
 	@PostMapping(path = "/restaurant/saveWaiter")
 	@ResponseStatus(HttpStatus.CREATED)
-	public void saveWaiter(@Valid @RequestBody Waiter waiter) {
-		waiter.setRegistrated("0");
+	public void saveWaiter(@RequestBody Waiter waiter) {
+		waiter = setObjectWaiter(waiter);
 		Restaurant restaurant = findRestaurantForRestaurantManager();
+		waiterService.save(waiter);
 		restaurant.getWaiters().add(waiter);
 		restaurantService.save(restaurant);
 	}
 
-	@PostMapping(path = "/restaurant/saveCook")
+	private Waiter setObjectWaiter(Waiter waiter) {
+		waiter.setRestaurant(findRestaurantForRestaurantManager());
+		waiter.setNumRate(new ArrayList<Integer>());
+		waiter.setRegistrated("0");
+		waiter.setOrders(new ArrayList<Orderr>());
+		waiter.setBills(new ArrayList<Bill>());
+		return waiter;
+	}
+
+	@PostMapping(path = "/restaurant/saveCook/{cookType}")
 	@ResponseStatus(HttpStatus.CREATED)
-	public void saveCook(@Valid @RequestBody Cook cook) {
-		cook.setRegistrated("0");
+	public void saveCook(@PathVariable String cookType,@RequestBody Cook cook) {
+		cook = setCook(cook,cookType);
 		Restaurant restaurant = findRestaurantForRestaurantManager();
 		restaurant.getCooks().add(cook);
 		restaurantService.save(restaurant);
 	}
+	
+	private Cook setCook(Cook cook,String cookType) {
+		cook.setRegistrated("0");
+		if(cookType.equals("salad"))
+			cook.setTypeOfCooker(TypeOfCooker.salad);
+		else if(cookType.equals("cooked"))
+			cook.setTypeOfCooker(TypeOfCooker.cooked);
+		else
+			cook.setTypeOfCooker(TypeOfCooker.baked);
+		cook.setRestaurant(findRestaurantForRestaurantManager());
+		cook.setOrders(new ArrayList<CookOrder>());
+		return cook;
+	}
 
 	@PostMapping(path = "/restaurant/saveBartender")
 	@ResponseStatus(HttpStatus.CREATED)
-	public void saveCook(@Valid @RequestBody Bartender bartender) {
+	public void saveBartender(@Valid @RequestBody Bartender bartender) {
 		bartender.setRegistrated("0");
+		bartender.setOrders(new ArrayList<Orderr>());
 		Restaurant restaurant = findRestaurantForRestaurantManager();
 		restaurant.getBartenders().add(bartender);
 		restaurantService.save(restaurant);
@@ -191,6 +248,7 @@ public class RestaurantManagerController {
 	public void deleteCook(@Valid @RequestBody Cook cook) {
 		Restaurant restaurant = findRestaurantForRestaurantManager();
 		restaurant.getCooks().remove(cook);
+		cookService.delete(cook.getId());
 		restaurantService.save(restaurant);
 	}
 
@@ -388,26 +446,86 @@ public class RestaurantManagerController {
 			throw new BadRequestException();
 	}
 
-	
 	@GetMapping(path = "/restaurant/getWaiterWithInputName/{waiterName}")
 	@ResponseStatus(HttpStatus.OK)
 	public Waiter getWaiterWithInputName(@PathVariable String waiterName) {
 		Restaurant rest = findRestaurantForRestaurantManager();
-		for(int i=0;i<rest.getWaiters().size();i++) {
-			if(rest.getWaiters().get(i).getFirstname().equals(waiterName))
+		for (int i = 0; i < rest.getWaiters().size(); i++) {
+			if (rest.getWaiters().get(i).getFirstname().equals(waiterName))
 				return rest.getWaiters().get(i);
 		}
 		return null;
 	}
-	
+
 	@GetMapping(path = "/restaurant/geDishWithInputName/{dishName}")
 	@ResponseStatus(HttpStatus.OK)
 	public double geDishWithInputName(@PathVariable String dishName) {
 		Restaurant rest = findRestaurantForRestaurantManager();
-		for(int i=0;i<rest.getFood().size();i++) {
-			if(rest.getFood().get(i).getName().equals(dishName))
+		for (int i = 0; i < rest.getFood().size(); i++) {
+			if (rest.getFood().get(i).getName().equals(dishName))
 				return rest.getFood().get(i).getRate();
 		}
 		return -1;
+	}
+
+	@GetMapping(path = "/restaurant/updateRestaurant/{restaurantName}/{description}/{city}/{street}/{number}")
+	@ResponseStatus(HttpStatus.OK)
+	public void updateRestaurant(@PathVariable String restaurantName, @PathVariable String description,
+			@PathVariable String city, @PathVariable String street, @PathVariable String number) {
+		Restaurant rest = findRestaurantForRestaurantManager();
+		rest.setName(restaurantName);
+		rest.setDescription(description);
+		rest.setCity(city);
+		rest.setNumber(number);
+		rest.setStreet(street);
+		restaurantService.save(rest);
+	}
+
+	// izmena vrednosti aktivne ponude
+	@PostMapping("/restaurant/tryToChangeDish/{id}/{name}/{count}")
+	@ResponseStatus(HttpStatus.OK)
+	public String tryToChangeDish(@PathVariable Long id, @PathVariable String name, @PathVariable Integer count) {
+		Restaurant rest = findRestaurantForRestaurantManager();
+		Dish dishh = null;
+		for (int i = 0; i < rest.getFood().size(); i++) {
+			if (rest.getFood().get(i).getId() == id) {
+				dishh = rest.getFood().get(i);
+				break;
+			}
+		}
+		dishh.setCount(count);
+		dishh.setName(name);
+		for (int j = 0; j < rest.getFood().size(); j++) {
+			if (rest.getFood().get(j).getId() == id) {
+				dishService.save(dishh);
+				rest.getFood().set(j, dishh);
+				return "ok";
+			}
+		}
+		return "no";
+	}
+
+	// izmena vrednosti aktivne ponude
+	@PostMapping("/restaurant/tryToChangeDrink/{id}/{name}/{count}")
+	@ResponseStatus(HttpStatus.OK)
+	public String tryToChangeDrink(@PathVariable Long id, @PathVariable String name, @PathVariable Integer count) {
+		Restaurant rest = findRestaurantForRestaurantManager();
+		Drink drinkk = null;
+		for (int i = 0; i < rest.getDrinks().size(); i++) {
+			if (rest.getDrinks().get(i).getId() == id) {
+				drinkk = rest.getDrinks().get(i);
+				break;
+			}
+		}
+		drinkk.setCount(count);
+		drinkk.setName(name);
+		for (int j = 0; j < rest.getDrinks().size(); j++) {
+			if (rest.getDrinks().get(j).getId() == id) {
+				drinkService.save(drinkk);
+				rest.getDrinks().set(j, drinkk);
+				return "ok";
+			}
+		}
+		return "no";
 	}
 }

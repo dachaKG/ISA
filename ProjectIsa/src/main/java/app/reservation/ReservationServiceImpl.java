@@ -1,5 +1,6 @@
 package app.reservation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -8,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.common.collect.Lists;
+
+import app.guest.Guest;
+import app.restaurant.Restaurant;
 
 @Service
 @Transactional
@@ -38,5 +42,6 @@ public class ReservationServiceImpl implements ReservationService {
 	public Reservation save(Reservation reservation) {
 		return repository.save(reservation);
 	}
+
 
 }

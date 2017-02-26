@@ -68,6 +68,17 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		}
 		
 		
+		$scope.findRestaurants = function(){
+			if($scope.findRestaurantStr !== '') {
+				guestService.findRestaurants($scope.findRestaurantStr).then(
+					function(response){
+						$scope.foundRestaurants = response.data;
+					//	alert("success");
+					}
+				)
+			}
+		}
+		
 		
 		$scope.update = function() {
 			guestService.updateGuestProfile($scope.loggedUser).then(
@@ -388,7 +399,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			    mapTypeId: google.maps.MapTypeId.ROADMAP
 			};
 			
-			var map=new google.maps.Map(document.getElementById("googleMap1"),mapProp);
+			var map=new google.maps.Map(document.getElementById("googleMap2"),mapProp);
 			pos = [];
 						
 			geocoder = new google.maps.Geocoder();

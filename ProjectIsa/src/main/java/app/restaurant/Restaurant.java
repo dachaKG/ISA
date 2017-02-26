@@ -5,6 +5,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -41,7 +43,7 @@ public class Restaurant {
 	@NotBlank
 	private String name;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany
 	@JoinTable(name = "RESTAURANT_MANAGERS_OF_RESTAURANT", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "RESTAURANT_MANAGER_ID"))
 	private List<RestaurantManager> restaurantManagers;
 
@@ -93,6 +95,11 @@ public class Restaurant {
 	@Column
 	@NotBlank
 	private String country;
+
+	
+	@Column
+	@NotBlank
+	private String description;
 
 	@Column
 	@NotBlank

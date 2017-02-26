@@ -41,6 +41,54 @@
     </table> 
     <div>
     
+    
+    
+    
+    
+    
+    <!--  Deo koji omogucuje pretragu restorana -->
+<hr/>
+<div id="restaurantFind">
+<label>Find Restaurants</label>
+<form>
+<input placeholder="Enter name or type" type="text" class="form-control x3" ng-model = "$parent.findRestaurantStr" ng-change = "findRestaurants()" >
+</form>
+
+<table  class="table table-bordered tableBG" border="1">
+		<tbody>
+	        <tr>
+				<th>ID</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>&nbsp</th>
+            </tr>
+			<tr ng-repeat="rest in foundRestaurants">
+				<td> 
+					{{rest.id}}
+				</td>
+				<td>
+		    		{{rest.name}}	
+				</td>
+            	<td>
+		    		{{rest.description}}	
+				</td>
+				<td>
+					<button class="btn btn-default navbar-btn" ng-click="reservation1(rest.id)" > Make Reservation</button>
+				</td>
+				
+			</tr>
+		</tbody>
+    </table>  
+</div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <br> <br> <br>
 	 <div ng-model = "restaurantMenu">
 	 <h3>Food</h3>
@@ -76,6 +124,6 @@
 		</tbody>
 	</table>
 	</div>
-	<div id="googleMap1" style="width:100%;height:400px;"></div>
+	<div id="googleMap2" style="width:100%;height:400px;"></div>
 	 
 </div>

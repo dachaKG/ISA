@@ -16,6 +16,10 @@ services.service('guestService', ['$http', function($http){
 		return $http.get("/guest/findByFirstAndLastName/"+input);
 	}
 	
+	this.findRestaurants = function(input){
+		return $http.get("/guest/findRestaurant/"+input);
+	}
+	
 	this.updateGuestProfile = function(guest){
 		return $http.put("/guest/"+guest.id,guest);
 	}

@@ -6,6 +6,7 @@ import java.util.List;
 import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import javax.ws.rs.BadRequestException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,6 +45,18 @@ public class BidderController {
 		this.httpSession = httpSession;
 	}
 
+	
+	@GetMapping("/updateBidderProfile/{firstName}/{lastName}/{password}")
+	@ResponseStatus(HttpStatus.OK)
+	public Bidder updateBidderProfile(@PathVariable String firstName,@PathVariable String lastName,@PathVariable String password) {
+		Long bidderId = ((Bidder) httpSession.getAttribute("user")).getId();
+		Bidder bidder = bidderService.findOne(bidderId);
+		bidder.setPassword(password);
+		bidder.setFirstname(firstName);
+		bidder.setLastname(lastName);
+		return bidderService.save(bidder);
+	}
+	
 	@GetMapping("/checkRights")
 	@ResponseStatus(HttpStatus.OK)
 	public Bidder checkRights() throws AuthenticationException {
@@ -89,7 +102,7 @@ public class BidderController {
 	// izmena vrednosti aktivne ponude
 	@PostMapping("/changeOffer/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public void changeOffer(@PathVariable Long id,@Valid @RequestBody Offer offer) {
+	public String changeOffer(@PathVariable Long id,@Valid @RequestBody Offer offer) {
 		RestaurantOrderr restaurantOrder = restaurantOrderrService.findOne(id);
 		List<Offer> listOfOffers = restaurantOrder.getOffers();
 		for (int j = 0; j < listOfOffers.size(); j++) {
@@ -101,16 +114,17 @@ public class BidderController {
 					listOfOffers.get(j).setGaranty(offer.getGaranty());
 					listOfOffers.get(j).setPosibleDelivery(offer.getPosibleDelivery());
 					restaurantOrderrService.save(restaurantOrder);
-					return;
+					return "ok";
 				}
 			}
 		}
-		throw new IllegalArgumentException();
+
+		return "no";
 	}
 
 	@PostMapping("/competeWithInsertedValue/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public void competeWithInsertedValue(@PathVariable Long id,@Valid  @RequestBody Offer offer) {
+	public String competeWithInsertedValue(@PathVariable Long id,@Valid  @RequestBody Offer offer) {
 		RestaurantOrderr restaurantOrderr = restaurantOrderrService.findOne(id);
 		Long bidderId = ((Bidder) httpSession.getAttribute("user")).getId();
 		Bidder bidder = bidderService.findOne(bidderId);
@@ -121,9 +135,9 @@ public class BidderController {
 				offerService.save(offer);
 				restaurantOrderr.getOffers().add(offer);
 				restaurantOrderrService.save(restaurantOrderr);
-				return;
+				return "ok";
 			}
-			throw new RuntimeException("Can't compete.");
+		return "no";
 	}
 	
 	private boolean checkIfMakedOfferEarlier(RestaurantOrderr restaurantOrderr,Bidder bidder) {
@@ -133,4 +147,5 @@ public class BidderController {
 		}
 		return false;
 	}
+	
 }

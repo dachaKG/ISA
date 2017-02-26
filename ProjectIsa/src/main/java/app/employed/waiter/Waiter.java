@@ -48,7 +48,6 @@ public class Waiter extends Employed {
 	@JsonIgnore
 	private Restaurant restaurant;
 	
-	
 	@Column
 	private double rate;
 	
@@ -66,6 +65,5 @@ public class Waiter extends Employed {
 			average = sum/this.numRate.size();
 		}
 		return average;
-	}
-	
+	}	
 }

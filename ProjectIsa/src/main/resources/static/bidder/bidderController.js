@@ -42,10 +42,6 @@ app.controller('bidderController', ['$scope','bidderService', '$location',
 					
 					//konverzija vremena za lep prikaz, jer daje u ms
 					$scope.restaurantOrders = result
-					for(w = 0;w<$scope.restaurantOrders.length;w++) {
-						$scope.restaurantOrders[w].startDate = new Date($scope.restaurantOrders[w].startDate).toISOString();
-						$scope.restaurantOrders[w].endDate = new Date($scope.restaurantOrders[w].endDate).toISOString();
-					}
 				}
 	        );
 		}
@@ -56,14 +52,33 @@ app.controller('bidderController', ['$scope','bidderService', '$location',
 		function getActiveOffers() {
 			bidderService.getActiveOffers().then(
 				function (response) {
-					$scope.restaurantOrdersFromAllRestaurants = response.data;
-					//konverzija vremena za lep prikaz, jer daje u ms
-					for(w = 0;w<$scope.restaurantOrdersFromAllRestaurants.length;w++) {
-						$scope.restaurantOrdersFromAllRestaurants[w].startDate = new Date($scope.restaurantOrdersFromAllRestaurants[w].startDate).toISOString();
-						$scope.restaurantOrdersFromAllRestaurants[w].endDate = new Date($scope.restaurantOrdersFromAllRestaurants[w].endDate).toISOString();
+					result = [];
+					for(var i=0;i<response.data.length;i++) {
+						var res = checkIfInLastOrders(response.data[i])
+						if(res != "")
+							result.push(response.data[i]);
 					}
+					$scope.restaurantOrdersFromAllRestaurants = result;
 				}
 	        );
+		}
+		
+		function checkIfInLastOrders(object) {
+			var ord1 = [];
+			if(object.dish == null)
+				ord1 = object.drink.name
+			else
+				ord1 = object.dish.name;
+			for(var i=0;i<$scope.restaurantOrders.length;i++) {
+				var ord2 = [];
+				if($scope.restaurantOrders[i].dish == null)
+					ord2 = $scope.restaurantOrders[i].drink.name
+				else
+					ord2 = $scope.restaurantOrders[i].dish.name;
+				if(ord1 == ord2)
+					return "";				
+			}
+			return "ok"
 		}
 		
 		//kliknuto je na neku startu ponudu ponudjaca za promenu, prikazati je u formi
@@ -98,7 +113,7 @@ app.controller('bidderController', ['$scope','bidderService', '$location',
 			offer1.accepted = offers.accepted;
 			bidderService.changeOffer($scope.restaurantOrderForChange,offer1).then(
 				function (response) {
-					if(response.status == 200) {
+					if(response.data == 'ok') {
 	                	location.reload(true);
 					}
 					else
@@ -111,13 +126,27 @@ app.controller('bidderController', ['$scope','bidderService', '$location',
 		$scope.competeWithInsertedValue = function(){
 			bidderService.competeWithInsertedValue($scope.restaurantOrderForCompete,$scope.offer).then(
 				function (response) {
-					if(response.status ==  200) {
+					if(response.data == 'ok') {
 	                	location.reload(true);
 					}
 					else
 						alert('Forbidden operation.Maybe you have one offer for that order or maybe oreder is closed.');
 				}
 		    );
+		}
+		
+		$scope.update = function() {
+			bidderService.updateBidderProfile($scope.bidder).then(
+				function (response) {
+                    alert("Successfully change.");
+                    $scope.state = undefined;
+                    findAll();
+                    $location.path('login');
+                },
+                function (response) {
+                    alert("Error in changing.");
+                }
+			);
 		}
 	}
 ]);

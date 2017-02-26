@@ -51,7 +51,7 @@ app.controller('bossManagerController', ['$scope','bossManagerService', '$locati
                     alert("Successfully change.");
                     $scope.state = undefined;
                     findAll();
-                    $location.path('loggedIn/boss/list');
+                    $location.path('login');
                 },
                 function (response) {
                     alert("Error in changing.");

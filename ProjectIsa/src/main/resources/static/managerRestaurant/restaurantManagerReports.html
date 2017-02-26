@@ -16,14 +16,7 @@
 		<label class="form-control"> Rate: {{$parent.dishRate}}</label>
 	</form>
 	
-	<form name = "dishReport">
-		<label>Report for dish</label><br>
-		<input class="form-control" type = "text" ng-model="$parent.dishName" required>
-		<button class="btn btn-default" ng-click="dishReport.$valid && geDishWithInputName()"><span class="glyphicon glyphicon-ok" ></span>Get report</button>
-		<br><br>
-		<label class="form-control"> Rate: {{$parent.dishRate}}</label>
-	</form>
-	
+	<h3>Revenues</h3>
 	<form name = "revenuesForm">
 	    <label>From date</label>
 	    <input type="date" class="form-control" ng-model = "$parent.fromDateRevenues" required>  
