@@ -44,7 +44,6 @@ import app.manager.changedShiftWaiter.ChangedShiftWaiterService;
 import app.offer.Offer;
 import app.offer.OfferService;
 import app.order.Orderr;
-import app.restaurant.Description;
 import app.restaurant.Restaurant;
 import app.restaurant.RestaurantService;
 import app.restaurant.Segment;
@@ -283,13 +282,13 @@ public class RestaurantManagerController {
 
 	@PostMapping(path = "/restaurant/createNewOffer")
 	@ResponseStatus(HttpStatus.CREATED)
-	public void createNewOffer(@Valid @RequestBody RestaurantOrderr restaurantOrderr) {
+	public void createNewOffer(@RequestBody RestaurantOrderr restaurantOrderr) {
 		Dish dish = restaurantOrderr.getDish();
 		Drink drink = restaurantOrderr.getDrink();
 		Restaurant restaurant = findRestaurantForRestaurantManager();
 		setObject(dish, drink, restaurant, restaurantOrderr);
-		restaurant.getRestaurantOrders().add(restaurantOrderr);
 		restaurantOrderService.save(restaurantOrderr);
+		restaurant.getRestaurantOrders().add(restaurantOrderr);
 		restaurantService.save(restaurant);
 	}
 
@@ -299,8 +298,7 @@ public class RestaurantManagerController {
 		if (restaurantOrderr.getOrderActive().equals("open")) {
 			restaurantOrderr.setOrderActive("closed");
 			for (int i = 0; i < restaurantOrderr.getOffers().size(); i++) {
-				if (restaurantOrderr.getOffers().get(i).getBidder().getId() == restaurantOrderr
-						.getIdFromChoosenBidder()) {
+				if (restaurantOrderr.getOffers().get(i).getBidder().getId() == restaurantOrderr.getBidderID()) {
 					restaurantOrderr.getOffers().get(i).setAccepted("accepted");
 				} else
 					restaurantOrderr.getOffers().get(i).setAccepted("rejected");
