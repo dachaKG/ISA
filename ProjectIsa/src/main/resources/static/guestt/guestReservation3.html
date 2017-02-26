@@ -21,7 +21,49 @@
 	</tr>
 </table>
 <hr/><br/>
-<h3>Call friend: TODO </h3><br/>
+<h3>Call friend:</h3><br/>
+
+
+
+
+
+
+<!-- Deo koji prikazuje sve gostove prijatelje sa njihovim statusima(pending, friends, rejected) -->
+<table ng-init="listFriends()"  class="table table-bordered tableBG" border="1">
+		<tbody>
+	        <tr>
+				<th>Firstame</th>
+                <th>Lastname</th>
+                <th>&nbsp</th>
+            </tr>
+			<tr ng-repeat="friend in friends">
+				<td> 
+					{{friend.guest.firstname}}
+				</td>
+				<td>
+		    		{{friend.guest.lastname}}	
+				</td>
+				<td>
+					<button class="btn btn-default navbar-btn" ng-if="friend.status == 'Friends'" >Call friend</button>
+					<label ng-if = "friend.status != 'Friends'">{{friend.status}}</label>
+				</td>
+				
+			</tr>
+		</tbody>
+    </table> 
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <hr/>
 <button class="btn btn-default navbar-btn" ng-click="openModal()">Send</button>
