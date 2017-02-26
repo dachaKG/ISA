@@ -114,6 +114,7 @@ services.service('guestService', ['$http', function($http){
 		return $http.put("/guest/rateService/"+serviceRate +"/"+ order);	
 	}
 	
+<<<<<<< HEAD
 	this.acceptInvite = function(id){
 		return $http.post("/guest/acceptInvite/"+id);	
 	}
@@ -122,6 +123,11 @@ services.service('guestService', ['$http', function($http){
 	}
 	
 	
+=======
+	this.avgRateFriends = function(id){
+		return $http.get("/guest/avgRateFriends/" + id)
+	}
+>>>>>>> c1b9eee6b61bc1cb545a6ab571d350aff8e58aea
 
 	
 }]);

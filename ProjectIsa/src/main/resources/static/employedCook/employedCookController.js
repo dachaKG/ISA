@@ -23,6 +23,12 @@ app.controller('employedCookController',['$scope','employedCookService','$locati
 				}
 			);
 			
+			employedCookService.employedCooks().then(
+				function(response){
+					$scope.employedCooks = response.data;
+				}
+			)
+			
 			employedCookService.findAllOrders().then(
 				function(response){
 					$scope.orders = response.data;
@@ -35,11 +41,11 @@ app.controller('employedCookController',['$scope','employedCookService','$locati
 				}
 			);
 			
-			employedCookService.readyFood().then(
+			/*employedCookService.readyFood().then(
 				function(response){
 					$scope.readyFood = response.data;
 				}
-			);
+			);*/
 		}
 		
 		$scope.received = function(foodOrder){
@@ -92,6 +98,34 @@ app.controller('employedCookController',['$scope','employedCookService','$locati
 					alert("Error in changing");
 				}
 			);
+		}
+		
+		$scope.changedShift = function(cook) {
+		    var today = Date.now();
+		    var tomorrow = new Date(Date.now() + 86400000 * 1);
+			var step = 1;
+			var datesArr = [];
+			var temp = 0;
+			if(cook.defaultShift != "First") 
+				temp = 1;
+			else
+				temp = 0;
+			for(var i = 0;i<300;i++) {
+				s = i % 14;
+				if(s >= 7){
+					day = new Date(Date.now() +temp * 86400000 + 86400000 *  i*step);
+					datesArr.push(day);
+				}
+			}
+			
+			
+			$('#date').multiDatesPicker('destroy');
+			$('#date').multiDatesPicker({
+		        numberOfMonths: 1,
+		        addDates: datesArr
+			});
+			if(temp == 1)
+				$('#date').multiDatesPicker('toggleDate', new Date());
 		}
 		
 }]);

@@ -230,10 +230,21 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		$scope.nextToOrders = function(restaurant){
 			guestService.nextToOrders(restaurant.id).then(
 				function(response){
-					$scope.state = undefined;
-					$scope.restaurantOrders = response.data;
-					$location.path('loggedIn/guest/restaurantOrders');
-					findAll();
+					guestService.avgRateFriends(restaurant.id).then(
+						function(response1){
+							if(response1.data == "Nan"){
+								$scope.avg = 0;
+							} else {
+								$scope.avg = response1.data;
+							}
+							$scope.state = undefined;
+							$scope.restaurantOrder = restaurant;
+							$scope.restaurantOrders = response.data;
+							$location.path('loggedIn/guest/restaurantOrders');
+							findAll();
+						}
+					);
+				
 				},
 				function(response){
 					alert("Error in changing");
@@ -364,7 +375,6 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		$scope.closeModal = function(){
 			var modal = document.getElementById('myModal');
 			modal.style.display = "none";
-			//$window.location.reload();
 			
 		}
 		
