@@ -37,6 +37,7 @@ import app.employed.waiter.Waiter;
 import app.employed.waiter.WaiterService;
 import app.friends.FriendsService;
 import app.manager.changedShiftWaiter.ChangedShiftWaiter;
+import app.manager.changedShiftWaiter.ChangedShiftWaiterService;
 import app.order.OrderService;
 import app.order.Orderr;
 import app.order.RateOrder;
@@ -72,6 +73,7 @@ public class GuestController {
 	private final RateServiceService rateServiceService;
 	private final BillService billService;
 	private final FriendsService friendsService;
+	private final ChangedShiftWaiterService changedShiftWaiterService;
 	private HttpSession httpSession;
 	private JavaMailSender javaMailSender;
 	
@@ -81,12 +83,10 @@ public class GuestController {
 			DishService dishService,final DrinkService drinkService,
 			final OrderService orderService, final TableService tableService, final ReservationService reservationService,
 			final WaiterService waiterService,final SegmentService segmentService,
-			final RateRestaurantService rateRestaurantService, final RateOrderService rateOrderService, 
-<<<<<<< HEAD
-			final RateServiceService rateServiceService, final BillService billService, final ChangedShiftWaiterService changedShiftWaiterService,final JavaMailSender javaMailSender) {
-=======
-			final RateServiceService rateServiceService, final BillService billService, final FriendsService friendsService) {
->>>>>>> c1b9eee6b61bc1cb545a6ab571d350aff8e58aea
+			final RateRestaurantService rateRestaurantService, final RateOrderService rateOrderService,
+			final RateServiceService rateServiceService, final BillService billService,
+			final ChangedShiftWaiterService changedShiftWaiterService,
+			final JavaMailSender javaMailSender,final FriendsService friendsService) {
 		this.guestService = service;
 		this.httpSession = httpSession;
 		this.restaurantService = restaurantService;
@@ -100,12 +100,9 @@ public class GuestController {
 		this.rateOrderService = rateOrderService;
 		this.rateServiceService = rateServiceService;
 		this.billService = billService;
-<<<<<<< HEAD
 		this.changedShiftWaiterService = changedShiftWaiterService;
 		this.javaMailSender = javaMailSender;
-=======
 		this.friendsService = friendsService;
->>>>>>> c1b9eee6b61bc1cb545a6ab571d350aff8e58aea
 	}
 
 	@SuppressWarnings("unused")
