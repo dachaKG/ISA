@@ -434,8 +434,10 @@ public class RestaurantManagerController {
 
 	// fali da se ubaci provera da se ne poklapaju kuvari
 	@PostMapping(path = "/restaurant/changeShiftWaiterAction")
-	public void changeShiftWaiterAction(@Valid @RequestBody ChangedShiftWaiter changedShiftWaiter) {
+	public void changeShiftWaiterAction(@RequestBody ChangedShiftWaiter changedShiftWaiter) {
 		// onemoguceno da sam sa sobom menja smenu
+		
+		setObjects(changedShiftWaiter);
 		if (changedShiftWaiter.getWaiter1().getId() != changedShiftWaiter.getWaiter2().getId()) {
 			Restaurant restaurant = findRestaurantForRestaurantManager();
 			changedShiftWaiterService.save(changedShiftWaiter);
@@ -445,6 +447,15 @@ public class RestaurantManagerController {
 			throw new BadRequestException();
 	}
 
+	private ChangedShiftWaiter setObjects(ChangedShiftWaiter changedShiftWaiter) {
+		for(int i=0;i<waiterService.findAll().size();i++) {
+			if(changedShiftWaiter.getWaiter1().getId() == waiterService.findAll().get(i).getId())
+				changedShiftWaiter.setWaiter1(waiterService.findAll().get(i));
+			if(changedShiftWaiter.getWaiter2().getId() == waiterService.findAll().get(i).getId())
+				changedShiftWaiter.setWaiter2(waiterService.findAll().get(i));
+		}
+		return changedShiftWaiter;
+	}
 	@GetMapping(path = "/restaurant/getWaiterWithInputName/{waiterName}")
 	@ResponseStatus(HttpStatus.OK)
 	public Waiter getWaiterWithInputName(@PathVariable String waiterName) {

@@ -33,10 +33,11 @@
     </select>
     
     <label> Default shift</label>
-	<select class = "form-control" ng-model="$parent.employed.defaultShift"
+	<select class = "form-control" ng-change="changedShift()" ng-model="$parent.employed.defaultShift"
 		ng-options="option as option for option in ['First','Second']" required>
     	<option value="" selected hidden />
     </select>
+    
     
     <div ng-show="$parent.employedType=='Waiter'">
 	    <table ng-init="loadTables(restaurant.id)" class = "tablesTable">
@@ -63,4 +64,9 @@
 <button class="btn btn-default" ng-click="cancel()"><span class="glyphicon glyphicon-remove" ></span> Cancel</button>
 </form>
 
+
+    
+    <div style="width : 10%;  color:#0000FF">
+    	<div id="date"></div>
+    </div>
 </div>

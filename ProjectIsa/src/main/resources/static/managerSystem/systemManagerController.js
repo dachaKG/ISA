@@ -89,6 +89,5 @@ app.controller('systemManagerController', ['$scope','systemManagerService','$loc
 		listOfManagerForRestaurant = [];
 		$scope.addManagerInRestaurant = function(manager) {
 			listOfManagerForRestaurant.push(manager);			
-		}
-		
+		}		
 }]);

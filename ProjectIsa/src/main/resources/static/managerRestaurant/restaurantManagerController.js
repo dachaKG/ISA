@@ -650,5 +650,27 @@ app.controller('restaurantManagerController', ['$scope','$window','restaurantMan
 		$scope.addTableInListFowWaiter = function(id){
 			tablesForNewWaiter.push(id);
 		}
-		
+
+		$scope.changedShift = function() {
+		    var today = Date.now();
+		    var tomorrow = new Date(Date.now() + 86400000 * 1);
+			var step = 2;
+			var datesArr = [];
+			var temp = 0;
+			if($scope.employed.defaultShift != "First") 
+				temp = 1;
+			else
+				temp = 0;
+			for(var i = 0;i<300;i++) {
+				day = new Date(Date.now() +temp * 86400000 + 86400000 *  i*step);
+				datesArr.push(day);
+			}
+			$('#date').multiDatesPicker('destroy');
+			$('#date').multiDatesPicker({
+		        numberOfMonths: 1,
+		        addDates: datesArr
+			});
+			if(temp == 1)
+				$('#date').multiDatesPicker('toggleDate', new Date());
+		}
 }]);
