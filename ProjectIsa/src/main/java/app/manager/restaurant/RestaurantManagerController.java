@@ -44,6 +44,7 @@ import app.manager.changedShiftWaiter.ChangedShiftWaiterService;
 import app.offer.Offer;
 import app.offer.OfferService;
 import app.order.Orderr;
+import app.restaurant.Description;
 import app.restaurant.Restaurant;
 import app.restaurant.RestaurantService;
 import app.restaurant.Segment;

@@ -16,6 +16,10 @@ services.service('guestService', ['$http', function($http){
 		return $http.get("/guest/findByFirstAndLastName/"+input);
 	}
 	
+	this.findRestaurants = function(input){
+		return $http.get("/guest/findRestaurant/"+input);
+	}
+	
 	this.updateGuestProfile = function(guest){
 		return $http.put("/guest/"+guest.id,guest);
 	}
@@ -57,16 +61,20 @@ services.service('guestService', ['$http', function($http){
 		return $http.get("/guest/order");
 	}
 	
-	this.orderFood = function(id){
-		return $http.put("/guest/addDish/"+id);
+	this.orderFood = function(id, order){
+		return $http.put("/guest/addDish/"+id, order);
 	}
 	
-	this.removeFood = function(id){
-		return $http.get("/guest/removeDish/"+id);
+	this.removeFood = function(id, order){
+		return $http.put("/guest/removeDish/"+id, order);
 	}
 	
-	this.orderDrink = function(id){
-		return $http.put("/guest/addDrink/"+id);
+	this.removeDrink = function(id, order){
+		return $http.put("/guest/removeDrink/"+id, order);
+	}
+	
+	this.orderDrink = function(id, order){
+		return $http.put("/guest/addDrink/"+id, order);
 	}
 	
 	this.makeOrder = function(tableId, reservationId, order){

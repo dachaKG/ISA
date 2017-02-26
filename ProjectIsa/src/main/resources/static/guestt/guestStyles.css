@@ -9,3 +9,9 @@ div.reservation{
 	width: 50%;
 	
 }
+
+#restaurantFind {
+	background-color: rgba(30, 30, 30, 0.9);
+	width: 50%;
+	height: 200px;
+}

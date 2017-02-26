@@ -10,6 +10,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -120,85 +121,94 @@ public class CookController {
 
 	// 2.4 vidi listu porudzbina jela koje je potrebno pripremiti
 	@GetMapping(path = "/orders")
-	public ResponseEntity<List<Orderr>> findAllOrdrers() {
+	public List<Orderr> findAllOrdrers() {
 		Long id = ((Cook) httpSession.getAttribute("user")).getId();
 		Cook cook = cookService.findOne(id);
-
-		List<Orderr> orders = new ArrayList<Orderr>();
-		List<Orderr> allOrders = orderService.findAll();
-		List<Orderr> tempOrders = new ArrayList<Orderr>();
-		for (int i = 0; i < allOrders.size(); i++) {
-			if (allOrders.get(i).getFood().size() != 0 && allOrders.get(i).getFoodStatus() != null
-					&& allOrders.get(i).getFoodStatus().compareTo(FoodStatus.inPrepared) == 0 ) {
-				tempOrders.add(allOrders.get(i));
+		Restaurant restaurant = new Restaurant();
+		List<Reservation> reservationsTemp = getActiveReservations(reservationService.findAll(), cook);
+		
+		for(int i = 0 ; i < restaurantService.findAll().size(); i++){
+			for(int j = 0 ; j < restaurantService.findAll().get(i).getCooks().size(); j++){
+				if(restaurantService.findAll().get(i).getCooks().get(j).getId() == cook.getId()){
+					restaurant = restaurantService.findAll().get(i);
+				}
 			}
 		}
+		
+		List<Orderr> ordersTemp = new ArrayList<Orderr>();
+		for(int i = 0; i < restaurant.getOrder().size(); i++){
+			for(int j = 0 ; j < orderService.findAll().size(); j++){
+				if(restaurant.getOrder().get(i).getId() == orderService.findAll().get(j).getId()){
+					ordersTemp.add(restaurant.getOrder().get(i));
+				}
+			}
+		}
+		
 		List<CookOrder> cookOrdersTemp = cookOrderService.findAll();
 		List<CookOrder> cookOrders = new ArrayList<CookOrder>();
+		List<Long> cookOrderId = new ArrayList<Long>();
 		for (int i = 0; i < cookOrdersTemp.size(); i++) {
 			if (cookOrdersTemp.get(i).getCookId() == cook.getId()) {
 				cookOrders.add(cookOrdersTemp.get(i));
+				cookOrderId.add(cookOrdersTemp.get(i).getOrderId());
 			}
 		}
-
-		orders.addAll(tempOrders);
-		/*List<Orderr> orders = new ArrayList<Orderr>();
-		for (int i = 0; i < cookOrders.size(); i++) {
-			for (int j = 0; j < tempOrders.size(); j++) {
-				if (cook.getId() == cookOrders.get(i).getCookId()
-						&& tempOrders.get(j).getId() != cookOrders.get(i).getOrderId()) {
-					orders.add(tempOrders.get(j));
+		
+		
+		List<Orderr> order = new ArrayList<Orderr>();
+		
+		List<Orderr> cookOrdersType = new ArrayList<Orderr>();
+		for(int i = 0 ; i < ordersTemp.size(); i++){
+			for(int j = 0 ; j < ordersTemp.get(i).getFood().size(); j++){
+				if(ordersTemp.get(i).getFood().get(j).getTypeOfDish().toString().equals(cook.getTypeOfCooker().toString())){
+					cookOrdersType.add(ordersTemp.get(i));
+					break;
 				}
 			}
-		}*/
-		List<Orderr> orderFood = new ArrayList<Orderr>();
-
-		for (int i = 0; i < orders.size(); i++) {
+		}
+		
+		for(int j = 0 ; j < cookOrdersType.size(); j++){
+			if(!cookOrderId.contains(cookOrdersType.get(j).getId())){
+				order.add(cookOrdersType.get(j));
+			}
+		}
+		
+		List<Orderr> orders = new ArrayList<Orderr>();
+		for(int i = 0 ; i < order.size(); i++){
 			List<Dish> food = new ArrayList<Dish>();
-			for (int j = 0; j < orders.get(i).getFood().size(); j++) {
-				if (orders.get(i).getFood().get(j).getTypeOfDish().toString()
-						.equals(cook.getTypeOfCooker().toString())) {
-					food.add(orders.get(i).getFood().get(j));
+			for(int j = 0 ; j < order.get(i).getFood().size(); j++){
+				if(order.get(i).getFood().get(j).getTypeOfDish().toString().equals(cook.getTypeOfCooker().toString())){
+					food.add(order.get(i).getFood().get(j));
 				}
 			}
-			orders.get(i).setFood(food);
-			if (orders.get(i).getFood().size() > 0) {
-				orderFood.add(orders.get(i));
+			if(food.size() > 0){
+				Orderr ord = order.get(i);
+				ord.setFood(food);
+				orders.add(ord);
 			}
 		}
 		
-		List<Orderr> returnOrderFood = new ArrayList<Orderr>(); 
-		List<Reservation> reservationsTemp = new ArrayList<Reservation>();
-		Date date = new Date();
-		SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
-		
-		//danasnje rezervacije
-		for(int i = 0 ; i < reservationService.findAll().size(); i++){
-			if(reservationService.findAll().get(i).getDate().toString().equals(ft.format(date))){
-				reservationsTemp.add(reservationService.findAll().get(i));
+		List<Orderr> tempOrdersStatus = new ArrayList<Orderr>();
+		for(int i = 0; i < orders.size(); i++){
+			if(orders.get(i).getFoodStatus() != null && orders.get(i).getFoodStatus().compareTo(FoodStatus.inPrepared) == 0){
+				tempOrdersStatus.add(orders.get(i));
 			}
 		}
 		
-		//provera smene
-		List<Reservation> reservations = getActiveReservations(reservationsTemp, cook);
 		
-		
-		
-		//provera  da li se narudzbiina poklapa sa narudzbinom rezervacije
-		for(int i = 0 ; i < reservations.size(); i++){
-			for(int k = 0 ; k < reservations.get(i).getOrders().size(); k++){
-				for(int j = 0 ; j < orderFood.size(); j++){
-					if(reservations.get(i).getOrders().get(k).getId() == orderFood.get(j).getId()){
-						returnOrderFood.add(orderFood.get(j));
+		List<Orderr> returnOrders = new ArrayList<Orderr>();
+		for(int i = 0 ; i < reservationsTemp.size(); i++){
+			for(int j = 0 ; j < reservationsTemp.get(i).getOrders().size(); j++){
+				for(int k = 0 ; k < tempOrdersStatus.size(); k++){
+					if(tempOrdersStatus.get(k).getId() == reservationsTemp.get(i).getOrders().get(j).getId()){
+						returnOrders.add(tempOrdersStatus.get(k));
 					}
 				}
 			}
 		}
 		
+		return returnOrders;
 		
-		
-
-		return new ResponseEntity<>(returnOrderFood, HttpStatus.OK);
 	}
 
 	@GetMapping(path = "/foodReceived/{orderId}")
@@ -341,28 +351,33 @@ public class CookController {
 		Date date = new Date();
 		SimpleDateFormat date24Format = new SimpleDateFormat("HH:mm");
 		String timeString = date24Format.format(date);
+		SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
 		try {
-			date = date24Format.parse(timeString);
+			
 			for (int i = 0; i < reservations.size(); i++) {
-				String time = "", timeEnd = "";
-				time += "" + reservations.get(i).getHours() + ":" + reservations.get(i).getMinutes();
-				timeEnd += "" + (reservations.get(i).getHours() + reservations.get(i).getDuration().intValue()) + ":"
-						+ reservations.get(i).getMinutes();
-				Date timeDate = new Date();
-				Date timeDateEnd = new Date();
-				Date shiftTime = new Date();
-				timeDate = date24Format.parse(time);
-				timeDateEnd = date24Format.parse(timeEnd);
-				shiftTime = date24Format.parse("16:00");
-				
-				if (date.after(timeDate) && date.before(timeDateEnd)) {
-					if(cook.getDefaultShift().compareTo(DefaultShift.First) == 0){
-						if(date.before(shiftTime)){
-							returnReservation.add(reservations.get(i));
-						}
-					} else {
-						if(date.after(shiftTime)){
-							returnReservation.add(reservations.get(i));
+				if(reservations.get(i).getDate().toString().equals(ft.format(date))){
+					String time = "", timeEnd = "";
+					time += "" + reservations.get(i).getHours() + ":" + reservations.get(i).getMinutes();
+					timeEnd += "" + (reservations.get(i).getHours() + reservations.get(i).getDuration()) + ":"
+							+ reservations.get(i).getMinutes();
+					Date timeDate = new Date();
+					Date timeDateEnd = new Date();
+					Date shiftTime = new Date();
+					Date currentDate = new Date();
+					currentDate = date24Format.parse(timeString);
+					timeDate = date24Format.parse(time);
+					timeDateEnd = date24Format.parse(timeEnd);
+					shiftTime = date24Format.parse("16:00");
+					
+					if (currentDate.after(timeDate) && currentDate.before(timeDateEnd)) {
+						if(cook.getDefaultShift().compareTo(DefaultShift.First) == 0){
+							if(currentDate.before(shiftTime)){
+								returnReservation.add(reservations.get(i));
+							}
+						} else {
+							if(currentDate.after(shiftTime)){
+								returnReservation.add(reservations.get(i));
+							}
 						}
 					}
 				}
