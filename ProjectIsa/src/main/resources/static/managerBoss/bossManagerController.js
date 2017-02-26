@@ -58,4 +58,6 @@ app.controller('bossManagerController', ['$scope','bossManagerService', '$locati
                 }
 			);
 		}
+		
+		
 }]);

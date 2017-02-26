@@ -20,12 +20,12 @@
 	</form>
 	
 	<form name="new2" ng-model="$parent.changeShiftBartender">
-		<label>Waiter1</label> 
+		<label>Bartender1</label> 
 		<select class="form-control" ng-model="$parent.changeShiftBartender.bartender1.id">
 			<option value="" selected />
 			<option ng-repeat="option in restaurant.bartenders" value="{{option.id}}">{{option.firstname}}</option>
 		</select> 
-		<label>Waiter2</label> 
+		<label>Bartender2</label> 
 		<select class="form-control" ng-model="$parent.changeShiftBartender.bartender2.id">
 			<option value="" selected />
 			<option ng-repeat="option in restaurant.bartenders" value="{{option.id}}">{{option.firstname}}</option>
