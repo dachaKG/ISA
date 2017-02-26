@@ -60,7 +60,7 @@ public class GuestController {
 	private final DishService dishService;
 	private final DrinkService drinkService;
 	private final OrderService orderService;
-	private Orderr order = new Orderr();
+	//private Orderr order = new Orderr();
 	
 	
 	private final TableService tableService;
@@ -158,40 +158,53 @@ public class GuestController {
 
 	@GetMapping(path = "/order")
 	public Orderr guestOrder(){
-		Orderr order = this.order;
+		Orderr order = new Orderr();
 		return order;
 	}
 	
 	@PutMapping(path = "/addDish/{id}")
-	public Orderr guestAddDish(@PathVariable Long id){
+	public Orderr guestAddDish(@PathVariable Long id,  @RequestBody Orderr order){
 		Dish dish = dishService.findOne(id);
-		this.order.getFood().add(dish);
-		return this.order;
+		order.getFood().add(dish);
+		return order;
 	}
 	
-	@GetMapping(path = "/removeDish/{id}")
-	public Orderr removeDish(@PathVariable Long id){
+	@PutMapping(path = "/removeDish/{id}")
+	public Orderr removeDish(@PathVariable Long id, @RequestBody Orderr order){
 		//da li treba zastita ovde sa ifom za size hrane?
-		for(int i = 0 ; i < this.order.getFood().size(); i++){
-			if(this.order.getFood().get(i).getId() == id){
-				this.order.getFood().remove(i);
+		for(int i = 0 ; i < order.getFood().size(); i++){
+			if(order.getFood().get(i).getId() == id){
+				order.getFood().remove(i);
 				break;
 			}
 		}
 		
-		return this.order;
+		return order;
+	}
+	
+	@PutMapping(path = "/removeDrink/{id}")
+	public Orderr removeDrink(@PathVariable Long id, @RequestBody Orderr order){
+		//da li treba zastita ovde sa ifom za size hrane?
+		for(int i = 0 ; i < order.getDrinks().size(); i++){
+			if(order.getDrinks().get(i).getId() == id){
+				order.getDrinks().remove(i);
+				break;
+			}
+		}
+		
+		return order;
 	}
 	
 	@PutMapping(path = "/addDrink/{id}")
-	public Orderr guestAddDrink(@PathVariable Long id){
+	public Orderr guestAddDrink(@PathVariable Long id, @RequestBody Orderr order){
 		Drink drink = drinkService.findOne(id);
-		this.order.getDrinks().add(drink);
-		return this.order;
+		order.getDrinks().add(drink);
+		return order;
 	}
 	
 	@PostMapping(path = "/makeOrder/{id}/{resId}")
 	@ResponseStatus(HttpStatus.CREATED)
-	public void makeOrder(@PathVariable Long id, @PathVariable Long resId,@Valid @RequestBody Orderr order){
+	public void makeOrder(@PathVariable Long id, @PathVariable Long resId, @Valid @RequestBody Orderr order){
 		if(order.getDrinks().size() > 0 || order.getFood().size() > 0){
 			Table table = tableService.findOne(id);
 			Reservation reservation = reservationService.findOne(resId);
@@ -273,7 +286,7 @@ public class GuestController {
 			
 			//-----------------------------
 			//TO DO: dodati goste za rezervaciju
-			this.order = new Orderr();
+			
 		}
 	}
 	

@@ -171,12 +171,11 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		
 
 		$scope.orderFood = function(dish){
-			guestService.orderFood(dish.id).then(
+			guestService.orderFood(dish.id, $scope.order).then(
 				function(response){
-					//alert("successfully added");
+					$scope.order = response.data;
 					$scope.state = undefined;
-					findAll();
-					//$window.location.reload();
+										
 				},
 				function(response){
 					alert("Error in changing");
@@ -185,21 +184,31 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		}
 		
 		$scope.removeDish = function(dish){
-			guestService.removeFood(dish.id).then(
+			guestService.removeFood(dish.id, $scope.order).then(
 				function(response){
-					$scope.order.food.splice($scope.order.food.indexOf(dish),1);
-					
+					$scope.order = response.data;
 					$scope.state = undefined;
-					findAll();
+				}
+			)
+		}
+		
+		$scope.removeDrink = function(drink){
+			guestService.removeDrink(drink.id, $scope.order).then(
+				function(response){
+					
+					$scope.order = response.data;
+					$scope.state = undefined;
+					
 				}
 			)
 		}
 		
 		$scope.orderDrink = function(drink){
-			guestService.orderDrink(drink.id).then(
+			guestService.orderDrink(drink.id, $scope.order).then(
 				function(response){
 					$scope.state = undefined;
-					findAll();
+					$scope.order = response.data;
+					
 				},
 				function(response){
 					alert("Error in changing");
@@ -224,7 +233,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		$scope.makeOrder = function(order){
 			guestService.makeOrder($scope.chosenTable, $scope.reservations.length, $scope.order).then(
 				function(response){
-					//alert("successfully added");
+					
 					$scope.state = undefined;
 					$scope.order = null;
 					findAll();

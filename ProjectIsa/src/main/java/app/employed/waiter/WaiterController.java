@@ -273,7 +273,7 @@ public class WaiterController {
 				SimpleDateFormat date24Format = new SimpleDateFormat("HH:mm");
 				String time = "", timeEnd = "";
 				time += "" + reservation.getHours() + ":" + reservation.getMinutes();
-				timeEnd += "" + (reservation.getHours() + reservation.getDuration().intValue()) + ":"
+				timeEnd += "" + (reservation.getHours() + reservation.getDuration()) + ":"
 						+ reservation.getMinutes();
 				
 				Date shiftTime = new Date();
@@ -369,9 +369,7 @@ public class WaiterController {
 	@PutMapping(path = "/newOrderDish/{id}/{reservationId}")
 	public Orderr newOrderDish(@PathVariable Long id, @PathVariable Long reservationId, @RequestBody Orderr order){
 		Dish dish = dishService.findOne(id);
-		//Reservation reservation = reservationService.findOne(reservationId);
 		order.getFood().add(dish);
-		//reservation.getOrders().add(order);
 		return order;
 	}
 	
@@ -530,7 +528,7 @@ public class WaiterController {
 			for (int i = 0; i < reservations.size(); i++) {
 				String time = "", timeEnd = "";
 				time += "" + reservations.get(i).getHours() + ":" + reservations.get(i).getMinutes();
-				timeEnd += "" + (reservations.get(i).getHours() + reservations.get(i).getDuration().intValue()) + ":"
+				timeEnd += "" + (reservations.get(i).getHours() + reservations.get(i).getDuration()) + ":"
 						+ reservations.get(i).getMinutes();
 				Date timeDate = new Date();
 				Date timeDateEnd = new Date();

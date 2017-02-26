@@ -46,20 +46,22 @@ public class Reservation {
 	private int minutes;
 	
 	@Column
-	private Double duration;
+	private int duration;
+	
 	
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "RESERVATION_GUEST", joinColumns = @JoinColumn(name = "RESERVATION_ID"), inverseJoinColumns = @JoinColumn(name = "GUEST_ID"))
 	private List<Guest> guests;
 	
 	@JsonIgnore
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany
 	@JoinTable(name = "RESERVATION_ORDER", joinColumns = @JoinColumn(name = "RESERVATION_ID"), inverseJoinColumns = @JoinColumn(name = "ORDER_ID"))
 	private List<Orderr> orders;
 	
 	@JsonIgnore
 	@ManyToOne(cascade = CascadeType.ALL)
 	private Restaurant restaurant;
+	
 	
 	
 

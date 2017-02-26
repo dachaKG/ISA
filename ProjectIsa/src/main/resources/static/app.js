@@ -284,8 +284,8 @@ angular.module('routerApp', ['ui.router',
 			url : '/reservation4',
 			templateUrl : 'guestt/guestReservation4.html'
 		})
-		.state('loggedIn.guest.reservations', {
-			url : '/reservations',
+		.state('loggedIn.guest.history', {
+			url : '/history',
 			templateUrl : 'guestt/guestReservations.html'
 		})
 		.state('loggedIn.guest.restaurantOrders', {
