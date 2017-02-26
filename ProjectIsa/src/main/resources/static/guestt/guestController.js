@@ -269,6 +269,12 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			$location.path('loggedIn/guest/reservation3');
 		}
 		
+		
+		var friendsInReservation = [];
+		$scope.addFriendToReservation = function(id){
+			friendsInReservation.push(id);
+		}
+		
 		$scope.rateOrder = function(orderRate, order){
 			guestService.rateOrder(orderRate, order.id).then(
 				function(response){
@@ -371,14 +377,15 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		
 		
 		$scope.makeReservation = function(){
+			$scope.reservation.invitedGuests = friendsInReservation;
 			guestService.makeReservation($scope.chosenTable, $scope.reservation).then(
 					function(response){
-						 
 						$location.path('loggedIn/guest/reservation4');
 					});
 		}
 		
 		$scope.orderForReservation = function(){
+			$scope.reservation.invitedGuests = friendsInReservation;
 			guestService.makeReservation($scope.chosenTable, $scope.reservation).then(
 					function(response){
 						$location.path('loggedIn/guest/reservation4');
@@ -386,6 +393,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		}
 		
 		$scope.dontOrderForReservation = function(){
+			$scope.reservation.invitedGuests = friendsInReservation;
 			guestService.makeReservation($scope.chosenTable, $scope.reservation).then(
 					function(response){
 						$location.path('loggedIn/guest/home');

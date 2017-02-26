@@ -8,6 +8,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import javax.ws.rs.Path;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
@@ -309,6 +310,7 @@ public class GuestController {
 	
 	@PostMapping(path="/makeReservation/{id}")
 	public void makeReservation(@PathVariable Long id, @RequestBody Reservation reservation){
+		//reservation.setInvitedGuests(new ArrayList<>());
 		Long guestId = ((Guest) httpSession.getAttribute("user")).getId();
 		Guest guest = guestService.findOne(guestId);
 		System.out.println("SUCCESS, id:"+id);
@@ -329,10 +331,9 @@ public class GuestController {
 			}
 		}
 		
+		System.out.println("SUCCESS BLA: SIZE: "+reservation.getInvitedGuests().size());
 		reservation.setRestaurant(restaurant);
 		reservationService.save(reservation);
-		//---------------------------------
-		//tableService.save(table);
 		
 	}
 	

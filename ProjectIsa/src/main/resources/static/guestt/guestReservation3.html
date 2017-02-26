@@ -22,13 +22,7 @@
 </table>
 <hr/><br/>
 <h3>Call friend:</h3><br/>
-
-
-
-
-
-
-<!-- Deo koji prikazuje sve gostove prijatelje sa njihovim statusima(pending, friends, rejected) -->
+<!-- Deo koji prikazuje sve gostove prijatelje  -->
 <table ng-init="listFriends()"  class="table table-bordered tableBG" border="1">
 		<tbody>
 	        <tr>
@@ -44,24 +38,13 @@
 		    		{{friend.guest.lastname}}	
 				</td>
 				<td>
-					<button class="btn btn-default navbar-btn" ng-if="friend.status == 'Friends'" >Call friend</button>
+					<button class="btn btn-default navbar-btn" ng-click="addFriendToReservation(friend.guest.id)" ng-if="friend.status == 'Friends'" >Call friend</button>
 					<label ng-if = "friend.status != 'Friends'">{{friend.status}}</label>
 				</td>
 				
 			</tr>
 		</tbody>
-    </table> 
-
-
-
-
-
-
-
-
-
-
-
+    </table>
 
 
 
