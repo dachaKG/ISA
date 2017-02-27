@@ -180,14 +180,17 @@ public class BartenderController {
 
 
 	// 2.4 sanker signalizir da je odgovarajuce pice spremno
-	@GetMapping(path = "/drinkReady/{orderId}")
+	@GetMapping(path = "/drinkReady/{orderId}/{versionId}")
 	@ResponseStatus(HttpStatus.OK)
-	public Orderr drinkReady(@PathVariable Long orderId) {
+	public Orderr drinkReady(@PathVariable Long orderId, @PathVariable Integer versionId) {
 		Optional.ofNullable(orderService.findOne(orderId))
 				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 		Long id = ((Bartender) httpSession.getAttribute("user")).getId();
 		Bartender bartender = bartenderService.findOne(id);
 		Orderr order = orderService.findOne(orderId);
+		if(order.getChangeVersion() != versionId){
+			return null;
+		}
 		order.setDrinkStatus(DrinkStatus.finished);
 		order.setCheckVersion(order.getCheckVersion()+1);
 		for(int i = 0 ; i < bartender.getOrders().size(); i++){

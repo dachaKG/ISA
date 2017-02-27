@@ -44,10 +44,15 @@ app.controller('employedCookController',['$scope','employedCookService','$locati
 		}
 		
 		$scope.received = function(foodOrder){
-			employedCookService.received(foodOrder.id).then(
+			employedCookService.received(foodOrder.id, foodOrder.changeVersion).then(
 				function(response){
-					$scope.orders.splice($scope.orders.indexOf(foodOrder),1);
-					findAll();
+					if(response.data == ""){
+						alert("Order is changed you can't receive it now");
+						findAll();
+					} else {
+						$scope.orders.splice($scope.orders.indexOf(foodOrder),1);
+						findAll();
+					}
 				},
 				function(response){
 					alert("Error while signal");

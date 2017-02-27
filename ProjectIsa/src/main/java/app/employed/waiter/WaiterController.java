@@ -342,6 +342,8 @@ public class WaiterController {
 	public Orderr changeOrder(@PathVariable Long orderId){
 		Orderr order = orderService.findOne(orderId);
 		if(order.getCheckVersion() == 0){
+			order.setChangeVersion(order.getChangeVersion()+1);
+			orderService.save(order);
 			return order;
 		} else {
 			return null;

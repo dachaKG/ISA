@@ -232,7 +232,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 				function(response){
 					guestService.avgRateFriends(restaurant.id).then(
 						function(response1){
-							if(response1.data == "Nan"){
+							if(!angular.isNumber(response1.data)){
 								$scope.avg = 0;
 							} else {
 								$scope.avg = response1.data;

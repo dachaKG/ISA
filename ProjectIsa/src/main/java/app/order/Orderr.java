@@ -53,6 +53,9 @@ public class Orderr {
 	@Column
 	private int checkVersion;
 	
+	@Column 
+	private int changeVersion;
+	
 	@Version
 	@Column
 	private Integer version;

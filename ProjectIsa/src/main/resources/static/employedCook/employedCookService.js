@@ -20,8 +20,8 @@ services.service('employedCookService',['$http', function($http){
 		return $http.get("/cook/orders");
 	}
 	
-	this.received = function(id){
-		return $http.get("/cook/foodReceived/"+id);
+	this.received = function(id, version){
+		return $http.get("/cook/foodReceived/"+id+"/"+version);
 	}
 	
 	this.receivedFood = function(){

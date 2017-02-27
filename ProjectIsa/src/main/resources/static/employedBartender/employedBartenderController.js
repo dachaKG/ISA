@@ -43,10 +43,15 @@ app.controller('employedBartenderController', [ '$scope', 'employedBartenderServ
 		}
 		
 		$scope.ready = function(drinkOrder){
-			employedBartenderService.ready(drinkOrder.id).then(
+			employedBartenderService.ready(drinkOrder.id, drinkOrder.changeVersion).then(
 				function(response) {
-					$scope.drinkOrders.splice($scope.drinkOrders.indexOf(drinkOrder),1);
-					findAll();
+					if(response.data == ""){
+						alert("Order is changed you can't make drinks ready at the moment");
+						findAll();
+					} else {
+						$scope.drinkOrders.splice($scope.drinkOrders.indexOf(drinkOrder),1);
+						findAll();
+					}
 				},
 				function(response){
 					alert("Error while signal")
