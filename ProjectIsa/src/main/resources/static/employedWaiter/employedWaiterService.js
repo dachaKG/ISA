@@ -10,6 +10,10 @@ services.service('employedWaiterService',['$http', function($http){
 		return $http.get("/waiter");
 	}
 	
+	this.employedWaiters = function(){
+		return $http.get("/waiter/employedWaiters");
+	}
+	
 	this.readyOrders = function(){
 		return $http.get("/waiter/readyOrders");
 	}
@@ -92,6 +96,10 @@ services.service('employedWaiterService',['$http', function($http){
 
 	this.allTables = function(id){
 		return $http.get("/waiter/getTables/" + id);
+	}
+	
+	this.changeOrdersList = function(){
+		return $http.get("/waiter/changeOrdersList");
 	}
 	
 }]);

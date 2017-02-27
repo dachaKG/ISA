@@ -50,6 +50,9 @@ public class Orderr {
 	@Column
 	private int total;
 	
+	@Column
+	private int checkVersion;
+	
 	@Version
 	@Column
 	private Integer version;

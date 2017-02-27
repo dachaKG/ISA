@@ -236,7 +236,8 @@ public class CookController {
 				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 
 		Orderr order = orderService.findOne(orderId);
-		
+		order.setCheckVersion(order.getCheckVersion() + 1);
+		orderService.save(order);
 		CookOrder cookOrder = new CookOrder();
 		cookOrder.setOrder(order);
 		cookOrder.setCook(cook);

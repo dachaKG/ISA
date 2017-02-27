@@ -1,7 +1,5 @@
 package app.guest;
 
-import static org.assertj.core.api.Assertions.useRepresentation;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -10,7 +8,6 @@ import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import javax.ws.rs.Path;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
