@@ -105,7 +105,7 @@ app.controller('employedWaiterController', [ '$scope', 'employedWaiterService','
 		}
 		
 		$scope.changeOrder = function(order){
-			employedWaiterService.changeOrder(order.id).then(
+			employedWaiterService.changeOrder(order.id, order.version).then(
 					function(response){
 						$scope.changedOrder = response.data;
 						$location.path('loggedIn/waiter/changeOrder');

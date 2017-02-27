@@ -322,10 +322,13 @@ public class WaiterController {
 		return waiter;
 	}
 	
-	@GetMapping("/changeOrder/{orderId}")
-	public Orderr changeOrder(@PathVariable Long orderId){
+	@GetMapping("/changeOrder/{orderId}/{version}")
+	public Orderr changeOrder(@PathVariable Long orderId, @PathVariable Integer version){
 		Orderr order = orderService.findOne(orderId);
-		return order;
+		if(version == order.getVersion())
+			return order;
+		else 
+			return null;
 	}
 	
 	@GetMapping("/getRestaurant")
