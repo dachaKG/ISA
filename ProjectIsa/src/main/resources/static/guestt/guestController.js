@@ -408,6 +408,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			$scope.reservation.tables = chosenTables;
 			guestService.makeReservation($scope.chosenTable, $scope.reservation).then(
 					function(response){
+						$scope.reservation = response.data;
 						$location.path('loggedIn/guest/reservation4');
 					});
 		}
