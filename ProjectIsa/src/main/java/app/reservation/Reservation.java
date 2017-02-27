@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import app.guest.Guest;
 import app.order.Orderr;
 import app.restaurant.Restaurant;
+import app.restaurant.Table;
 import lombok.Data;
 
 @Data
@@ -30,6 +31,9 @@ public class Reservation {
 	
 	public Reservation(){
 		this.guests = new ArrayList<Guest>();
+		this.invitedGuests = new ArrayList<Long>();
+		this.orders = new ArrayList<Orderr>();
+		this.tables = new ArrayList<Long>();
 	}
 	
 	@Id
@@ -57,6 +61,9 @@ public class Reservation {
 	@ElementCollection
 	private List<Long> invitedGuests;
 	
+	@ElementCollection
+	private List<Long> tables;
+	
 	@JsonIgnore
 	@OneToMany
 	@JoinTable(name = "RESERVATION_ORDER", joinColumns = @JoinColumn(name = "RESERVATION_ID"), inverseJoinColumns = @JoinColumn(name = "ORDER_ID"))
@@ -65,7 +72,6 @@ public class Reservation {
 	@JsonIgnore
 	@ManyToOne(cascade = CascadeType.ALL)
 	private Restaurant restaurant;
-	
 	
 	
 

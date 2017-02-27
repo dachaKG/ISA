@@ -283,6 +283,8 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		
 		var friendsInReservation = [];
 		$scope.addFriendToReservation = function(id){
+			button = document.getElementById(id);
+			button.style.background = 'green';
 			friendsInReservation.push(id);
 		}
 		
@@ -379,16 +381,20 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		}
 		
 		
-		
+		var chosenTables = [];
 		$scope.selectTable = function(table){
 			$("#odabranSto").html("Chosen table: "+table.name);
-			$scope.chosenTable = table.id;
+			button = document.getElementById(table.id);
+			button.style.background = 'green';
+			$scope.chosenTable = table;
+			chosenTables.push(table.id);
 		}
 		
 		
 		$scope.makeReservation = function(){
 			alert("Sending mails...");
 			$scope.reservation.invitedGuests = friendsInReservation;
+			$scope.reservation.tables = chosenTables;
 			guestService.makeReservation($scope.chosenTable, $scope.reservation).then(
 					function(response){
 						$location.path('loggedIn/guest/reservation4');
@@ -398,6 +404,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		$scope.orderForReservation = function(){
 			alert("Sending mails...");
 			$scope.reservation.invitedGuests = friendsInReservation;
+			$scope.reservation.tables = chosenTables;
 			guestService.makeReservation($scope.chosenTable, $scope.reservation).then(
 					function(response){
 						$location.path('loggedIn/guest/reservation4');
@@ -407,7 +414,8 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		$scope.dontOrderForReservation = function(){
 			alert("Sending mails...");
 			$scope.reservation.invitedGuests = friendsInReservation;
-			guestService.makeReservation($scope.chosenTable, $scope.reservation).then(
+			$scope.reservation.tables = chosenTables;
+			guestService.makeReservation(($scope.chosenTable.id), $scope.reservation).then(
 					function(response){
 						$location.path('loggedIn/guest/home');
 					});

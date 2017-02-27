@@ -86,8 +86,8 @@ services.service('guestService', ['$http', function($http){
 		return $http.get("guest/restaurant/getTables/"+id);
 	}
 	
-	this.makeReservation = function(tableId, reservation){
-		return $http.post("guest/makeReservation/"+ tableId, reservation);
+	this.makeReservation = function(id, reservation){
+		return $http.post("guest/makeReservation", reservation);
 	}
 	
 	this.reservations = function(){
