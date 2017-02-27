@@ -387,6 +387,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		
 		
 		$scope.makeReservation = function(){
+			alert("Sending mails...");
 			$scope.reservation.invitedGuests = friendsInReservation;
 			guestService.makeReservation($scope.chosenTable, $scope.reservation).then(
 					function(response){
@@ -395,6 +396,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		}
 		
 		$scope.orderForReservation = function(){
+			alert("Sending mails...");
 			$scope.reservation.invitedGuests = friendsInReservation;
 			guestService.makeReservation($scope.chosenTable, $scope.reservation).then(
 					function(response){
@@ -403,9 +405,47 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		}
 		
 		$scope.dontOrderForReservation = function(){
+			alert("Sending mails...");
 			$scope.reservation.invitedGuests = friendsInReservation;
 			guestService.makeReservation($scope.chosenTable, $scope.reservation).then(
 					function(response){
+						$location.path('loggedIn/guest/home');
+					});
+		}
+		
+		
+		
+		$scope.loadInvites = function(){
+			$scope.invites = [];
+			guestService.reservations().then(
+			function(response){
+				var reservations = response.data;
+				angular.forEach(reservations, function(reservation, key){
+					angular.forEach(reservation.invitedGuests, function(id, key2){
+						if(id==$scope.loggedUser.id){
+							($scope.invites).push(reservation);
+						}
+					});
+					
+				});
+				
+			});
+		}
+		
+		$scope.acceptInvite = function(id){
+			guestService.acceptInvite(id).then(
+				function(response){
+					
+					alert("restoran: "+response.data.name)
+					
+					
+				});
+		}
+		
+		$scope.rejectInvite = function(id){
+			guestService.rejectInvite(id).then(
+					function(response){
+						alert("Rejected");
 						$location.path('loggedIn/guest/home');
 					});
 		}

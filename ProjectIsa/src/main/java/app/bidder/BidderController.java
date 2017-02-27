@@ -6,7 +6,6 @@ import java.util.List;
 import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import javax.ws.rs.BadRequestException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -100,25 +99,26 @@ public class BidderController {
 	}
 
 	// izmena vrednosti aktivne ponude
-	@PostMapping("/changeOffer/{id}")
+	@PostMapping("/changeOffer/{id}/{lock}")
 	@ResponseStatus(HttpStatus.OK)
-	public String changeOffer(@PathVariable Long id,@Valid @RequestBody Offer offer) {
+	public String changeOffer(@PathVariable Long id,@PathVariable Integer lock,@Valid @RequestBody Offer offer) {
 		RestaurantOrderr restaurantOrder = restaurantOrderrService.findOne(id);
-		List<Offer> listOfOffers = restaurantOrder.getOffers();
-		for (int j = 0; j < listOfOffers.size(); j++) {
-			if (listOfOffers.get(j).getId() == offer.getId()) {
-				if (restaurantOrder.getEndDate().getTime() > offer.getPosibleDelivery().getTime() && offer.getPosibleDelivery().getTime() > restaurantOrder.getStartDate().getTime()
-					&& restaurantOrder.getOrderActive().equals("open")) {
-					//glupost al da ne pravim bzv drugi objekat
-					listOfOffers.get(j).setPrice(offer.getPrice());
-					listOfOffers.get(j).setGaranty(offer.getGaranty());
-					listOfOffers.get(j).setPosibleDelivery(offer.getPosibleDelivery());
-					restaurantOrderrService.save(restaurantOrder);
-					return "ok";
+		if(restaurantOrder.getLock() == lock) {
+			List<Offer> listOfOffers = restaurantOrder.getOffers();
+			for (int j = 0; j < listOfOffers.size(); j++) {
+				if (listOfOffers.get(j).getId() == offer.getId()) {
+					if (restaurantOrder.getEndDate().getTime() > offer.getPosibleDelivery().getTime() && offer.getPosibleDelivery().getTime() > restaurantOrder.getStartDate().getTime()
+						&& restaurantOrder.getOrderActive().equals("open")) {
+						//glupost al da ne pravim bzv drugi objekat
+						listOfOffers.get(j).setPrice(offer.getPrice());
+						listOfOffers.get(j).setGaranty(offer.getGaranty());
+						listOfOffers.get(j).setPosibleDelivery(offer.getPosibleDelivery());
+						restaurantOrderrService.save(restaurantOrder);
+						return "ok";
+					}
 				}
 			}
 		}
-
 		return "no";
 	}
 
