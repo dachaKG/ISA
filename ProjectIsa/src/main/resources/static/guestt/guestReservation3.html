@@ -38,7 +38,7 @@
 		    		{{friend.guest.lastname}}	
 				</td>
 				<td>
-					<button class="btn btn-default navbar-btn" ng-click="addFriendToReservation(friend.guest.id)" ng-if="friend.status == 'Friends'" >Call friend</button>
+					<button class="btn btn-default navbar-btn"  id = {{friend.guest.id}} ng-click="addFriendToReservation(friend.guest.id)" ng-if="friend.status == 'Friends'" >Call friend</button>
 					<label ng-if = "friend.status != 'Friends'">{{friend.status}}</label>
 				</td>
 				

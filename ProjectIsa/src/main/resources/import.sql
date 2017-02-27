@@ -22,13 +22,13 @@ INSERT INTO RESTAURANT_MANAGERS_OF_RESTAURANT (RESTAURANT_ID,RESTAURANT_MANAGER_
 INSERT INTO RESTAURANT_MANAGERS_OF_RESTAURANT (RESTAURANT_ID,RESTAURANT_MANAGER_ID) VALUES (2,2)
 
 
-INSERT INTO WAITER (MAIL,PASSWORD,FIRSTNAME,LASTNAME,REGISTRATED,CLOTHES_SIZE,SHOES_SIZE,DEFAULT_SHIFT,RATE) VALUES ('9@9','9','milanko','milanovic','1','M','no45','Second',4)
+INSERT INTO WAITER (MAIL,PASSWORD,FIRSTNAME,LASTNAME,REGISTRATED,CLOTHES_SIZE,SHOES_SIZE,DEFAULT_SHIFT,RATE) VALUES ('9@9','9','milanko','milanovic','1','M','no45','First',4)
 INSERT INTO WAITER (MAIL,PASSWORD,FIRSTNAME,LASTNAME,REGISTRATED,CLOTHES_SIZE,SHOES_SIZE,DEFAULT_SHIFT,RATE) VALUES ('waiter1@gmail.com','1','waiter1','zzz','1','M','no45','First',0)
 INSERT INTO WAITER (MAIL,PASSWORD,FIRSTNAME,LASTNAME,REGISTRATED,CLOTHES_SIZE,SHOES_SIZE,DEFAULT_SHIFT,RATE) VALUES ('waiter2@gmail.com','1','waiter2','zzz','1','M','no45','Second',3)
 INSERT INTO WAITER (MAIL,PASSWORD,FIRSTNAME,LASTNAME,REGISTRATED,CLOTHES_SIZE,SHOES_SIZE,DEFAULT_SHIFT,RATE) VALUES ('waiter3@gmail.com','1','waiter3','zzz','1','M','no45','Second',0)
 
 INSERT INTO COOK (MAIL,PASSWORD,FIRSTNAME,LASTNAME,REGISTRATED,CLOTHES_SIZE,SHOES_SIZE,TYPE_OF_COOKER, DEFAULT_SHIFT) VALUES ('8','8','milance','milanovic','1','M','no46','baked','First')
-INSERT INTO COOK (MAIL,PASSWORD,FIRSTNAME,LASTNAME,REGISTRATED,CLOTHES_SIZE,SHOES_SIZE,TYPE_OF_COOKER, DEFAULT_SHIFT) VALUES ('8@8','8','mila','milanovic','1','M','no46','salad','Second')
+INSERT INTO COOK (MAIL,PASSWORD,FIRSTNAME,LASTNAME,REGISTRATED,CLOTHES_SIZE,SHOES_SIZE,TYPE_OF_COOKER, DEFAULT_SHIFT) VALUES ('8@8','8','mila','milanovic','1','M','no46','salad','First')
 
 INSERT INTO BARTENDER (MAIL,PASSWORD,FIRSTNAME,LASTNAME,REGISTRATED,CLOTHES_SIZE,SHOES_SIZE,DEFAULT_SHIFT) VALUES ('a@gmail.com','a','milan','milanovic','1','M','no45','First')
 INSERT INTO BARTENDER (MAIL,PASSWORD,FIRSTNAME,LASTNAME,REGISTRATED,CLOTHES_SIZE,SHOES_SIZE,DEFAULT_SHIFT) VALUES ('saAA@ss','passw','milan','milanovic','1','M','no45','Second')
@@ -65,19 +65,19 @@ INSERT INTO RESTAURANT_DISH (RESTAURANT_ID,DISH_ID) VALUES (1,2)
 INSERT INTO RESTAURANT_DISH (RESTAURANT_ID,DISH_ID) VALUES (1,3)
 INSERT INTO RESTAURANT_DISH (RESTAURANT_ID,DISH_ID) VALUES (2,4)
 
-INSERT INTO ORDERR (TOTAL) VALUES(215)
-INSERT INTO ORDERR (FOOD_STATUS, DRINK_STATUS, TOTAL) VALUES('finished','finished',215)
-INSERT INTO ORDERR (FOOD_STATUS, DRINK_STATUS, TOTAL) VALUES('finished','finished',155)
-INSERT INTO ORDERR (TOTAL) VALUES(144)
-INSERT INTO ORDERR (FOOD_STATUS, DRINK_STATUS, TOTAL) VALUES('finished','finished',370)
-INSERT INTO ORDERR (TOTAL) VALUES(260)
-INSERT INTO ORDERR (FOOD_STATUS, DRINK_STATUS, TOTAL)  VALUES('inPrepared','inPrepared',260)
-INSERT INTO ORDERR (TOTAL) VALUES(260)
-INSERT INTO ORDERR (FOOD_STATUS, DRINK_STATUS, TOTAL)  VALUES('inPrepared','inPrepared',500)
-INSERT INTO ORDERR (TOTAL)  VALUES(450)
-INSERT INTO ORDERR (FOOD_STATUS, DRINK_STATUS, TOTAL)  VALUES('inPrepared','inPrepared',400)
-INSERT INTO ORDERR (FOOD_STATUS, DRINK_STATUS, TOTAL)  VALUES('inPrepared','inPrepared',600)
-INSERT INTO ORDERR (TOTAL)  VALUES(200)
+INSERT INTO ORDERR (TOTAL, VERSION) VALUES(215, 0)
+INSERT INTO ORDERR (FOOD_STATUS, DRINK_STATUS, TOTAL, VERSION) VALUES('finished','finished',215, 0)
+INSERT INTO ORDERR (FOOD_STATUS, DRINK_STATUS, TOTAL, VERSION) VALUES('finished','finished',155, 0)
+INSERT INTO ORDERR (TOTAL, VERSION) VALUES(144, 0)
+INSERT INTO ORDERR (FOOD_STATUS, DRINK_STATUS, TOTAL, VERSION) VALUES('finished','finished',370, 0)
+INSERT INTO ORDERR (TOTAL, VERSION) VALUES(260, 0)
+INSERT INTO ORDERR (FOOD_STATUS, DRINK_STATUS, TOTAL, VERSION)  VALUES('inPrepared','inPrepared',260, 0)
+INSERT INTO ORDERR (TOTAL, VERSION) VALUES(260, 0)
+INSERT INTO ORDERR (FOOD_STATUS, DRINK_STATUS, TOTAL, VERSION)  VALUES('inPrepared','inPrepared',500, 0)
+INSERT INTO ORDERR (TOTAL, VERSION)  VALUES(450, 0)
+INSERT INTO ORDERR (FOOD_STATUS, DRINK_STATUS, TOTAL, VERSION)  VALUES('inPrepared','inPrepared',400, 0)
+INSERT INTO ORDERR (FOOD_STATUS, DRINK_STATUS, TOTAL, VERSION)  VALUES('inPrepared','inPrepared',600, 0)
+INSERT INTO ORDERR (TOTAL, VERSION)  VALUES(200, 0)
 
 
 
@@ -221,9 +221,9 @@ INSERT INTO RESERVATION (DATE,HOURS,MINUTES,DURATION,RESTAURANT_RESTAURANT_ID) V
 INSERT INTO RESERVATION (DATE,HOURS,MINUTES,DURATION,RESTAURANT_RESTAURANT_ID) VALUES ('2017-02-25',10,4,5,1);
 INSERT INTO RESERVATION (DATE,HOURS,MINUTES,DURATION,RESTAURANT_RESTAURANT_ID) VALUES ('2017-02-25',18,4,3,1);
 INSERT INTO RESERVATION (DATE,HOURS,MINUTES,DURATION,RESTAURANT_RESTAURANT_ID) VALUES ('2017-02-25',12,4,5,1);
-INSERT INTO RESERVATION (DATE,HOURS,MINUTES,DURATION,RESTAURANT_RESTAURANT_ID) VALUES ('2017-02-26',13,4,2,1);
-INSERT INTO RESERVATION (DATE,HOURS,MINUTES,DURATION,RESTAURANT_RESTAURANT_ID) VALUES ('2017-02-26',14,4,2,1);
-INSERT INTO RESERVATION (DATE,HOURS,MINUTES,DURATION,RESTAURANT_RESTAURANT_ID) VALUES ('2017-02-26',15,4,3,1);
+INSERT INTO RESERVATION (DATE,HOURS,MINUTES,DURATION,RESTAURANT_RESTAURANT_ID) VALUES ('2017-02-27',8,4,2,1);
+INSERT INTO RESERVATION (DATE,HOURS,MINUTES,DURATION,RESTAURANT_RESTAURANT_ID) VALUES ('2017-02-27',8,4,2,1);
+INSERT INTO RESERVATION (DATE,HOURS,MINUTES,DURATION,RESTAURANT_RESTAURANT_ID) VALUES ('2017-02-27',8,4,3,1);
 INSERT INTO RESERVATION (DATE,HOURS,MINUTES,DURATION,RESTAURANT_RESTAURANT_ID) VALUES ('2017-02-25',19,4,2,1);
 INSERT INTO RESERVATION (DATE,HOURS,MINUTES,DURATION,RESTAURANT_RESTAURANT_ID) VALUES ('2017-02-25',14,4,2,1);
 INSERT INTO RESERVATION (DATE,HOURS,MINUTES,DURATION,RESTAURANT_RESTAURANT_ID) VALUES ('2017-02-25',18,4,3,1);
@@ -287,49 +287,49 @@ insert into restaurant_segment(restaurant_id, segment_id) values (1,1)
 insert into restaurant_segment(restaurant_id, segment_id) values (1,2)
 
 
-insert into table(name, segment_name, status, x_pos, y_pos) values ('1', 'Nepusacki', 'Exists', 0, 0)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('2', 'Nepusacki', 'Exists', 0, 1)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('3', 'Nepusacki', 'Exists', 0, 2)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('4', 'Nepusacki', 'Exists', 0, 3)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('', '', 'Not Exists', 0, 4)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('5', 'Nepusacki', 'Exists', 0, 5)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('6', 'Nepusacki', 'Exists', 0, 6)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('7', 'Nepusacki', 'Exists', 0, 7)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('', '', 'Not Exists', 1, 0)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('', '', 'Not Exists', 1, 1)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('1', 'Nepusacki', 'Exists', 0, 0, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('2', 'Nepusacki', 'Exists', 0, 1, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('3', 'Nepusacki', 'Exists', 0, 2, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('4', 'Nepusacki', 'Exists', 0, 3, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('', '', 'Not Exists', 0, 4, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('5', 'Nepusacki', 'Exists', 0, 5, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('6', 'Nepusacki', 'Exists', 0, 6, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('7', 'Nepusacki', 'Exists', 0, 7, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('', '', 'Not Exists', 1, 0, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('', '', 'Not Exists', 1, 1, 0)
 
-insert into table(name, segment_name, status, x_pos, y_pos) values ('', '', 'Not Exists', 1, 2)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('8', 'Nepusacki', 'Exists', 1, 3)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('', '', 'Not Exists', 1, 4)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('', '', 'Not Exists', 1, 5)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('', '', 'Not Exists', 1, 6)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('', '', 'Not Exists', 1, 7)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('9', 'Nepusacki', 'Exists', 2, 0)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('10', 'Nepusacki', 'Exists', 2, 1)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('11', 'Nepusacki', 'Exists', 2, 2)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('12', 'Nepusacki', 'Exists', 2, 3)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('', '', 'Not Exists', 1, 2, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('8', 'Nepusacki', 'Exists', 1, 3, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('', '', 'Not Exists', 1, 4, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('', '', 'Not Exists', 1, 5, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('', '', 'Not Exists', 1, 6, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('', '', 'Not Exists', 1, 7, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('9', 'Nepusacki', 'Exists', 2, 0, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('10', 'Nepusacki', 'Exists', 2, 1, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('11', 'Nepusacki', 'Exists', 2, 2, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('12', 'Nepusacki', 'Exists', 2, 3, 0)
 
-insert into table(name, segment_name, status, x_pos, y_pos) values ('', '', 'Not Exists', 2, 4)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('', '', 'Not Exists', 2, 5)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('', '', 'Not Exists', 2, 6)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('', '', 'Not Exists', 2, 7)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('13', 'Nepusacki', 'Exists', 3, 0)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('13a', 'Nepusacki', 'Exists', 3, 1)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('14', 'Nepusacki', 'Exists', 3, 2)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('', '', 'Not Exists', 3, 3)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('', '', 'Not Exists', 3, 4)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('', '', 'Not Exists', 3, 5)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('', '', 'Not Exists', 2, 4, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('', '', 'Not Exists', 2, 5, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('', '', 'Not Exists', 2, 6, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('', '', 'Not Exists', 2, 7, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('13', 'Nepusacki', 'Exists', 3, 0, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('13a', 'Nepusacki', 'Exists', 3, 1, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('14', 'Nepusacki', 'Exists', 3, 2, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('', '', 'Not Exists', 3, 3, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('', '', 'Not Exists', 3, 4, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('', '', 'Not Exists', 3, 5, 0)
 
-insert into table(name, segment_name, status, x_pos, y_pos) values ('1f', 'Balkon', 'Exists', 3, 6)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('2f', 'Balkon', 'Exists', 3, 7)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('16', 'Nepusacki', 'Exists', 4, 0)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('17', 'Nepusacki', 'Exists', 4, 1)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('18', 'Nepusacki', 'Exists', 4, 2)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('', '', 'Not Exists', 4, 3)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('', '', 'Not Exists', 4, 4)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('', '', 'Not Exists', 4, 5)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('3f', 'Balkon', 'Exists', 4, 6)
-insert into table(name, segment_name, status, x_pos, y_pos) values ('4f', 'Balkon', 'Exists', 4, 7)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('1f', 'Balkon', 'Exists', 3, 6, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('2f', 'Balkon', 'Exists', 3, 7, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('16', 'Nepusacki', 'Exists', 4, 0, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('17', 'Nepusacki', 'Exists', 4, 1, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('18', 'Nepusacki', 'Exists', 4, 2, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('', '', 'Not Exists', 4, 3, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('', '', 'Not Exists', 4, 4, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('', '', 'Not Exists', 4, 5, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('3f', 'Balkon', 'Exists', 4, 6, 0)
+insert into table(name, segment_name, status, x_pos, y_pos, version) values ('4f', 'Balkon', 'Exists', 4, 7, 0)
 
 
 

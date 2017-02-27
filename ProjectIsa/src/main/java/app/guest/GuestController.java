@@ -317,23 +317,26 @@ public class GuestController {
 	}
 	
 	
-	@PostMapping(path="/makeReservation/{id}")
-	public void makeReservation(@PathVariable Long id, @RequestBody Reservation reservation){
-		//reservation.setInvitedGuests(new ArrayList<>());
+	@PostMapping(path="/makeReservation")
+	public void makeReservation(@RequestBody Reservation reservation){
+		List<Long> tables = reservation.getTables();
+		for(int i=0; i<tables.size(); i++){
+			tableService.findOne(tables.get(i)).getReservations().add(reservation);
+		}
+		System.out.println("tables size:::: "+tables.size());
+		
 		Long guestId = ((Guest) httpSession.getAttribute("user")).getId();
 		Guest guest = guestService.findOne(guestId);
-		System.out.println("SUCCESS, id:"+id);
-		System.out.println("DATE: "+reservation.getDate()+" h:"+reservation.getHours()+" m:"+reservation.getMinutes());
-		Table table = tableService.findOne(id);
+		
+		
 		reservation.getGuests().add(guest);
-		table.getReservations().add(reservation);
 		
 		List<Restaurant> restaurants = restaurantService.findAll();
 		Restaurant restaurant = new Restaurant();
 		label :
 		for(int i = 0 ; i < restaurants.size(); i++){
 			for(int j = 0 ; j < restaurants.get(i).getSegments().size(); j++){
-				if(restaurants.get(i).getSegments().get(j).getName().equals(table.getSegmentName())){
+				if(restaurants.get(i).getSegments().get(j).getName().equals(tableService.findOne(tables.get(0)).getSegmentName())){
 					restaurant = restaurants.get(i);
 					break label;
 				}
@@ -355,7 +358,6 @@ public class GuestController {
 		}
 		reservation.setRestaurant(restaurant);
 		reservationService.save(reservation);
-		
 	}
 	
 	
