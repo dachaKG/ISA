@@ -78,7 +78,7 @@ services.service('guestService', ['$http', function($http){
 	}
 	
 	this.makeOrder = function(tableId, reservationId, order){
-		return $http.post("/guest/makeOrder/"+tableId +"/"+ reservationId, order);
+		return $http.post("/guest/makeOrder/"+tableId.id +"/"+ reservationId, order);
 	}
 	
 
