@@ -252,7 +252,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			);
 		}
 		
-		$scope.makeOrder = function(order){
+		$scope.makeOrder = function(order){	
 			guestService.makeOrder($scope.chosenTable, $scope.reservation.id, $scope.order).then(
 				function(response){
 					
@@ -442,14 +442,12 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			});
 		}
 		
-		$scope.acceptInvite = function(id){
-			guestService.acceptInvite(id).then(
-				function(response){
-					
-					alert("restoran: "+response.data.name)
-					
-					
-				});
+		var inviteId = 0;
+		$scope.acceptInvite = function(invite){
+			inviteId = invite.id;
+			$scope.reservation = invite;
+			var modal = document.getElementById('myModal');
+			modal.style.display = "block";
 		}
 		
 		$scope.rejectInvite = function(id){
@@ -459,6 +457,28 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 						$location.path('loggedIn/guest/home');
 					});
 		}
+		
+		$scope.acceptInviteAndOrder = function(){
+			guestService.acceptInvite(inviteId).then(
+					function(response){
+						$scope.restaurant = response.data;
+						var tables = $scope.reservation.tables;
+						var chosenTable = {
+								id : $scope.reservation.tables[0]
+						};
+						$scope.chosenTable = chosenTable;
+						$location.path('loggedIn/guest/reservation4');
+					});
+		}
+		
+		$scope.acceptInviteAndNoOrder = function(){
+			guestService.acceptInvite(inviteId).then(
+					function(response){
+						$location.path('loggedIn/guest/home');
+					});
+		}
+		
+		
 		
 				
 		function myMap(restaurant) {
