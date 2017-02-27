@@ -27,12 +27,7 @@ import lombok.Data;
 @Data
 @Entity
 public class Orderr {
-	public Orderr(){
-		this.drinks = new ArrayList<Drink>();
-		this.food = new ArrayList<Dish>();
-		this.version = 0;
-	}
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "ORDER_ID")
@@ -99,4 +94,13 @@ public class Orderr {
 	@ManyToOne
 	@JoinTable(name = "ORDER_TABLE", joinColumns = @JoinColumn(name = "ORDER_ID"), inverseJoinColumns = @JoinColumn(name = "TABLE_ID"))
 	private Table table;
+	
+	public Orderr(){
+		this.drinks = new ArrayList<Drink>();
+		this.food = new ArrayList<Dish>();
+		this.version = 0;
+		this.checkVersion = 0;
+		this.changeVersion = 0;
+	}
+
 }

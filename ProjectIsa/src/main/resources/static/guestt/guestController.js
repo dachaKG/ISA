@@ -253,7 +253,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		}
 		
 		$scope.makeOrder = function(order){
-			guestService.makeOrder($scope.chosenTable, $scope.reservations.length, $scope.order).then(
+			guestService.makeOrder($scope.chosenTable, $scope.reservation.id, $scope.order).then(
 				function(response){
 					
 					$scope.state = undefined;
@@ -397,6 +397,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			$scope.reservation.tables = chosenTables;
 			guestService.makeReservation($scope.chosenTable, $scope.reservation).then(
 					function(response){
+						$scope.reservation = response.data;
 						$location.path('loggedIn/guest/reservation4');
 					});
 		}

@@ -224,7 +224,7 @@ public class GuestController {
 			order.setId(null);
 			order.setTable(tableService.findOne(id));
 			order.setTotal(order.getTotal());
-			orderService.save(order);
+			order = orderService.save(order);
 			Restaurant restaurant = restaurantService.findOne(reservation.getRestaurant().getId());
 			
 			restaurant.getOrder().add(order);
@@ -240,7 +240,7 @@ public class GuestController {
 				shift = "Second";
 			}
 			
-			int endTime = (int) (reservation.getHours() + reservation.getDuration());
+			int endTime = reservation.getHours() + reservation.getDuration();
 			
 			if(endTime > 16 && shift == "Second"){
 				for(int i = 0 ; i < waiters.size(); i++){
@@ -277,10 +277,10 @@ public class GuestController {
 							changedShifts.get(i).getDate().compareTo(reservation.getDate()) == 0)){
 						
 						//waiter = changedShifts.get(i).getWaiter2();
-						waiter.set(i, changedShifts.get(i).getWaiter2());
+						waiter.set(j, changedShifts.get(i).getWaiter2());
 					} else if ((changedShifts.get(i).getWaiter2().getId() == waiter.get(j).getId() &&
 							changedShifts.get(i).getDate().compareTo(reservation.getDate()) == 0)){
-						waiter.set(i, changedShifts.get(i).getWaiter1());
+						waiter.set(j, changedShifts.get(i).getWaiter1());
 					}
 				}
 			}
@@ -289,16 +289,12 @@ public class GuestController {
 				Waiter w = waiterService.findOne(waiter.get(i).getId());
 				waiterService.save(w);
 			}
-			//waiter.getOrders().add(order);
-			orderService.save(order);
+			
 			reservation.getOrders().add(order);
 			reservationService.save(reservation);
-			//waiterService.save(waiter);
 			restaurantService.save(restaurant);
 			
 			
-			//-----------------------------
-			//TO DO: dodati goste za rezervaciju
 			
 		}
 	}
@@ -315,7 +311,7 @@ public class GuestController {
 	
 	
 	@PostMapping(path="/makeReservation")
-	public void makeReservation(@RequestBody Reservation reservation){
+	public Reservation makeReservation(@RequestBody Reservation reservation){
 		List<Long> tables = reservation.getTables();
 		for(int i=0; i<tables.size(); i++){
 			tableService.findOne(tables.get(i)).getReservations().add(reservation);
@@ -354,7 +350,7 @@ public class GuestController {
 				}
 		}
 		reservation.setRestaurant(restaurant);
-		reservationService.save(reservation);
+		return reservationService.save(reservation);
 	}
 	
 	
