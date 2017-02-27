@@ -10,7 +10,6 @@ import java.util.Optional;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -27,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import app.dish.Dish;
 import app.employed.DefaultShift;
-import app.employed.waiter.Waiter;
 import app.order.FoodStatus;
 import app.order.OrderService;
 import app.order.Orderr;
@@ -238,7 +236,8 @@ public class CookController {
 				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 
 		Orderr order = orderService.findOne(orderId);
-
+		order.setCheckVersion(order.getCheckVersion() + 1);
+		orderService.save(order);
 		CookOrder cookOrder = new CookOrder();
 		cookOrder.setOrder(order);
 		cookOrder.setCook(cook);

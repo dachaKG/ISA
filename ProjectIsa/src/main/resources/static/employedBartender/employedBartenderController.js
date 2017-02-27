@@ -34,6 +34,12 @@ app.controller('employedBartenderController', [ '$scope', 'employedBartenderServ
 					$scope.readyDrinks = response.data;
 				}
 			);
+			
+			employedBartenderService.employedBartenders().then(
+					function(response){
+						$scope.employedBartenders = response.data;
+					}
+				)
 		}
 		
 		$scope.ready = function(drinkOrder){
@@ -74,5 +80,33 @@ app.controller('employedBartenderController', [ '$scope', 'employedBartenderServ
 					alert("Error in changing");
 				}
 			);
+		}
+		
+		$scope.changedShift = function(bartender) {
+		    var today = Date.now();
+		    var tomorrow = new Date(Date.now() + 86400000 * 1);
+			var step = 1;
+			var datesArr = [];
+			var temp = 0;
+			if(bartender.defaultShift != "First") 
+				temp = 1;
+			else
+				temp = 0;
+			for(var i = 0;i<300;i++) {
+				s = i % 14;
+				if(s >= 7){
+					day = new Date(Date.now() +temp * 86400000 + 86400000 *  i*step);
+					datesArr.push(day);
+				}
+			}
+			
+			
+			$('#date').multiDatesPicker('destroy');
+			$('#date').multiDatesPicker({
+		        numberOfMonths: 1,
+		        addDates: datesArr
+			});
+			if(temp == 1)
+				$('#date').multiDatesPicker('toggleDate', new Date());
 		}
 }]);

@@ -28,6 +28,12 @@ app.controller('employedWaiterController', [ '$scope', 'employedWaiterService','
 				}
 			);
 			
+			employedWaiterService.employedWaiters().then(
+					function(response){
+						$scope.employedWaiters = response.data;
+					}
+				)
+			
 			employedWaiterService.orders().then(
 				function(response){
 					$scope.orders = response.data;
@@ -61,6 +67,12 @@ app.controller('employedWaiterController', [ '$scope', 'employedWaiterService','
 			employedWaiterService.tables().then(
 				function(response){
 					$scope.waiterTables = response.data;
+				}
+			)
+			
+			employedWaiterService.changeOrdersList().then(
+				function(response){
+					$scope.changeOrdersList = response.data;
 				}
 			)
 			
@@ -107,8 +119,13 @@ app.controller('employedWaiterController', [ '$scope', 'employedWaiterService','
 		$scope.changeOrder = function(order){
 			employedWaiterService.changeOrder(order.id).then(
 					function(response){
-						$scope.changedOrder = response.data;
-						$location.path('loggedIn/waiter/changeOrder');
+						if(response.data == ""){
+							alert("You can't change this order anymore");
+							findAll();
+						} else {
+							$scope.changedOrder = response.data;
+							$location.path('loggedIn/waiter/changeOrder');
+						}
 			});				
 		}
 		
@@ -270,6 +287,7 @@ app.controller('employedWaiterController', [ '$scope', 'employedWaiterService','
 		}
 		
 		
+		
 		$scope.loadTables = function(){
 			employedWaiterService.restaurant().then(
 					function(response){
@@ -318,6 +336,34 @@ app.controller('employedWaiterController', [ '$scope', 'employedWaiterService','
 			
 			
 		});
+		}
+		
+		$scope.changedShift = function(waiter) {
+		    var today = Date.now();
+		    var tomorrow = new Date(Date.now() + 86400000 * 1);
+			var step = 1;
+			var datesArr = [];
+			var temp = 0;
+			if(waiter.defaultShift != "First") 
+				temp = 1;
+			else
+				temp = 0;
+			for(var i = 0;i<300;i++) {
+				s = i % 14;
+				if(s >= 7){
+					day = new Date(Date.now() +temp * 86400000 + 86400000 *  i*step);
+					datesArr.push(day);
+				}
+			}
+			
+			
+			$('#date').multiDatesPicker('destroy');
+			$('#date').multiDatesPicker({
+		        numberOfMonths: 1,
+		        addDates: datesArr
+			});
+			if(temp == 1)
+				$('#date').multiDatesPicker('toggleDate', new Date());
 		}
 		
 		

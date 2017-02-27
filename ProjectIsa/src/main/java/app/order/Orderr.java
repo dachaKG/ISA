@@ -16,13 +16,11 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.Version;
 
 import app.dish.Dish;
 import app.drink.Drink;
 import app.employed.cook.CookOrder;
-import app.reservation.Reservation;
 import app.restaurant.Table;
 import lombok.Data;
 
@@ -32,6 +30,7 @@ public class Orderr {
 	public Orderr(){
 		this.drinks = new ArrayList<Drink>();
 		this.food = new ArrayList<Dish>();
+		this.version = 0;
 	}
 
 	@Id
@@ -50,6 +49,13 @@ public class Orderr {
 	
 	@Column
 	private int total;
+	
+	@Column
+	private int checkVersion;
+	
+	@Version
+	@Column
+	private Integer version;
 	
 	public int getTotal(){
 		int total = 0;

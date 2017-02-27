@@ -8,6 +8,10 @@ services.service('employedBartenderService',['$http', function($http){
 		return $http.get("/bartender/checkRights");
 	}
 	
+	this.employedBartenders = function(){
+		return $http.get("/bartender/employedBartenders");
+	}
+	
 	this.findBartender = function(){
 		return $http.get("/bartender");
 	}
