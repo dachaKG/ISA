@@ -281,6 +281,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		}
 		
 		$scope.reservation1 = function(id){
+			 $("#datepicker").datepicker({minDate: 0});
 			guestService.find(id).then(
 				function(response){
 					$scope.restaurant = response.data;
@@ -289,11 +290,14 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		}
 		
 		$scope.reservation2 = function(){
+			chosenTables = [];
 			$location.path('loggedIn/guest/reservation2');
 		}
 		
 		$scope.reservation3 = function(){
-			$location.path('loggedIn/guest/reservation3');
+			if(chosenTables.length > 0){
+				$location.path('loggedIn/guest/reservation3');
+			}
 		}
 		
 		
@@ -301,6 +305,8 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		$scope.addFriendToReservation = function(id){
 			button = document.getElementById(id);
 			button.style.background = 'green';
+			$('#'+id).attr('disabled', 'disabled');
+			$('#'+id).empty();  $('#'+id).append("Called"); 
 			friendsInReservation.push(id);
 		}
 		
@@ -402,6 +408,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			$("#odabranSto").html("Chosen table: "+table.name);
 			button = document.getElementById(table.id);
 			button.style.background = 'green';
+			$('#'+table.id).attr('disabled', 'disabled');
 			$scope.chosenTable = table;
 			chosenTables.push(table.id);
 		}
