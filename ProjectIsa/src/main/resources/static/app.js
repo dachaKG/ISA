@@ -308,10 +308,6 @@ angular.module('routerApp', ['ui.router',
 			url : '/restaurantOrders',
 			templateUrl : 'guestt/guestRestaurantOrders.html'
 		})
-		.state('loggedIn.guest.invites', {
-			url : '/invites',
-			templateUrl : 'guestt/guestInvites.html'
-		})
         
         
         

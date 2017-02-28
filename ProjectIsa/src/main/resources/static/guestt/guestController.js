@@ -68,6 +68,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			guestService.cancelReservation(res.id).then(
 					function(response){
 						alert("Reservation canceled");
+						$window.location.reload();
 					});
 			
 		}
