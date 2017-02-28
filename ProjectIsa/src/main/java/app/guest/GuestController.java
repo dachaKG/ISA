@@ -360,6 +360,17 @@ public class GuestController {
 		return reservationService.findAll();		
 	}
 	
+	@GetMapping(path="/currentReservations")
+	@ResponseStatus(HttpStatus.OK)
+	public List<Reservation> getcurrentReservations(){
+		return reservationService.findAll();		
+	}
+	
+	@GetMapping(path="/cancelReservation/{id}")
+	public void CancelReservation(@PathVariable Long id){
+		reservationService.delete(id);
+	}
+	
 	
 	public List<Reservation> getReservationsRestaurant(){
 		Long guestId = ((Guest) httpSession.getAttribute("user")).getId();

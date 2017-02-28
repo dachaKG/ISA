@@ -12,3 +12,17 @@
 		</h3>
 	</li>
 </ul>
+
+
+
+
+
+
+<!--  Deo koji prikazuje sve trenutne rezervacije -->
+<h2>Current reservations: </h2>
+
+<ul ng-init = "currentReservations()">
+<li ng-repeat = "reservation in currentReservations"> <h3>You have ongoing reservation: Date:{{reservation.date}}, Time: {{reservation.hours}}:{{reservation.minutes}}
+								<button class="btn btn-default navbar-btn" ng-click="cancelReservation(reservation)">Cancel</button>  </h3></li>
+</ul>
+

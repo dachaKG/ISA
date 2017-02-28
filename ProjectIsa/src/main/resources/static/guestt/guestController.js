@@ -57,6 +57,21 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			)
 		}
 		
+		$scope.currentReservations = function(){
+			guestService.getCurrentReservations().then(
+				function(response){
+					$scope.currentReservations = response.data;
+				});
+		}
+		
+		$scope.cancelReservation = function(res){
+			guestService.cancelReservation(res.id).then(
+					function(response){
+						alert("Reservation canceled");
+					});
+			
+		}
+		
 		$scope.findFriends = function(){
 			if($scope.inputStr !== '') {
 				guestService.findFriends($scope.inputStr).then(
