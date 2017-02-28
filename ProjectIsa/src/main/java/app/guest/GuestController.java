@@ -236,7 +236,7 @@ public class GuestController {
 			String shift = "";
 			if(reservation.getHours() > 8 && reservation.getHours() < 16){
 				shift = "First";
-			} else if (reservation.getHours() >= 16 && reservation.getHours() < 24){
+			} else if (reservation.getHours() >= 16 && reservation.getHours() < 22){
 				shift = "Second";
 			}
 			
@@ -275,8 +275,6 @@ public class GuestController {
 				for(int i = 0 ; i < changedShifts.size(); i++){
 					if((changedShifts.get(i).getWaiter1().getId() == waiter.get(j).getId() &&
 							changedShifts.get(i).getDate().compareTo(reservation.getDate()) == 0)){
-						
-						//waiter = changedShifts.get(i).getWaiter2();
 						waiter.set(j, changedShifts.get(i).getWaiter2());
 					} else if ((changedShifts.get(i).getWaiter2().getId() == waiter.get(j).getId() &&
 							changedShifts.get(i).getDate().compareTo(reservation.getDate()) == 0)){

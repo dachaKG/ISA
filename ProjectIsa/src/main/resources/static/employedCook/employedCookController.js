@@ -1,7 +1,7 @@
 var app = angular.module('employedCook.controllers',[]);
 
-app.controller('employedCookController',['$scope','employedCookService','$location',
-	function($scope, employedCookService, $location){
+app.controller('employedCookController',['$scope','$filter','employedCookService','$location',
+	function($scope,$filter, employedCookService, $location){
 		function checkRights(){
 			employedCookService.checkRights().then(
 				function(response){
@@ -101,31 +101,49 @@ app.controller('employedCookController',['$scope','employedCookService','$locati
 		}
 		
 		$scope.changedShift = function(cook) {
-		    var today = Date.now();
-		    var tomorrow = new Date(Date.now() + 86400000 * 1);
-			var step = 1;
-			var datesArr = [];
-			var temp = 0;
-			if(cook.defaultShift != "First") 
-				temp = 1;
-			else
-				temp = 0;
-			for(var i = 0;i<300;i++) {
-				s = i % 14;
-				if(s >= 7){
-					day = new Date(Date.now() +temp * 86400000 + 86400000 *  i*step);
-					datesArr.push(day);
+			employedCookService.changedShiftDate(cook.id).then(
+				function(response){
+					var today = Date.now();
+				    var tomorrow = new Date(Date.now() + 86400000 * 1);
+					var step = 1;
+					var datesArr = [];
+					var temp = 0;
+					if(cook.defaultShift != "First") 
+						temp = 1;
+					else
+						temp = 0;
+					
+					dates = response.data;
+					for(var i = 0;i<300;i++) {
+						day = new Date(Date.now() + temp * 86400000 + 86400000 * i/* * 86400000 + 86400000 *  i*step*/);
+						days = $filter('date')(day, 'yyyy-MM-dd');
+						var check = true;
+						for(var j = 0 ; j < dates.length; j++){
+							if(dates[j] != days)
+								check = true;
+							else{
+								check = false;
+								break;
+							} 
+								
+							
+						}
+						if(check)
+							datesArr.push(day);
+						
+					}
+					
+					
+					$('#date').multiDatesPicker('destroy');
+					$('#date').multiDatesPicker({
+				        numberOfMonths: 1,
+				        addDates: datesArr
+					});
+					if(temp == 1)
+						$('#date').multiDatesPicker('toggleDate', new Date());
 				}
-			}
-			
-			
-			$('#date').multiDatesPicker('destroy');
-			$('#date').multiDatesPicker({
-		        numberOfMonths: 1,
-		        addDates: datesArr
-			});
-			if(temp == 1)
-				$('#date').multiDatesPicker('toggleDate', new Date());
+			)
+			    
 		}
 		
 }]);

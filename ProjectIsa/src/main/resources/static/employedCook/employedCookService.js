@@ -44,4 +44,8 @@ services.service('employedCookService',['$http', function($http){
 		return $http.put("/cook/changePassword/"+id,cook);
 	}
 	
+	this.changedShiftDate = function(id){
+		return $http.get("/cook/changedShiftDate/"+id);
+	}
+	
 }]);

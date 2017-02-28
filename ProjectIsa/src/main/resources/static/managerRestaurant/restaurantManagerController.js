@@ -659,18 +659,18 @@ app.controller('restaurantManagerController', ['$scope','$window','restaurantMan
 			tablesForNewWaiter.push(table);
 		}
 
-		$scope.changedShift = function(cook) {
+		$scope.changedShift = function() {
 		    var today = Date.now();
 		    var tomorrow = new Date(Date.now() + 86400000 * 1);
 			var step = 2;
 			var datesArr = [];
 			var temp = 0;
-			if(cook.defaultShift != "First") 
+			if($scope.employed.defaultShift != "First") 
 				temp = 1;
 			else
 				temp = 0;
 			for(var i = 0;i<300;i++) {
-				day = new Date(Date.now() +temp * 86400000 + 86400000 *  i*step);
+				day = new Date(Date.now() + temp * 86400000 + 86400000 *  i*step);
 				datesArr.push(day);
 			}
 			$('#date').multiDatesPicker('destroy');

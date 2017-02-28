@@ -88,6 +88,11 @@ app.controller('employedBartenderController', [ '$scope', 'employedBartenderServ
 		}
 		
 		$scope.changedShift = function(bartender) {
+			$employedBartenderService.changedShiftDate(bartender.id).then(
+				function(response){
+					$scope.changedShiftDate = response.data;
+				}
+			)
 		    var today = Date.now();
 		    var tomorrow = new Date(Date.now() + 86400000 * 1);
 			var step = 1;

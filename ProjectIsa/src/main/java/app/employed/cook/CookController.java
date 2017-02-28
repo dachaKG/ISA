@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import app.dish.Dish;
 import app.employed.DefaultShift;
+import app.manager.changedShiftCook.ChangedShiftCook;
+import app.manager.changedShiftCook.ChangedShiftCookService;
 import app.order.FoodStatus;
 import app.order.OrderService;
 import app.order.Orderr;
@@ -44,16 +46,18 @@ public class CookController {
 	private final CookOrderService cookOrderService;
 	private final ReservationService reservationService;
 	private final RestaurantService restaurantService;
-
+	private final ChangedShiftCookService changedShiftService;
 	@Autowired
 	public CookController(final HttpSession httpSession, final CookService cookService, final OrderService orderService,
-			final CookOrderService cookOrderService, final ReservationService reservationService, final RestaurantService restaurantService) {
+			final CookOrderService cookOrderService, final ReservationService reservationService, final RestaurantService restaurantService,
+			final ChangedShiftCookService changedShiftService) {
 		this.httpSession = httpSession;
 		this.cookService = cookService;
 		this.orderService = orderService;
 		this.cookOrderService = cookOrderService;
 		this.reservationService = reservationService;
 		this.restaurantService = restaurantService;
+		this.changedShiftService = changedShiftService;
 		
 	}
 
@@ -359,7 +363,24 @@ public class CookController {
 		}
 		
 		return order;
-
+	}
+	
+	@GetMapping("/changedShiftDate/{cookId}")
+	public List<Date> changedShiftDate(@PathVariable Long cookId){
+		
+		Cook cook = cookService.findOne(cookId);
+		
+		List<ChangedShiftCook> changedShifts = changedShiftService.findAll();
+		List<Date> dates = new ArrayList<Date>();
+		for(int i = 0 ; i < changedShifts.size(); i++){
+			if(changedShifts.get(i).getCook1().getId() == cook.getId()){
+				dates.add(changedShifts.get(i).getDate());
+			} else if (changedShifts.get(i).getCook2().getId() == cook.getId()){
+				dates.add(changedShifts.get(i).getDate());
+			}
+		}
+		
+		return dates;
 	}
 	
 	public List<Reservation> getActiveReservations(List<Reservation> reservations, Cook cook){
