@@ -1,6 +1,8 @@
 package app.guest;
 
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -340,7 +342,7 @@ public class GuestController {
 					mail.setTo("isarestorani2@gmail.com");// umesto ovoga guest.mail..ako neces da testiras
 					mail.setFrom("isarestorani2@gmail.com");
 					mail.setSubject("Activation link");
-					mail.setText("http://localhost:8080/#/loggedIn/guest/invites");
+					mail.setText("http://localhost:8080/#/loggedIn/guest/home");
 
 					javaMailSender.send(mail);
 				} catch (Exception m) {
@@ -356,6 +358,35 @@ public class GuestController {
 	@ResponseStatus(HttpStatus.OK)
 	public List<Reservation> getReservations(){
 		return reservationService.findAll();		
+	}
+	
+	@GetMapping(path="/currentReservations")
+	@ResponseStatus(HttpStatus.OK)
+	public List<Reservation> getcurrentReservations(){
+		Long guestId = ((Guest) httpSession.getAttribute("user")).getId();
+		List<Reservation> reservations = reservationService.findAll();
+		List<Reservation> out = new ArrayList<Reservation>();
+		for(int i=0; i<reservations.size(); i++){
+			List<Guest> guests = reservations.get(i).getGuests();
+			for(int j=0; j<guests.size(); j++){
+				if(guests.get(j).getId()== guestId ){
+					Date today = new Date(Calendar.getInstance().getTime().getTime());
+					Date resDate = reservations.get(i).getDate();
+					if(today.before(resDate))
+						out.add(reservations.get(i));
+				}
+			}
+			
+		}
+		
+		return out;		
+	}
+	
+	@GetMapping(path="/cancelReservation/{id}")
+	public void CancelReservation(@PathVariable Long id){
+		Reservation res = reservationService.findOne(id);
+		res.getGuests().clear();
+		reservationService.save(res);
 	}
 	
 	

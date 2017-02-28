@@ -57,6 +57,22 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			)
 		}
 		
+		$scope.currentReservations = function(){
+			guestService.getCurrentReservations().then(
+				function(response){
+					$scope.currentReservations = response.data;
+				});
+		}
+		
+		$scope.cancelReservation = function(res){
+			guestService.cancelReservation(res.id).then(
+					function(response){
+						alert("Reservation canceled");
+						$window.location.reload();
+					});
+			
+		}
+		
 		$scope.findFriends = function(){
 			if($scope.inputStr !== '') {
 				guestService.findFriends($scope.inputStr).then(
@@ -252,7 +268,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			);
 		}
 		
-		$scope.makeOrder = function(order){
+		$scope.makeOrder = function(order){	
 			guestService.makeOrder($scope.chosenTable, $scope.reservation.id, $scope.order).then(
 				function(response){
 					
@@ -265,6 +281,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		}
 		
 		$scope.reservation1 = function(id){
+			 $("#datepicker").datepicker({minDate: 0});
 			guestService.find(id).then(
 				function(response){
 					$scope.restaurant = response.data;
@@ -273,11 +290,14 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		}
 		
 		$scope.reservation2 = function(){
+			chosenTables = [];
 			$location.path('loggedIn/guest/reservation2');
 		}
 		
 		$scope.reservation3 = function(){
-			$location.path('loggedIn/guest/reservation3');
+			if(chosenTables.length > 0){
+				$location.path('loggedIn/guest/reservation3');
+			}
 		}
 		
 		
@@ -285,6 +305,8 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		$scope.addFriendToReservation = function(id){
 			button = document.getElementById(id);
 			button.style.background = 'green';
+			$('#'+id).attr('disabled', 'disabled');
+			$('#'+id).empty();  $('#'+id).append("Called"); 
 			friendsInReservation.push(id);
 		}
 		
@@ -386,6 +408,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			$("#odabranSto").html("Chosen table: "+table.name);
 			button = document.getElementById(table.id);
 			button.style.background = 'green';
+			$('#'+table.id).attr('disabled', 'disabled');
 			$scope.chosenTable = table;
 			chosenTables.push(table.id);
 		}
@@ -408,6 +431,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			$scope.reservation.tables = chosenTables;
 			guestService.makeReservation($scope.chosenTable, $scope.reservation).then(
 					function(response){
+						$scope.reservation = response.data;
 						$location.path('loggedIn/guest/reservation4');
 					});
 		}
@@ -441,14 +465,12 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			});
 		}
 		
-		$scope.acceptInvite = function(id){
-			guestService.acceptInvite(id).then(
-				function(response){
-					
-					alert("restoran: "+response.data.name)
-					
-					
-				});
+		var inviteId = 0;
+		$scope.acceptInvite = function(invite){
+			inviteId = invite.id;
+			$scope.reservation = invite;
+			var modal = document.getElementById('myModal');
+			modal.style.display = "block";
 		}
 		
 		$scope.rejectInvite = function(id){
@@ -458,6 +480,28 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 						$location.path('loggedIn/guest/home');
 					});
 		}
+		
+		$scope.acceptInviteAndOrder = function(){
+			guestService.acceptInvite(inviteId).then(
+					function(response){
+						$scope.restaurant = response.data;
+						var tables = $scope.reservation.tables;
+						var chosenTable = {
+								id : $scope.reservation.tables[0]
+						};
+						$scope.chosenTable = chosenTable;
+						$location.path('loggedIn/guest/reservation4');
+					});
+		}
+		
+		$scope.acceptInviteAndNoOrder = function(){
+			guestService.acceptInvite(inviteId).then(
+					function(response){
+						$location.path('loggedIn/guest/home');
+					});
+		}
+		
+		
 		
 				
 		function myMap(restaurant) {

@@ -122,7 +122,15 @@ services.service('guestService', ['$http', function($http){
 	}
 	
 	this.avgRateFriends = function(id){
-		return $http.get("/guest/avgRateFriends/" + id)
+		return $http.get("/guest/avgRateFriends/" + id);
+	}
+	
+	this.getCurrentReservations = function(){
+		return $http.get("/guest/currentReservations");
+	}
+	
+	this.cancelReservation = function(id){
+		return $http.get("/guest/cancelReservation/"+id);
 	}
 
 	
