@@ -58,8 +58,8 @@ public class SystemManagerController {
 		this.systemManagerService = systemManagerService;
 	}
 
-	@SuppressWarnings("unused")
 	@GetMapping("/checkRights")
+	@ResponseStatus(HttpStatus.OK)
 	public boolean checkRights() {
 		try {
 			SystemManager systemManager = ((SystemManager) httpSession.getAttribute("user"));
@@ -71,17 +71,20 @@ public class SystemManagerController {
 
 	// izlistavanje svih menadzera restorana
 	@GetMapping("/restaurantManager")
+	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<List<RestaurantManager>> findAllRestaurantManagers() {
 		return new ResponseEntity<>(restaurantManagerService.findAll(), HttpStatus.OK);
 	}
 
 	@GetMapping
+	@ResponseStatus(HttpStatus.OK)
 	public SystemManager findSystemManager() {
 		return ((SystemManager) httpSession.getAttribute("user"));
 	}
 
 	// izlistavanje svih menadzera restorana koji nemaju radno mesto
 	@GetMapping(path = "/freeRestaurantManager")
+	@ResponseStatus(HttpStatus.OK)
 	public List<RestaurantManager> findAllFreeRestaurantManagers() {
 		// ovo ce se kasnije promeniti da ide odmah na bazu, sa posebnim upitom
 		List<RestaurantManager> managers = restaurantManagerService.findAll();

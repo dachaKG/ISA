@@ -20,5 +20,5 @@ public interface BidderService {
 
 	ArrayList<RestaurantOrderr> selectAllOffersWhereBidderCompeted(Bidder bidder);
 
-	boolean tryToChangeValueOfOffer(RestaurantOrderr restaurantOrderr, Long bidderId, Bidder bidder);
+	boolean tryToChangeValueOfOffer(RestaurantOrderr restaurantOrderr, Long bidderId);
 }

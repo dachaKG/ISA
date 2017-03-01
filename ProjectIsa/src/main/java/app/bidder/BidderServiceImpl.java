@@ -79,7 +79,7 @@ public class BidderServiceImpl implements BidderService {
 	}
 
 	@Override
-	public boolean tryToChangeValueOfOffer(RestaurantOrderr restaurantOrderr,Long bidderId,Bidder bidder) {
+	public boolean tryToChangeValueOfOffer(RestaurantOrderr restaurantOrderr,Long bidderId) {
 		List<RestaurantOrderr> restaurantOrderrs = Lists.newArrayList(restaurantOrderRepository.findAll());
 		for (int i = 0; i < restaurantOrderrs.size(); i++) {
 			if (restaurantOrderrs.get(i).getId() == restaurantOrderr.getId()) {
