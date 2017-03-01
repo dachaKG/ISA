@@ -88,14 +88,10 @@ app.controller('employedBartenderController', [ '$scope', 'employedBartenderServ
 		}
 		
 		$scope.changedShift = function(bartender) {
-			$employedBartenderService.changedShiftDate(bartender.id).then(
-				function(response){
-					$scope.changedShiftDate = response.data;
-				}
-			)
+			
 		    var today = Date.now();
 		    var tomorrow = new Date(Date.now() + 86400000 * 1);
-			var step = 1;
+			var step = 2;
 			var datesArr = [];
 			var temp = 0;
 			if(bartender.defaultShift != "First") 
@@ -103,11 +99,11 @@ app.controller('employedBartenderController', [ '$scope', 'employedBartenderServ
 			else
 				temp = 0;
 			for(var i = 0;i<300;i++) {
-				s = i % 14;
-				if(s >= 7){
-					day = new Date(Date.now() +temp * 86400000 + 86400000 *  i*step);
-					datesArr.push(day);
-				}
+				day = new Date(Date.now() +temp * 86400000 + 86400000 *  i*step);
+				
+				
+				datesArr.push(day);
+				
 			}
 			
 			

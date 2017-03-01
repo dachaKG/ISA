@@ -52,6 +52,9 @@ public class Orderr {
 	@Column 
 	private ChangeStatus changeStatus;
 	
+	@Column
+	private int changeVersion;
+	
 	@Version
 	@Column
 	private Integer version;
