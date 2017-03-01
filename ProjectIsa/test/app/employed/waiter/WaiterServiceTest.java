@@ -44,7 +44,7 @@ public class WaiterServiceTest {
 		waiter.setClothesSize(ClothesSize.S);
 		waiter.setShoesSize(ShoesSize.no40);
 		waiter.setDefaultShift(DefaultShift.First);
-		waiter.setRate(2);
+		waiter.setRate(2.2);
 		waiter.setNumRate(new ArrayList<Integer>());
 		Waiter saveWaiter = repository.save(waiter);
 		assertEquals(saveWaiter.getMail(), waiter.getMail());

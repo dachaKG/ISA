@@ -109,6 +109,7 @@ app.controller('employedWaiterController', [ '$scope', 'employedWaiterService','
 			employedWaiterService.sendToEmployed(order.id).then(
 					function(response){
 						$scope.orders.splice($scope.orders.indexOf(order),1);
+						findAll();
 					},
 					function(response){
 						alert("Error while signal");
@@ -178,7 +179,12 @@ app.controller('employedWaiterController', [ '$scope', 'employedWaiterService','
 		}
 		
 		$scope.makeOrder = function(){
-			$location.path('loggedIn/waiter/orders');
+			employedWaiterService.makeOrder($scope.changedOrder.id).then(
+				function(response){
+					$location.path('loggedIn/waiter/orders');
+					findAll();
+				}
+			)
 		}
 		
 		$scope.newOrderDrink = function(drink){

@@ -23,7 +23,8 @@ public class BartenderServiceTest {
 	@Autowired
 	private BartenderRepository repository;
 	
-	@Autowired BartenderService bartenderService;
+	@Autowired
+	BartenderService bartenderService;
 	
 
 	@Test

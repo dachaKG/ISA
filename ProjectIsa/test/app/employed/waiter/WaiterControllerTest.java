@@ -8,7 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -56,11 +56,6 @@ public class WaiterControllerTest {
 		session.setAttribute("user", w);
 		
 	}
-	@Ignore
-	@Test
-	public void testWaiterController() {
-		fail("Not yet implemented");
-	}
 
 	@Test
 	public void testCheckRights() throws Exception {
@@ -77,10 +72,12 @@ public class WaiterControllerTest {
 
 	}
 
-	@Ignore
+	
 	@Test
-	public void testOrders() {
-		fail("Not yet implemented");
+	public void testOrders() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders.get("/waiter/orders").session(session)).andDo(print())
+		.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+		.andExpect(jsonPath("$",hasSize(2)));
 	}
 
 	@Test
@@ -96,137 +93,31 @@ public class WaiterControllerTest {
 		.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
 		.andExpect(jsonPath("$",hasSize(4)));
 	}
-	@Ignore
+	
 	@Test
-	public void testSendToEmployed() {
-		fail("Not yet implemented");
+	public void testSendToEmployed() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders.put("/waiter/sendToEmployed/{odrerId}", 12L)).andDo(print())
+		.andExpect(status().isOk());/*.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+		.andExpect(jsonPath("$.drinkStatus").value("inPrepared"));*/
 	}
 
-	@Test
-	public void testSave() throws Exception {
-		
-		
-	}
-	@Ignore
-	@Test
-	public void testFindOne() {
-		fail("Not yet implemented");
-	}
-	@Ignore
+
 	@Test
 	public void testUpdate() throws Exception {
 		Waiter waiter = getWaiter();
-		//String waiterPut = asJsonString(waiter);
-		 mockMvc.perform(put("/waiter/profile/{id}", waiter.getId())
-	                        .contentType(MediaType.APPLICATION_JSON)
-	                        .content(asJsonString(waiter)))
-	                .andExpect(status().isOk());
+		mockMvc.perform(put("/waiter/profile/{id}", waiter.getId())
+	                       .contentType(MediaType.APPLICATION_JSON)
+	                       .content(asJsonString(waiter)))
+	               .andExpect(status().isOk());
 	}
-	@Ignore
+	
 	@Test
-	public void testChangePassword() {
-		fail("Not yet implemented");
+	public void testWaiterTables() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders.get("/waiter/waiterTables").session(session)).andDo(print())
+		.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+		.andExpect(jsonPath("$",hasSize(4)));
 	}
-	@Ignore
-	@Test
-	public void testMakeBill() {
-		fail("Not yet implemented");
-	}
-	@Ignore
-	@Test
-	public void testBillForWaiter() {
-		fail("Not yet implemented");
-	}
-	@Ignore
-	@Test
-	public void testSecondWaiter() {
-		fail("Not yet implemented");
-	}
-	@Ignore
-	@Test
-	public void testChangeOrder() {
-		fail("Not yet implemented");
-	}
-	@Ignore
-	@Test
-	public void testGetRestaurant() {
-		fail("Not yet implemented");
-	}
-	@Ignore
-	@Test
-	public void testGuestAddDrink() {
-		fail("Not yet implemented");
-	}
-	@Ignore
-	@Test
-	public void testGuestAddDish() {
-		fail("Not yet implemented");
-	}
-	@Ignore
-	@Test
-	public void testNewOrder() {
-		fail("Not yet implemented");
-	}
-	@Ignore
-	@Test
-	public void testNewOrderDish() {
-		fail("Not yet implemented");
-	}
-	@Ignore
-	@Test
-	public void testNewOrderDrink() {
-		fail("Not yet implemented");
-	}
-	@Ignore
-	@Test
-	public void testRemoveNewDish() {
-		fail("Not yet implemented");
-	}
-	@Ignore
-	@Test
-	public void testRemoveNewDrink() {
-		fail("Not yet implemented");
-	}
-	@Ignore
-	@Test
-	public void testMakeNewOrder() {
-		fail("Not yet implemented");
-	}
-	@Ignore
-	@Test
-	public void testRemoveDish() {
-		fail("Not yet implemented");
-	}
-	@Ignore
-	@Test
-	public void testRemoveDrink() {
-		fail("Not yet implemented");
-	}
-	@Ignore
-	@Test
-	public void testGetReservations() {
-		fail("Not yet implemented");
-	}
-	@Ignore
-	@Test
-	public void testWaiterTables() {
-		fail("Not yet implemented");
-	}
-	@Ignore
-	@Test
-	public void testGetTables() {
-		fail("Not yet implemented");
-	}
-	@Ignore
-	@Test
-	public void testChangeOrdersList() {
-		fail("Not yet implemented");
-	}
-	@Ignore
-	@Test
-	public void testGetActiveReservations() {
-		fail("Not yet implemented");
-	}
+	
 	
 	private Waiter getWaiter(){
 		Waiter waiter = new Waiter();
@@ -239,7 +130,8 @@ public class WaiterControllerTest {
 		waiter.setClothesSize(ClothesSize.S);
 		waiter.setShoesSize(ShoesSize.no40);
 		waiter.setDefaultShift(DefaultShift.First);
-		waiter.setRate(2);
+		waiter.setRate(2.2);
+		waiter.setNumRate(new ArrayList<Integer>());
 		return waiter;
 	}
 	

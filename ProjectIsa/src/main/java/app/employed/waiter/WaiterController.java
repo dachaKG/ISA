@@ -34,6 +34,7 @@ import app.drink.DrinkService;
 import app.employed.DefaultShift;
 import app.manager.changedShiftWaiter.ChangedShiftWaiter;
 import app.manager.changedShiftWaiter.ChangedShiftWaiterService;
+import app.order.ChangeStatus;
 import app.order.DrinkStatus;
 import app.order.FoodStatus;
 import app.order.OrderService;
@@ -189,7 +190,7 @@ public class WaiterController {
 
 	@PutMapping(path = "/sendToEmployed/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public void sendToEmployed(@PathVariable Long id) {
+	public Orderr sendToEmployed(@PathVariable Long id) {
 
 		Optional.ofNullable(orderService.findOne(id))
 				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
@@ -208,7 +209,7 @@ public class WaiterController {
 			order.setFoodStatus(FoodStatus.finished);
 		}
 
-		orderService.save(order);
+		return orderService.save(order);
 
 	}
 
@@ -343,7 +344,8 @@ public class WaiterController {
 	public Orderr changeOrder(@PathVariable Long orderId, @PathVariable Integer versionId){
 		Orderr order = orderService.findOne(orderId);
 		if(order.getVersion() == versionId){
-			order.setChangeVersion(order.getChangeVersion()+1);
+			order.setChangeStatus(ChangeStatus.change);
+			//order.setChangeVersion(order.getChangeVersion()+1);
 			orderService.save(order);
 			return order;
 		} else {
@@ -474,6 +476,15 @@ public class WaiterController {
 		waiterService.save(waiter);
 		
 		return order;
+	}
+	
+	@PutMapping(path = "/changeOrder/{orderId}")
+	public Orderr changeOrder(@PathVariable Long orderId){
+		Orderr order = orderService.findOne(orderId);
+		
+		order.setChangeStatus(null);
+		
+		return orderService.save(order);
 	}
 	
 	@GetMapping(path = "/removeDish/{id}/{orderId}")

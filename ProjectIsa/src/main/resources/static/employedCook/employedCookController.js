@@ -44,7 +44,7 @@ app.controller('employedCookController',['$scope','$filter','employedCookService
 		}
 		
 		$scope.received = function(foodOrder){
-			employedCookService.received(foodOrder.id, foodOrder.changeVersion).then(
+			employedCookService.received(foodOrder.id).then(
 				function(response){
 					if(response.data == ""){
 						alert("Order is changed you can't receive it now");

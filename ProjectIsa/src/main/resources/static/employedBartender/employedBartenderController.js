@@ -29,11 +29,11 @@ app.controller('employedBartenderController', [ '$scope', 'employedBartenderServ
 				}
 			);
 			
-			employedBartenderService.readyDrinks().then(
+			/*employedBartenderService.readyDrinks().then(
 				function(response){
 					$scope.readyDrinks = response.data;
 				}
-			);
+			);*/
 			
 			employedBartenderService.employedBartenders().then(
 					function(response){
@@ -43,7 +43,7 @@ app.controller('employedBartenderController', [ '$scope', 'employedBartenderServ
 		}
 		
 		$scope.ready = function(drinkOrder){
-			employedBartenderService.ready(drinkOrder.id, drinkOrder.changeVersion).then(
+			employedBartenderService.ready(drinkOrder.id).then(
 				function(response) {
 					if(response.data == ""){
 						alert("Order is changed you can't make drinks ready at the moment");

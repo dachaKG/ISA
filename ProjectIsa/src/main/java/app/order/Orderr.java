@@ -48,8 +48,9 @@ public class Orderr {
 	@Column
 	private int checkVersion;
 	
+	@Enumerated(EnumType.STRING)
 	@Column 
-	private int changeVersion;
+	private ChangeStatus changeStatus;
 	
 	@Version
 	@Column
@@ -100,7 +101,6 @@ public class Orderr {
 		this.food = new ArrayList<Dish>();
 		this.version = 0;
 		this.checkVersion = 0;
-		this.changeVersion = 0;
 	}
 
 }

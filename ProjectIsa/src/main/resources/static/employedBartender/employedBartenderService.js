@@ -20,8 +20,8 @@ services.service('employedBartenderService',['$http', function($http){
 		return $http.get("/bartender/orders");
 	}
 	
-	this.ready = function(id, version){
-		return $http.get("/bartender/drinkReady/"+id+"/"+version);
+	this.ready = function(id){
+		return $http.get("/bartender/drinkReady/"+id);
 	}
 	
 	this.readyDrinks = function(id){

@@ -638,8 +638,8 @@ public class GuestController {
 		}
 		
 		waiter.getNumRate().add(rate);
-		int average = (int) waiter.getRate();
-		average = (int) (Math.round(average*100.0)/100.0);
+		double average = waiter.getRate();
+		average = (Math.round(average*100.0)/100.0);
 		waiter.setRate(average);
 		waiterService.save(waiter);
 		

@@ -102,4 +102,8 @@ services.service('employedWaiterService',['$http', function($http){
 		return $http.get("/waiter/changeOrdersList");
 	}
 	
+	this.makeOrder = function(orderId){
+		return $http.put("/waiter/changeOrder/"+ orderId);
+	}
+	
 }]);
