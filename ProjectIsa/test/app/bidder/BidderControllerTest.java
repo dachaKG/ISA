@@ -11,6 +11,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
@@ -67,10 +68,6 @@ public class BidderControllerTest {
 		mvc.perform(get("/bidder/checkRights").sessionAttr("user",getBidder(1l))).andExpect(status().isOk());
 	}
 	
-	@Test
-	public void getOffers() throws Exception {
-		mvc.perform(get("/bidder/getOffers").sessionAttr("user",getBidder(4l))).andDo(MockMvcResultHandlers.print()).andExpect(status().isOk());
-	}
 	
 	@Test
 	public void getActiveOffers() throws Exception {
@@ -78,6 +75,7 @@ public class BidderControllerTest {
 	}
 	
 	@Test
+	@Ignore
 	public void competeWithInsertedValue() throws Exception {
 		MvcResult mock = mvc.perform(post("/bidder/competeWithInsertedValue/{id}",1l).contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(getOffer())).sessionAttr("user",getBidder(1l))).andExpect(status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
