@@ -87,7 +87,7 @@ public class Restaurant {
 	
 	
 	//lista porudzbina restorana za ponudjace
-	@OneToMany(fetch = FetchType.EAGER)	// Sa ovim nece da pokrene aplikaciju
+	@OneToMany
 	//@OneToMany
 	@JoinTable(name = "RESTAURANT_RESTAURANT_ORDER", joinColumns = @JoinColumn(name = "RESTAURANT_ID"), inverseJoinColumns = @JoinColumn(name = "RESTAURANT_ORDER_ID"))
 	private List<RestaurantOrderr> restaurantOrders;
