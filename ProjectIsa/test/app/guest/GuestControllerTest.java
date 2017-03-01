@@ -75,12 +75,6 @@ public class GuestControllerTest {
 		mvc.perform(put("/guest/activate/{acNum}",acNum).sessionAttr("user",getGuest(1l))).andExpect(status().isOk());
 	}
 	
-	
-	
-	
-	
-	
-	
 	private Guest getGuest(Long id) {
 		Guest guest = new Guest();	
 		guest.setId(id);
