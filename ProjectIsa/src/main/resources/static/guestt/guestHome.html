@@ -19,7 +19,7 @@
 <div ng-init = "loadInvites()" >
 
 <ul>
-<li ng-repeat = "invite in invites"><h3>You have been invited to attend meal, date: {{invite.date}} at {{invite.hours}}:{{invite.minutes}} 
+<li ng-repeat = "invite in invites" track by $index><h3>You have been invited to attend meal, date: {{invite.date}} at {{invite.hours}}:{{invite.minutes}} 
 		<button class="btn btn-default navbar-btn" ng-click="acceptInvite(invite)">Accept</button>
 		<button class="btn btn-default navbar-btn" ng-click="rejectInvite(invite.id)">Decline</button></h3>
 </li>

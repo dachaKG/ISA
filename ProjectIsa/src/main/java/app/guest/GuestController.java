@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.persistence.OptimisticLockException;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -53,6 +54,7 @@ import app.restaurant.Segment;
 import app.restaurant.SegmentService;
 import app.restaurant.Table;
 import app.restaurant.TableService;
+import net.minidev.asm.ex.ConvertException;
 
 @RestController
 @RequestMapping("/guest")
@@ -109,6 +111,11 @@ public class GuestController {
 	public boolean checkRights() {
 		try {
 			Guest guest = ((Guest) httpSession.getAttribute("user"));
+			if(!((httpSession.getAttribute("user")) instanceof Guest) )
+			{
+				return false;
+			}
+				
 			return true;
 		} catch (Exception e) {
 			return false;
@@ -313,6 +320,27 @@ public class GuestController {
 	@PostMapping(path="/makeReservation")
 	public Reservation makeReservation(@RequestBody Reservation reservation){
 		List<Long> tables = reservation.getTables();
+		
+		// provera u bazi da li moze za taj termin
+		for(int i=0; i<tables.size(); i++){
+			Table table = tableService.findOne(tables.get(i));
+			for(int j=0; j<table.getReservations().size(); j++){
+				Reservation res = table.getReservations().get(j);
+				if(res.getDate().toString().equals(reservation.getDate().toString()) ){
+					if(((res.getHours() + res.getMinutes()/60+res.getDuration()) >= (reservation.getHours()+reservation.getMinutes()/60)) &&
+						((reservation.getHours()+reservation.getMinutes()/60+reservation.getDuration())>=(res.getHours() + res.getMinutes()/60) )){
+						System.out.println("Kolizija");
+						throw new OptimisticLockException("Kolizija");
+					}
+				}
+			}	
+		}
+		
+		
+		if(reservation.getHours()>22 || reservation.getMinutes()>60 || reservation.getHours()<0 || reservation.getMinutes()<0 || tables.size()<1 ){
+			throw new NullPointerException();
+		}
+		
 		for(int i=0; i<tables.size(); i++){
 			tableService.findOne(tables.get(i)).getReservations().add(reservation);
 		}
@@ -352,6 +380,26 @@ public class GuestController {
 		reservation.setRestaurant(restaurant);
 		return reservationService.save(reservation);
 	}
+	
+	
+	@SuppressWarnings("unused")
+	@PostMapping(path="/checkTables")
+	public boolean checkTables(@RequestBody ArrayList<Table> tables){
+		
+		for(int i=0; i<tables.size(); i++){
+			Table t = tableService.findOne(tables.get(i).getId());
+			if(t.getVersion() == tables.get(i).getVersion()){}
+			else
+				throw new OptimisticLockException();
+		}
+		return true;
+	}
+	
+	
+	
+	
+	
+	
 	
 	
 	@GetMapping(path="/reservations")

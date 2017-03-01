@@ -401,6 +401,7 @@ public class RestaurantManagerController {
 		table.setXPos(pomtab.getXPos());
 		table.setYPos(pomtab.getYPos());
 		table.setId(id);
+		table.setVersion(pomtab.getVersion());
 
 		return tableService.save(table);
 	}
