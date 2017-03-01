@@ -452,6 +452,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 						$location.path('loggedIn/guest/reservation4');
 					},function (response) {
 	                    alert("We are sorry, reservation is not stored successfuly. \n Please try again. ");
+	                    $window.location.reload();
 	                });
 		}
 		
@@ -465,6 +466,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 						$location.path('loggedIn/guest/reservation4');
 					},function (response) {
 	                    alert("We are sorry, reservation is not stored successfuly. \n Please try again. ");
+	                    $window.location.reload();
 	                });
 		}
 		
@@ -477,6 +479,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 						$location.path('loggedIn/guest/home');
 					},function (response) {
 	                    alert("We are sorry, reservation is not stored successfuly. \n Please try again. ");
+	                    $window.location.reload();
 	                });
 		}
 		

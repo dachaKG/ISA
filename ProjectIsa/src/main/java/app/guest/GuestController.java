@@ -54,6 +54,7 @@ import app.restaurant.Segment;
 import app.restaurant.SegmentService;
 import app.restaurant.Table;
 import app.restaurant.TableService;
+import net.minidev.asm.ex.ConvertException;
 
 @RestController
 @RequestMapping("/guest")
@@ -328,6 +329,11 @@ public class GuestController {
 					}
 				}
 			}	
+		}
+		
+		
+		if(reservation.getHours()>22 || reservation.getMinutes()>60 || reservation.getHours()<0 || reservation.getMinutes()<0 || tables.size()<1 ){
+			throw new NullPointerException();
 		}
 		
 		for(int i=0; i<tables.size(); i++){
