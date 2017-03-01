@@ -111,6 +111,11 @@ public class GuestController {
 	public boolean checkRights() {
 		try {
 			Guest guest = ((Guest) httpSession.getAttribute("user"));
+			if(!((httpSession.getAttribute("user")) instanceof Guest) )
+			{
+				return false;
+			}
+				
 			return true;
 		} catch (Exception e) {
 			return false;
@@ -375,6 +380,26 @@ public class GuestController {
 		reservation.setRestaurant(restaurant);
 		return reservationService.save(reservation);
 	}
+	
+	
+	@SuppressWarnings("unused")
+	@PostMapping(path="/checkTables")
+	public boolean checkTables(@RequestBody ArrayList<Table> tables){
+		
+		for(int i=0; i<tables.size(); i++){
+			Table t = tableService.findOne(tables.get(i).getId());
+			if(t.getVersion() == tables.get(i).getVersion()){}
+			else
+				throw new OptimisticLockException();
+		}
+		return true;
+	}
+	
+	
+	
+	
+	
+	
 	
 	
 	@GetMapping(path="/reservations")

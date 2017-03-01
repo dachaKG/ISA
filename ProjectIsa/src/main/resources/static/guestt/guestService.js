@@ -132,6 +132,10 @@ services.service('guestService', ['$http', function($http){
 	this.cancelReservation = function(id){
 		return $http.get("/guest/cancelReservation/"+id);
 	}
+	
+	this.checkTables = function(tables){
+		return $http.post("/guest/checkTables",tables);
+	}
 
 	
 }]);

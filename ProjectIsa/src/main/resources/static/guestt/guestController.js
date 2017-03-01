@@ -290,6 +290,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		
 		$scope.reservation2 = function(){	
 			chosenTables = [];
+			chosenTablesToCheck = [];
 			if($("#hIn").val()!="" && $("#mIn").val()!="" && $("#dIn").val()!="" && $("#datepicker").val()!=""){
 				$location.path('loggedIn/guest/reservation2');
 			}
@@ -432,6 +433,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		
 		
 		var chosenTables = [];
+		var chosenTablesToCheck = [];
 		$scope.selectTable = function(table){
 			$("#odabranSto").html("Chosen table: "+table.name);
 			button = document.getElementById(table.id);
@@ -439,6 +441,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			$('#'+table.id).attr('disabled', 'disabled');
 			$scope.chosenTable = table;
 			chosenTables.push(table.id);
+			chosenTablesToCheck.push(table);
 		}
 		
 		
@@ -457,30 +460,47 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		}
 		
 		$scope.orderForReservation = function(){
-			
 			$scope.reservation.invitedGuests = friendsInReservation;
 			$scope.reservation.tables = chosenTables;
-			guestService.makeReservation($scope.chosenTable, $scope.reservation).then(
-					function(response){
-						$scope.reservation = response.data;
-						$location.path('loggedIn/guest/reservation4');
+			
+			guestService.checkTables(chosenTablesToCheck).then(
+				function(response){
+					guestService.makeReservation(($scope.chosenTable.id), $scope.reservation).then(
+					  function(response){
+						  $scope.reservation = response.data;
+						  $location.path('loggedIn/guest/reservation4');
 					},function (response) {
-	                    alert("We are sorry, reservation is not stored successfuly. \n Please try again. ");
-	                    $window.location.reload();
-	                });
+			           alert("We are sorry, reservation is not stored successfuly. \n Please try again. ");
+			           $window.location.reload();
+			         });
+				},
+				function(response){
+					alert("We are sorry, reservation is not stored successfuly. \n Please try again. ");
+			        $window.location.reload();
+				}
+			);
 		}
 		
 		$scope.dontOrderForReservation = function(){
 			
 			$scope.reservation.invitedGuests = friendsInReservation;
 			$scope.reservation.tables = chosenTables;
-			guestService.makeReservation(($scope.chosenTable.id), $scope.reservation).then(
-					function(response){
-						$location.path('loggedIn/guest/home');
+			
+			guestService.checkTables(chosenTablesToCheck).then(
+				function(response){
+					guestService.makeReservation(($scope.chosenTable.id), $scope.reservation).then(
+					  function(response){
+								$location.path('loggedIn/guest/home');
 					},function (response) {
-	                    alert("We are sorry, reservation is not stored successfuly. \n Please try again. ");
-	                    $window.location.reload();
-	                });
+			           alert("We are sorry, reservation is not stored successfuly. \n Please try again. ");
+			           $window.location.reload();
+			         });
+				},
+				function(response){
+					alert("We are sorry, reservation is not stored successfuly. \n Please try again. ");
+			        $window.location.reload();
+				}
+			);	
 		}
 		
 		
@@ -514,7 +534,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			guestService.rejectInvite(id).then(
 					function(response){
 						alert("Rejected");
-						$location.path('loggedIn/guest/home');
+						$window.location.reload();
 					});
 		}
 		
@@ -534,7 +554,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		$scope.acceptInviteAndNoOrder = function(){
 			guestService.acceptInvite(inviteId).then(
 					function(response){
-						$location.path('loggedIn/guest/home');
+						$window.location.reload();
 					});
 		}
 		
