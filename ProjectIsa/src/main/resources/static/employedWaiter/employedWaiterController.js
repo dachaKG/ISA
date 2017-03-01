@@ -117,7 +117,7 @@ app.controller('employedWaiterController', [ '$scope', 'employedWaiterService','
 		}
 		
 		$scope.changeOrder = function(order){
-			employedWaiterService.changeOrder(order.id).then(
+			employedWaiterService.changeOrder(order.id, order.version).then(
 					function(response){
 						if(response.data == ""){
 							alert("You can't change this order anymore");

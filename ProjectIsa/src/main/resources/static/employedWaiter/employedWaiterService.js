@@ -30,8 +30,8 @@ services.service('employedWaiterService',['$http', function($http){
 		return $http.post("/waiter/makeBill", order);
 	}
 	
-	this.changeOrder = function(id){
-		return $http.get("/waiter/changeOrder/" + id);
+	this.changeOrder = function(id, version){
+		return $http.get("/waiter/changeOrder/" + id + "/" + version);
 	}
 	
 	this.restaurant = function(){

@@ -49,7 +49,7 @@ public class Waiter extends Employed {
 	private Restaurant restaurant;
 	
 	@Column
-	private double rate;
+	private Integer rate;
 	
 	@ElementCollection
 	private List<Integer> numRate;

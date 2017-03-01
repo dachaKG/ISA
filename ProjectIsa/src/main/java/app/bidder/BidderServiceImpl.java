@@ -50,7 +50,7 @@ public class BidderServiceImpl implements BidderService {
 	}
 
 	@Override
-	public Bidder findOne(String mail, String password) {
+	public Bidder findOneMailAndPass(String mail, String password) {
 		return repository.findByMailAndPassword(mail,password);
 	}
 

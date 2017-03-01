@@ -90,6 +90,7 @@ public class BartenderController {
 	}
 	
 	@GetMapping(path = "/employedBartenders")
+	@ResponseStatus(HttpStatus.OK)
 	public List<Bartender> employedBartenders(){
 		Long id = ((Bartender) httpSession.getAttribute("user")).getId();
 		Bartender bartender = bartenderService.findOne(id);

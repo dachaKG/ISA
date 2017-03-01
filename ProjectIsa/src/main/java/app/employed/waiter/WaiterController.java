@@ -91,10 +91,11 @@ public class WaiterController {
 	}
 
 	@GetMapping
-	public ResponseEntity<Waiter> findBartender() {
+	@ResponseStatus(HttpStatus.OK)
+	public Waiter findWaiter() {
 		Long id = ((Waiter) httpSession.getAttribute("user")).getId();
 		Waiter waiter = waiterService.findOne(id);
-		return new ResponseEntity<Waiter>(waiter, HttpStatus.OK);
+		return waiter;
 	}
 
 
@@ -171,7 +172,7 @@ public class WaiterController {
 	}
 	
 	@GetMapping(path = "/employedWaiters")
-	public List<Waiter> employedCooks(){
+	public List<Waiter> employedWaiters(){
 		Long id = ((Waiter) httpSession.getAttribute("user")).getId();
 		Waiter waiter = waiterService.findOne(id);
 		Restaurant restaurant = new Restaurant();
@@ -338,10 +339,10 @@ public class WaiterController {
 		return waiter;
 	}
 	
-	@GetMapping("/changeOrder/{orderId}")
-	public Orderr changeOrder(@PathVariable Long orderId){
+	@GetMapping("/changeOrder/{orderId}/{versionId}")
+	public Orderr changeOrder(@PathVariable Long orderId, @PathVariable Integer versionId){
 		Orderr order = orderService.findOne(orderId);
-		if(order.getCheckVersion() == 0){
+		if(order.getVersion() == versionId){
 			order.setChangeVersion(order.getChangeVersion()+1);
 			orderService.save(order);
 			return order;
