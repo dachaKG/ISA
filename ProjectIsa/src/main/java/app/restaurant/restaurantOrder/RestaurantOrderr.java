@@ -6,7 +6,6 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -55,7 +54,7 @@ public class RestaurantOrderr {
 	@Column
 	private Integer count;
 	
-	@OneToMany(fetch = FetchType.EAGER)
+	@OneToMany
 	@JoinTable(name = "RESTAURANT_OFFER", joinColumns = @JoinColumn(name = "RESTAURANT_ORDER_ID"), inverseJoinColumns = @JoinColumn(name = "OFFER_ID"))
 	private List<Offer> offers;
 	

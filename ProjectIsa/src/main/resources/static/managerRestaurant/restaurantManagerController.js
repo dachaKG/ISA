@@ -189,7 +189,17 @@ app.controller('restaurantManagerController', ['$scope','$window','restaurantMan
 		
 		$scope.saveEmployed = function() {
 			//$scope.drink.restaurant = $scope.restaurant;
+			
 			if($scope.employedType == 'Waiter') {
+				for(var i = 0;i<tablesForNewWaiter.length;i++) 
+					for(var j = 0;j<tablesForNewWaiter.length;j++) 
+						if(tablesForNewWaiter[i].id == tablesForNewWaiter[j].id && i != j) {
+		                    alert("Choosen two same tables.");
+							$window.location.reload();
+		                    return;
+						}
+							
+				
 				$scope.employed.tablesForHandling = tablesForNewWaiter;
 				restaurantManagerService.saveWaiter($scope.employed).then(
 					function (response) {
