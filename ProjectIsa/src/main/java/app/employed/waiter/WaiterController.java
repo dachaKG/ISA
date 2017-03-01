@@ -483,6 +483,7 @@ public class WaiterController {
 		Orderr order = orderService.findOne(orderId);
 		
 		order.setChangeStatus(null);
+		order.setChangeVersion(order.getChangeVersion()+1);
 		
 		return orderService.save(order);
 	}

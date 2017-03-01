@@ -44,7 +44,7 @@ app.controller('employedCookController',['$scope','$filter','employedCookService
 		}
 		
 		$scope.received = function(foodOrder){
-			employedCookService.received(foodOrder.id).then(
+			employedCookService.received(foodOrder.id, foodOrder.changeVersion).then(
 				function(response){
 					if(response.data == ""){
 						alert("Order is changed you can't receive it now");
@@ -105,7 +105,7 @@ app.controller('employedCookController',['$scope','$filter','employedCookService
 				function(response){
 					var today = Date.now();
 				    var tomorrow = new Date(Date.now() + 86400000 * 1);
-					var step = 1;
+					var step = 2;
 					var datesArr = [];
 					var temp = 0;
 					if(cook.defaultShift != "First") 
@@ -115,21 +115,9 @@ app.controller('employedCookController',['$scope','$filter','employedCookService
 					
 					dates = response.data;
 					for(var i = 0;i<300;i++) {
-						day = new Date(Date.now() + temp * 86400000 + 86400000 * i/* * 86400000 + 86400000 *  i*step*/);
-						days = $filter('date')(day, 'yyyy-MM-dd');
-						var check = true;
-						for(var j = 0 ; j < dates.length; j++){
-							if(dates[j] != days)
-								check = true;
-							else{
-								check = false;
-								break;
-							} 
-								
-							
-						}
-						if(check)
-							datesArr.push(day);
+						day = new Date(Date.now() +temp * 86400000 + 86400000 *  i*step);
+												
+						datesArr.push(day);
 						
 					}
 					

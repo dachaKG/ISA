@@ -229,9 +229,9 @@ public class CookController {
 		
 	}
 
-	@GetMapping(path = "/foodReceived/{orderId}")
+	@GetMapping(path = "/foodReceived/{orderId}/{versionId}")
 	@ResponseStatus(HttpStatus.OK)
-	public Orderr foodReceived(@PathVariable Long orderId) {
+	public Orderr foodReceived(@PathVariable Long orderId, @PathVariable Integer versionId) {
 		Long id = ((Cook) httpSession.getAttribute("user")).getId();
 		Cook cook = cookService.findOne(id);
 		Optional.ofNullable(cook).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
@@ -240,7 +240,7 @@ public class CookController {
 				.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found!"));
 
 		Orderr order = orderService.findOne(orderId);
-		if(order.getChangeStatus() != null)
+		if(order.getChangeStatus() != null || order.getChangeVersion() != versionId)
 			return null;
 		order.setCheckVersion(order.getCheckVersion() + 1);
 		orderService.save(order);
