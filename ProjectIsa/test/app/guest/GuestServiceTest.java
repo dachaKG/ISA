@@ -63,15 +63,6 @@ public class GuestServiceTest {
 		assertEquals("guest1", guest.getMail());
 	}
 	
-	@Ignore
-	@Test
-	public void activateTest(){
-		Guest guest = getGuest();
-		guest.setRegistrated("12345");
-		guestService.activate("12345");
-		assertEquals("1", guestService.findOne(3l).getRegistrated());
-	}
-	
 	
 	@Test
 	public void findByFirstAndLastName(){
