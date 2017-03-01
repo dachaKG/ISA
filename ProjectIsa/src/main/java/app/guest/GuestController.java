@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.persistence.OptimisticLockException;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -313,6 +314,22 @@ public class GuestController {
 	@PostMapping(path="/makeReservation")
 	public Reservation makeReservation(@RequestBody Reservation reservation){
 		List<Long> tables = reservation.getTables();
+		
+		// provera u bazi da li moze za taj termin
+		for(int i=0; i<tables.size(); i++){
+			Table table = tableService.findOne(tables.get(i));
+			for(int j=0; j<table.getReservations().size(); j++){
+				Reservation res = table.getReservations().get(j);
+				if(res.getDate().toString().equals(reservation.getDate().toString()) ){
+					if(((res.getHours() + res.getMinutes()/60+res.getDuration()) >= (reservation.getHours()+reservation.getMinutes()/60)) &&
+						((reservation.getHours()+reservation.getMinutes()/60+reservation.getDuration())>=(res.getHours() + res.getMinutes()/60) )){
+						System.out.println("Kolizija");
+						throw new OptimisticLockException("Kolizija");
+					}
+				}
+			}	
+		}
+		
 		for(int i=0; i<tables.size(); i++){
 			tableService.findOne(tables.get(i)).getReservations().add(reservation);
 		}

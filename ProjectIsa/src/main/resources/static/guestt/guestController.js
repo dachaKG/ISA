@@ -280,8 +280,7 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			);
 		}
 		
-		$scope.reservation1 = function(id){
-			 $("#datepicker").datepicker({minDate: 0});
+		$scope.reservation1 = function(id){ 
 			guestService.find(id).then(
 				function(response){
 					$scope.restaurant = response.data;
@@ -289,15 +288,27 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			});
 		}
 		
-		$scope.reservation2 = function(){
+		$scope.reservation2 = function(){	
 			chosenTables = [];
-			$location.path('loggedIn/guest/reservation2');
+			if($("#hIn").val()!="" && $("#mIn").val()!="" && $("#dIn").val()!="" && $("#datepicker").val()!=""){
+				$location.path('loggedIn/guest/reservation2');
+			}
+			else alert("Unesite sva polja.");
 		}
 		
 		$scope.reservation3 = function(){
 			if(chosenTables.length > 0){
 				$location.path('loggedIn/guest/reservation3');
 			}
+		}
+		
+		$scope.inChange = function(){
+			if(parseInt($("#mIn").val()) >60) $("#mIn").val("60");
+			if(parseInt($("#mIn").val()) <0) $("#mIn").val("0");
+			if(parseInt($("#hIn").val()) <0) $("#hIn").val("0");
+			if(parseInt($("#hIn").val()) >22) $("#hIn").val("22");
+			if(parseInt($("#dIn").val()) <0) $("#dIn").val("0");
+			if(parseInt($("#dIn").val()) >10) $("#dIn").val("10");
 		}
 		
 		
@@ -402,6 +413,23 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 			
 		}
 		
+		$scope.datepickerInit = function(){
+			var today = new Date();
+			var dd = today.getDate();
+			var mm = today.getMonth()+1; //January is 0!
+			var yyyy = today.getFullYear();
+			 if(dd<10){
+			        dd='0'+dd
+			    } 
+			    if(mm<10){
+			        mm='0'+mm
+			    } 
+
+			today = yyyy+'-'+mm+'-'+dd;
+			document.getElementById("datepicker").setAttribute("min", today);
+			
+		}
+		
 		
 		var chosenTables = [];
 		$scope.selectTable = function(table){
@@ -415,35 +443,41 @@ app.controller('guestController', ['$scope','$window','guestService', '$location
 		
 		
 		$scope.makeReservation = function(){
-			alert("Sending mails...");
+			
 			$scope.reservation.invitedGuests = friendsInReservation;
 			$scope.reservation.tables = chosenTables;
 			guestService.makeReservation($scope.chosenTable, $scope.reservation).then(
 					function(response){
 						$scope.reservation = response.data;
 						$location.path('loggedIn/guest/reservation4');
-					});
+					},function (response) {
+	                    alert("We are sorry, reservation is not stored successfuly. \n Please try again. ");
+	                });
 		}
 		
 		$scope.orderForReservation = function(){
-			alert("Sending mails...");
+			
 			$scope.reservation.invitedGuests = friendsInReservation;
 			$scope.reservation.tables = chosenTables;
 			guestService.makeReservation($scope.chosenTable, $scope.reservation).then(
 					function(response){
 						$scope.reservation = response.data;
 						$location.path('loggedIn/guest/reservation4');
-					});
+					},function (response) {
+	                    alert("We are sorry, reservation is not stored successfuly. \n Please try again. ");
+	                });
 		}
 		
 		$scope.dontOrderForReservation = function(){
-			alert("Sending mails...");
+			
 			$scope.reservation.invitedGuests = friendsInReservation;
 			$scope.reservation.tables = chosenTables;
 			guestService.makeReservation(($scope.chosenTable.id), $scope.reservation).then(
 					function(response){
 						$location.path('loggedIn/guest/home');
-					});
+					},function (response) {
+	                    alert("We are sorry, reservation is not stored successfuly. \n Please try again. ");
+	                });
 		}
 		
 		
