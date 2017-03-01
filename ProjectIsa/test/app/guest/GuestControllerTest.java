@@ -84,18 +84,12 @@ public class GuestControllerTest {
 		.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		//.andExpect(jsonPath("$",hasSize(7)));
 	}
-	
-	
+
 	@Test
 	public void activateGuestTest() throws Exception {
 		 mvc.perform(put("/guest/activate/12345").session(session)).
 		 andExpect(status().isOk());
 	}
-	
-	
-	
-	
-	
 	
 	private Guest getGuest(Long id) {
 		Guest guest = new Guest();	
