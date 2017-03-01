@@ -1,7 +1,11 @@
 package app.guest;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.Before;
@@ -16,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -50,6 +55,9 @@ public class GuestControllerTest {
 		MockitoAnnotations.initMocks(this);
 		mvc = MockMvcBuilders.standaloneSetup(guestController).setCustomArgumentResolvers(pageResolver)
 				.build();
+		Guest g = getGuest(5l);
+		session = new MockHttpSession();
+		session.setAttribute("user", g);
 		
 	}
 
@@ -58,30 +66,38 @@ public class GuestControllerTest {
 		mvc.perform(get("/guest/checkRights").sessionAttr("user",getGuest(1l))).andExpect(status().isOk());
 	}
 	
-	@Ignore
+	
 	@Test
 	public void testUpdate() throws Exception {
-		Guest guest = getGuest(1l);
+		Guest guest = getGuest(5l);
 		 mvc.perform(put("/guest/{id}",guest.getId())
 	                        .contentType(MediaType.APPLICATION_JSON)
 	                        .content(asJsonString(guest)))
 	                .andExpect(status().isOk());
 	}
 	
+	
+	
 	@Test
-	public void ActivateGuest() throws Exception {
-		Guest guest = getGuest(1l);
-		String acNum = "12345";
-		mvc.perform(put("/guest/activate/{acNum}",acNum).sessionAttr("user",getGuest(1l))).andExpect(status().isOk());
+	public void testAllGuests() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.get("/guest").session(session)).andDo(print())
+		.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
+		//.andExpect(jsonPath("$",hasSize(7)));
+	}
+
+	@Test
+	public void activateGuestTest() throws Exception {
+		 mvc.perform(put("/guest/activate/12345").session(session)).
+		 andExpect(status().isOk());
 	}
 	
 	private Guest getGuest(Long id) {
 		Guest guest = new Guest();	
 		guest.setId(id);
-		guest.setFirstname("mika");
-		guest.setLastname("mikic");
-		guest.setMail("guest1");
-		guest.setPassword("pass1");
+		guest.setFirstname("Petar");
+		guest.setLastname("Peric");
+		guest.setMail("pera@gmail.com");
+		guest.setPassword("pera");
 		guest.setRegistrated("1");
 		return guest;
 	}
